@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 pip = "*"
 flask = "*"
+python-decouple = "*"
 
 [requires]
 python_version = "3.6"
