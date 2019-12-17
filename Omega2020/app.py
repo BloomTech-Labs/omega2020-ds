@@ -4,7 +4,7 @@ from decouple import config
 
 def create_app():
     #global variables within the flask app including the app name, and the DB Configuration path
-    #.env file will specify production vs. development enviornment
+    #.env file will specify production vs. development enviornment.
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
     app.config['ENV'] = config('FLASK_ENV')
