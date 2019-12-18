@@ -9,6 +9,15 @@ verify_ssl = true
 pip = "*"
 flask = "*"
 python-decouple = "*"
+numpy = "*"
+pandas = "*"
+matplotlib = "*"
+ipython = "*"
+opencv-python = "*"
+os = "*"
+torchvision = "*"
+pickle = "*"
+pytorch = "*"
 
 [requires]
 python_version = "3.6"
