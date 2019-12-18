@@ -79,7 +79,7 @@ class Preprocess:
         top_right, _ = max(enumerate([pt[0][0] - pt[0][1] for pt in polygon]), key=operator.itemgetter(1))
         for point in points:
             img = cv2.circle(img, tuple(int(x) for x in point), radius, colour, -1)
-        show_image(img)
+        #show_image(img)
         return img
 
     def show_image(img):
@@ -120,7 +120,7 @@ class Preprocess:
         imgScale = W/width
         newX, newY = img.shape[1]*imgScale, img.shape[0]*imgScale
         new_img = cv2.resize(img, (int(newX), int(newY)))
-        cv2.imshow("Show by CV2", new_img)
+        #cv2.imshow("Show by CV2", new_img)
         cv2.waitKey(0)
 
         return new_img
@@ -136,7 +136,7 @@ class Preprocess:
 
         return sharpened
 
-    def boxes(self, sharpened):
+    def boxes(sharpened):
         rows = [(15,125), (125,225), (235,335), (340,440), (455,555), (570,670), (680,780), (775,875), (890,990)]
         columns = [(30,130), (130,230), (240,340), (355,455), (455,555), (565,665), (670,770), (800,900),(890,990)]
         images_list = []
