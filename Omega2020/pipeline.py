@@ -1,6 +1,25 @@
-from .preprocessing import Preprocess
-from .model import Predict
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+from torchvision.utils import make_grid
 import cv2
+import numpy as np
+import pandas as pd
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+from torch import optim
+import matplotlib.image as mpimg
+from IPython.display import Image
+import os
+import pickle
+from random import shuffle
+import operator
+
+
+from .preprocessing import Preprocess
+from .model import Predict, ConvolutionalNetwork
 #import argparse
 
 #parser = argparse.ArgumentParser()
@@ -22,9 +41,29 @@ def pipeline(imgpath):
     #cv2.waitKey(25) & 0xFF == ord('q')
     
     
-    boxed = Preprocess.boxes(inverted)
+    cells = Preprocess.boxes(inverted)
 
-    return boxed
+    return cells
+
+def predict(cells):
+    model = ConvolutionalNetwork()
+    model.load_state_dict(torch.load('Omega2020/model1.pth'))
+    model.eval()
+
+    transform = transforms.ToTensor()
+    tensors = []
+    for cell in cells:
+            tensors.append((transform(cell).view(1,28,28).type(torch.FloatTensor)))
+    
+    grid = []
+    for i in range(len(tensors)):
+            if tensors[i].mean().item() <= .25:
+                grid.append(".")
+            else:
+                grid.append(str(model(tensors[i].view(1,1,28,28)).argmax().item()))
+    return grid
+
+
 
 if __name__ == '__main__':
     pipeline(img)

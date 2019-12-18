@@ -1,15 +1,6 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-from IPython.display import Image
 import cv2
-import os
-import torch
-import pickle
-from random import shuffle
 import operator
-
+import numpy as np
 class Preprocess:
     """
     Class based preprocessing functions to transform, resize, and
