@@ -1,5 +1,5 @@
-from preprocessing import *
-from model import *
+from preprocessing import Preprocess
+from model import Predict
 import cv2
 import argparse
 
