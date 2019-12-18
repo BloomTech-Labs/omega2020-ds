@@ -35,6 +35,7 @@ class Preprocess:
         #    kernel = np.array([[0., 1., 0.], [1., 1., 1.], [0., 1., 0.]])
         #    proc = cv2.dilate(proc, kernel)
         return proc
+        
     def find_corners_of_largest_polygon(img):
         """Finds the 4 extreme corners of the largest contour in the image."""
         contours, h = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
@@ -80,11 +81,13 @@ class Preprocess:
             img = cv2.circle(img, tuple(int(x) for x in point), radius, colour, -1)
         show_image(img)
         return img
+
     def show_image(img):
         """Shows an image until any key is pressed."""
         cv2.imshow('image', img)  # Display the image
         cv2.waitKey(0)  # Wait for any key to be pressed (with the image window active)
         cv2.destroyAllWindows()  # Close all windows
+
     def crop_and_warp(img, crop_rect):
         """Crops and warps a rectangular section from an image into a square of similar size."""
         # Rectangle described by top left, top right, bottom right and bottom left points
@@ -104,6 +107,7 @@ class Preprocess:
         m = cv2.getPerspectiveTransform(src, dst)
         # Performs the transformation on the original image
         return cv2.warpPerspective(img, m, (int(side), int(side)))
+
     def distance_between(p1, p2):
         """Returns the scalar distance between two points"""
         a = p2[0] - p1[0]
@@ -118,7 +122,9 @@ class Preprocess:
         new_img = cv2.resize(img, (int(newX), int(newY)))
         cv2.imshow("Show by CV2", new_img)
         cv2.waitKey(0)
-    
+
+        return new_img
+
     def invert(new_img):
         invert_img = cv2.bitwise_not(new_img)
         invert_img = (cv2.threshold(invert_img, 125, 255, cv2.THRESH_BINARY))
@@ -127,6 +133,8 @@ class Preprocess:
                                     [-1,-1,-1]])
         # applying the sharpening kernel to the input image & displaying it.
         sharpened = cv2.filter2D(invert_img[1], -1, kernel_sharpening)
+
+        return sharpened
 
     def boxes(self, sharpened):
         rows = [(15,125), (125,225), (235,335), (340,440), (455,555), (570,670), (680,780), (775,875), (890,990)]
@@ -144,4 +152,5 @@ class Preprocess:
             resize_img = cv2.resize(img_array, (28,28))
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
-     
+
+        return final_images
