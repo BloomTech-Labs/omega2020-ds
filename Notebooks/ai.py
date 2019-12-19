@@ -103,7 +103,7 @@ class Sudoku:
                 return ("Not solved", self.values, f"Number of iterations made: {start}")
 
         else:
-            print("That is not an option")
+            print("That is not an option.")
 
     def show_puzzle(self):
 
