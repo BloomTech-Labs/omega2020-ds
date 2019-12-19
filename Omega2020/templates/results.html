@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+    {% block content %}
+
+    <div id="parent">
+         <article class="flex two" style="padding: 3em 4em 3em 4em;">
+            
+            <div class="child">
+               <p>Photo ID:{{ imghash }}</p>
+               <p> Original Photo</p>
+               <img class="resize" src={{imgurl}}>
+            </div>
+               <H1>Sudoku Puzzle Predictions:</H1>
+
+               {{ pred }}
+               
+         </article>
+         </div>
+         {% endblock %}

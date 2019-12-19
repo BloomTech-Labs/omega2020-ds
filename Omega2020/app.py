@@ -1,10 +1,14 @@
 from flask import Flask, redirect, url_for, flash, request, render_template
 from Omega2020.schema import DB, PuzzleTable
 from decouple import config
-
-
+from .pipeline import * 
+import boto3
+import requests
 import hashlib
 import pandas as pd
+import cv2
+import json
+import hashlib
 
 def init_db():
     path = 'data/dataset.csv'
@@ -22,11 +26,42 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     DB.init_app(app)
 
+    AWS = {
+    'aws_access_key_id': config('S3_KEY'),
+    'aws_secret_access_key': config('S3_SECRET')
+    }
+    ExtraArgs = json.loads(config('ExtraArgs'))
+    s3 = boto3.client("s3", **AWS)
+    def upload_file_to_s3(*args):
+        try: s3.upload_fileobj(*args, ExtraArgs=ExtraArgs)
+        except Exception as e: return str(e)
+        return "{}{}".format(config('S3_LOCATION'), args[2])
+    
+    S3_BUCKET =  config('S3_BUCKET')
+    S3_LOCATION = config('S3_LOCATION')
+
+
+
+
+
 
     @app.route("/")
     def hello():
         return "Hello World!"
-
+    
+    @app.route("/upload")
+    def upload():
+        return render_template('base.html')
+    
+    @app.route("/demo_file", methods=['GET', 'POST'])
+    def demo_file():
+        image_file = request.files['file']
+        imghash = hashlib.md5(image_file.read()).hexdigest()
+        image_file.seek(0)
+        imgurl = upload_file_to_s3(image_file, config('S3_BUCKET'), imghash+'.png')
+        imgarray = pipeline(imgurl)
+        pred = predict(imgarray)
+        return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred)
 
     #route that will reset the database.    
     @app.route("/reset")
