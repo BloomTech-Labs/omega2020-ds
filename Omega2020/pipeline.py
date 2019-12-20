@@ -45,21 +45,23 @@ def pipeline(imgpath):
     
     cells = Preprocess.boxes(inverted)
 
-    return cells
+    return inverted, cells
 
 def predict(cells):
     model = ConvolutionalNetwork()
     model.load_state_dict(torch.load('Omega2020/model1.pth'))
     model.eval()
 
-    transform = transforms.ToTensor()
+    transform = transforms.Compose([transforms.ToTensor(),
+                              transforms.Normalize((0.5,), (0.5,)),
+                              ])
     tensors = []
     for cell in cells:
             tensors.append((transform(cell).view(1,28,28).type(torch.FloatTensor)))
     
     grid = []
     for i in range(len(tensors)):
-            if tensors[i].mean().item() <= .25:
+            if tensors[i].mean().item() <= -10:
                 grid.append(".")
             else:
                 grid.append(str(model(tensors[i].view(1,1,28,28)).argmax().item()))

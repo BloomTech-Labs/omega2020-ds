@@ -1,18 +1,20 @@
 {% extends "base.html" %}
-    {% block content %}
-
-    <div id="parent">
-         <article class="flex two" style="padding: 3em 4em 3em 4em;">
-            
-            <div class="child">
-               <p>Photo ID:{{ imghash }}</p>
-               <p> Original Photo</p>
-               <img class="resize" src={{imgurl}}>
-            </div>
-               <H1>Sudoku Puzzle Predictions:</H1>
-
-               {{ pred }}
-               
-         </article>
-         </div>
-         {% endblock %}
+{% block content %}
+<div id="parent">
+   <article class="flex two" style="padding: 3em 4em 3em 4em;">
+      <div class="child">
+         <p>Photo ID:{{ imghash }}</p>
+         <p> Original Photo</p>
+         <img src={{imgurl}} alt="Original" height="250" width="250">
+         <p> Cropped Photo</p>
+         <img src={{processed_url}} alt="Original" height="250" width="250">
+         <p>Cell Pictures</p>
+         {% for cell in processed_cells %}
+         <img src={{cell}}>
+         {% endfor %}
+      </div>
+      <H1>Sudoku Puzzle Predictions:</H1>
+      {{ pred }}
+   </article>
+</div>
+{% endblock %}

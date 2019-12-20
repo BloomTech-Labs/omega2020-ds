@@ -9,6 +9,9 @@ import pandas as pd
 import cv2
 import json
 import hashlib
+import scipy.misc
+from PIL import Image
+from io import BytesIO
 
 def init_db():
     path = 'data/dataset.csv'
@@ -59,9 +62,27 @@ def create_app():
         imghash = hashlib.md5(image_file.read()).hexdigest()
         image_file.seek(0)
         imgurl = upload_file_to_s3(image_file, config('S3_BUCKET'), imghash+'.png')
-        imgarray = pipeline(imgurl)
+        processed, imgarray = pipeline(imgurl)
+        processed_image = Image.fromarray(processed)
+        with BytesIO() as in_mem_file_cropped:
+            processed_image.save(in_mem_file_cropped, format='PNG')
+            in_mem_file_cropped.seek(0)
+            processed_url = upload_file_to_s3(in_mem_file_cropped, config('S3_BUCKET'), imghash+'_processed.png')
+
+
+
+        processed_cells = []
+        i = 0
+        for array in imgarray:
+            proc_img = Image.fromarray(array)
+            with BytesIO() as in_mem_file:
+                proc_img.save(in_mem_file, format='PNG')
+                in_mem_file.seek(0)
+                processed_cell_url = upload_file_to_s3(in_mem_file, config('S3_BUCKET'), imghash+"_"+str(i)+'_cell.png')
+            i = i+1
+            processed_cells.append(processed_cell_url)
         pred = predict(imgarray)
-        return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred)
+        return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells)
 
     #route that will reset the database.    
     @app.route("/reset")
