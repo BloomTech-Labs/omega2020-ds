@@ -9,6 +9,9 @@ import torch
 import pickle
 from random import shuffle
 import operator
+import cv2
+import argparse
+
 
 class Preprocess:
     """
@@ -35,7 +38,7 @@ class Preprocess:
         #    kernel = np.array([[0., 1., 0.], [1., 1., 1.], [0., 1., 0.]])
         #    proc = cv2.dilate(proc, kernel)
         return proc
-        
+
     def find_corners_of_largest_polygon(img):
         """Finds the 4 extreme corners of the largest contour in the image."""
         contours, h = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
@@ -154,3 +157,15 @@ class Preprocess:
             final_images.append(resize_img)
 
         return final_images
+
+    
+#from preprocessing import *
+#from model import *
+
+# parser = argparse.ArgumentParser()
+
+# parser.add_argument("path_image", help="path to input image to be displayed")
+# args = parser.parse_args()
+# img = cv2.imread(args.path_image)
+
+#

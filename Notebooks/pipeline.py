@@ -9,18 +9,19 @@ parser.add_argument("path_image", help="path to input image to be displayed")
 args = parser.parse_args()
 img = cv2.imread(args.path_image)
 
-def pipeline(img):
+#def pipeline(img):
 #    img = cv2.imread('./data/img1.jpg', cv2.IMREAD_GRAYSCALE)
-    processed = Preprocess.pre_process_image(img)
-    corners = Preprocess.find_corners_of_largest_polygon(processed)
-    cropped = Preprocess.crop_and_warp(img, corners)
-    resized = Preprocess.resize(cropped)
-    inverted = Preprocess.resize(invert)
-    cv2.imshow('Inverted', invert)
+processed = Preprocess.pre_process_image(img)
+corners = Preprocess.find_corners_of_largest_polygon(processed)
 
-    # Press q on keyboard to  exit
-    cv2.waitKey(25) & 0xFF == ord('q')
-    
+cropped = Preprocess.crop_and_warp(img, corners)
+resized = Preprocess.resize(cropped)
+inverted = Preprocess.invert(resized)
+cv2.imshow('Inverted', inverted)
+
+# Press q on keyboard to  exit
+cv2.waitKey(25) & 0xFF == ord('q')
+
     
     boxed = boxes(inverted)
     
