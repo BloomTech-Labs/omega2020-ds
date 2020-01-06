@@ -80,9 +80,9 @@ class Sudoku:
                     return False
 
             if solved_values_before == 81:
-                return ("Solved", self.values, f"Number of iterations made: {start}")
+                return ("Solved", str(self.values), f"Number of iterations made: {start}")
             else:
-                return ("Not solved", self.values, f"Number of iterations made: {start}")
+                return ("Not solved", str(self.values), f"Number of iterations made: {start}")
 
         elif self.technique == "single_candidate":
             stalled = False
@@ -97,10 +97,10 @@ class Sudoku:
                 if len([box for box in self.values.keys() if len(self.values[box]) == 0]):
                     return False
 
-            if solved_values_before == 81:
-                return ("Solved", self.values, f"Number of iterations made: {start}")
+            if solved_values_before == 81: 
+                return ("Solved", str(self.values), f"Number of iterations made: {start}")
             else:
-                return ("Not solved", self.values, f"Number of iterations made: {start}")
+                return ("Not solved", str(self.v  alues), f"Number of iterations made: {start}")
 
         else:
             print("That is not an option.")
