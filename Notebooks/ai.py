@@ -34,7 +34,6 @@ class Sudoku:
         self.peers = dict((s, set(sum(self.units[s], [])) - set([s])) for s in self.boxes)
         self.values = dict(zip(self.boxes, ["123456789" if element == "." else element for element in self.puzzle]))
 
-
     def single_position(self):
 
         solved_values = [box for box in self.values.keys() if len(self.values[box]) == 1]
@@ -85,6 +84,9 @@ class Sudoku:
             for k,v in values.items():
                 self.values[k] = v
         return self.values
+    
+    def search(self):
+        
 
     def solve(self):
 
@@ -120,7 +122,7 @@ class Sudoku:
             while not stalled:
                 start += 1
                 solved_values_before = len([box for box in self.values.keys() if len(self.values[box]) == 1])
-                self.values = self.single_position()
+#                 self.values = self.single_position()
                 self.values = self.single_candidate()
                 solved_values_after = len([box for box in self.values.keys() if len(self.values[box]) == 1])
                 stalled = solved_values_before == solved_values_after
