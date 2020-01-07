@@ -1,3 +1,5 @@
+
+from flask import Flask, redirect, url_for, flash, request, render_template
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -17,9 +19,12 @@ import pickle
 from random import shuffle
 import operator
 
-
+import urllib.request
+import numpy as np
+from skimage import io
 from .preprocessing import Preprocess
-from .model import Predict, ConvolutionalNetwork
+from .model import Predict, ConvolutionalNetwork, Net
+
 #import argparse
 
 #parser = argparse.ArgumentParser()
@@ -28,7 +33,7 @@ from .model import Predict, ConvolutionalNetwork
 #args = parser.parse_args()
 
 def pipeline(imgpath):
-    img = cv2.imread(imgpath)
+    img = io.imread(imgpath)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed = Preprocess.pre_process_image(gray)
     corners = Preprocess.find_corners_of_largest_polygon(processed)
@@ -43,21 +48,24 @@ def pipeline(imgpath):
     
     cells = Preprocess.boxes(inverted)
 
-    return cells
+    return inverted, cells
 
 def predict(cells):
-    model = ConvolutionalNetwork()
-    model.load_state_dict(torch.load('Omega2020/model1.pth'))
+    model = Net()
+    model_state_dict = torch.load('Omega2020/model.pth')
+    model.load_state_dict(model_state_dict)
     model.eval()
 
-    transform = transforms.ToTensor()
+    transform = transforms.Compose([transforms.ToTensor(),
+                              transforms.Normalize((0.5,), (0.5,)),
+                              ])
     tensors = []
     for cell in cells:
             tensors.append((transform(cell).view(1,28,28).type(torch.FloatTensor)))
     
     grid = []
     for i in range(len(tensors)):
-            if tensors[i].mean().item() <= .25:
+            if tensors[i].mean().item() <= -10:
                 grid.append(".")
             else:
                 grid.append(str(model(tensors[i].view(1,1,28,28)).argmax().item()))

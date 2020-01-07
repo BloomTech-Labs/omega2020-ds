@@ -1,10 +1,17 @@
 from flask import Flask, redirect, url_for, flash, request, render_template
 from Omega2020.schema import DB, PuzzleTable
 from decouple import config
-
-
+from .pipeline import * 
+import boto3
+import requests
 import hashlib
 import pandas as pd
+import cv2
+import json
+import hashlib
+import scipy.misc
+from PIL import Image
+from io import BytesIO
 
 def init_db():
     path = 'data/dataset.csv'
@@ -22,11 +29,58 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     DB.init_app(app)
 
+    AWS = {
+    'aws_access_key_id': config('S3_KEY'),
+    'aws_secret_access_key': config('S3_SECRET')
+    }
+    ExtraArgs = json.loads(config('ExtraArgs'))
+    s3 = boto3.client("s3", **AWS)
+    def upload_file_to_s3(*args):
+        try: s3.upload_fileobj(*args, ExtraArgs=ExtraArgs)
+        except Exception as e: return str(e)
+        return "{}{}".format(config('S3_LOCATION'), args[2])
+    
+    S3_BUCKET =  config('S3_BUCKET')
+    S3_LOCATION = config('S3_LOCATION')
+
+
+
+
+
 
     @app.route("/")
     def hello():
         return "Hello World!"
+    
+    @app.route("/upload")
+    def upload():
+        return render_template('base.html')
+    
+    @app.route("/demo_file", methods=['GET', 'POST'])
+    def demo_file():
+        image_file = request.files['file']
+        imghash = hashlib.md5(image_file.read()).hexdigest()
+        image_file.seek(0)
+        imgurl = upload_file_to_s3(image_file, config('S3_BUCKET'), imghash+'.png')
+        processed, imgarray = pipeline(imgurl)
+        processed_image = Image.fromarray(processed)
+        with BytesIO() as in_mem_file_cropped:
+            processed_image.save(in_mem_file_cropped, format='PNG')
+            in_mem_file_cropped.seek(0)
+            processed_url = upload_file_to_s3(in_mem_file_cropped, config('S3_BUCKET'), imghash+'_processed.png')
 
+        processed_cells = []
+        i = 0
+        for array in imgarray:
+            proc_img = Image.fromarray(array)
+            with BytesIO() as in_mem_file:
+                proc_img.save(in_mem_file, format='PNG')
+                in_mem_file.seek(0)
+                processed_cell_url = upload_file_to_s3(in_mem_file, config('S3_BUCKET'), imghash+"_"+str(i)+'_cell.png')
+            i = i+1
+            processed_cells.append(processed_cell_url)
+        pred = predict(imgarray)
+        return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells)
 
     #route that will reset the database.    
     @app.route("/reset")

@@ -1,6 +1,15 @@
-import cv2
-import operator
+import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from IPython.display import Image
+import cv2
+import os
+import torch
+import pickle
+from random import shuffle
+import operator
+
 class Preprocess:
     """
     Class based preprocessing functions to transform, resize, and
@@ -70,7 +79,6 @@ class Preprocess:
         top_right, _ = max(enumerate([pt[0][0] - pt[0][1] for pt in polygon]), key=operator.itemgetter(1))
         for point in points:
             img = cv2.circle(img, tuple(int(x) for x in point), radius, colour, -1)
-        #show_image(img)
         return img
 
     def show_image(img):
@@ -78,8 +86,10 @@ class Preprocess:
         cv2.imshow('image', img)  # Display the image
         cv2.waitKey(0)  # Wait for any key to be pressed (with the image window active)
         cv2.destroyAllWindows()  # Close all windows
-    
-    def distance_between( p1, p2):
+        
+
+
+    def distance_between(p1, p2):
         """Returns the scalar distance between two points"""
         a = p2[0] - p1[0]
         b = p2[1] - p1[1]
@@ -105,6 +115,7 @@ class Preprocess:
         # Performs the transformation on the original image
         return cv2.warpPerspective(img, m, (int(side), int(side)))
 
+
     def resize(img):
         W = 1000
         heigh, width, depth = img.shape
@@ -113,6 +124,7 @@ class Preprocess:
         new_img = cv2.resize(img, (int(newX), int(newY)))
         #cv2.imshow("Show by CV2", new_img)
         cv2.waitKey(0)
+
 
         return new_img
 
@@ -124,6 +136,8 @@ class Preprocess:
                                     [-1,-1,-1]])
         # applying the sharpening kernel to the input image & displaying it.
         sharpened = cv2.filter2D(invert_img[1], -1, kernel_sharpening)
+        sharpened = cv2.bitwise_not(sharpened)
+
 
         return sharpened
 
@@ -138,9 +152,11 @@ class Preprocess:
 
         final_images = []
         for i in range(len(images_list)):
-        #    img_array = cv2.imread(os.path.join(IMG_DIR, images))
+
+        #   img_array = cv2.imread(os.path.join(IMG_DIR, images))
             img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
             resize_img = cv2.resize(img_array, (28,28))
+            resize_img = ~resize_img
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
 
