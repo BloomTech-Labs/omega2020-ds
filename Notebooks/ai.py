@@ -32,9 +32,9 @@ class Sudoku:
         self.unitlist = self.row_units + self.column_units + self.square_units
         self.units = dict((s, [u for u in self.unitlist if s in u]) for s in self.boxes)
         self.peers = dict((s, set(sum(self.units[s], [])) - set([s])) for s in self.boxes)
-        self.values = dict(zip(self.boxes, ["123456789" if element == "." else element for element in self.puzzle]))
+        self.values = dict(zip(self.boxes,  ]))
 
-    def single_position(self):
+    def single_position(self):                
 
         solved_values = [box for box in self.values.keys() if len(self.values[box]) == 1]
         for box in solved_values:
@@ -48,7 +48,7 @@ class Sudoku:
 
         for unit in self.unitlist:
             for digit in "123456789":
-                dplaces = [box for box in self.units if digit in self.values[box]]
+                dplaces = [box for box in unit if digit in self.values[box]]
                 if len(dplaces) == 1:
                     self.values[dplaces[0]] = digit
 
@@ -84,9 +84,36 @@ class Sudoku:
             for k,v in values.items():
                 self.values[k] = v
         return self.values
+
+    def reduce_puzzle(self):
+        stalled = False
+        while not stalled:
+            solved_values_before = len([box for box in self.values.keys() if len(self.values[box]) == 1])
+            self.values = self.single_position()
+            self.values = self.single_candidate()
+            self.values = self.naked_twins()
+            solved_values_after = len([box for box in self.values.keys() if len(self.values[box]) == 1])
+            stalled = solved_values_before == solved_values_after
+            if len([box for box in self.values.keys() if len(self.values[box]) == 0]):
+                return False
+        return self.values    
     
     def search(self):
+        "Using depth-first search and propagation, try all possible values."
+        # First, reduce the puzzle using the previous function
+        self.values = self.reduce_puzzle()
+        if self.values is False:
+            return False ## Failed earlier
         
+        if all(len(self.values[s]) == 1 for s in self.boxes): 
+            return self.values ## Solved!
+        n,s = min((len(self.values[s]), s) for s in self.boxes if len(self.values[s]) > 1)
+        for value in self.values[s]:
+            new_sudoku = self.values.copy()
+            new_sudoku[s] = value
+            attempt = self.search(new_sudoku)
+            if attempt:
+                return attempt
 
     def solve(self):
 
@@ -115,6 +142,7 @@ class Sudoku:
                 return ("Solved", str(self.values), f"Number of iterations made: {start}")
             else:
                 return ("Not solved", str(self.values), f"Number of iterations made: {start}")
+            
 
         elif self.technique == "single_candidate":
             stalled = False
@@ -122,7 +150,7 @@ class Sudoku:
             while not stalled:
                 start += 1
                 solved_values_before = len([box for box in self.values.keys() if len(self.values[box]) == 1])
-#                 self.values = self.single_position()
+                self.values = self.single_position()
                 self.values = self.single_candidate()
                 solved_values_after = len([box for box in self.values.keys() if len(self.values[box]) == 1])
                 stalled = solved_values_before == solved_values_after
@@ -133,6 +161,7 @@ class Sudoku:
                 return ("Solved", str(self.values), f"Number of iterations made: {start}")
             else:
                 return ("Not solved", str(self.values), f"Number of iterations made: {start}")
+            
             
         elif self.technique == "naked_twins":
             stalled = False
