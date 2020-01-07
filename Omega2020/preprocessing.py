@@ -87,6 +87,12 @@ class Preprocess:
         cv2.waitKey(0)  # Wait for any key to be pressed (with the image window active)
         cv2.destroyAllWindows()  # Close all windows
 
+    def distance_between(p1, p2):
+        """Returns the scalar distance between two points"""
+        a = p2[0] - p1[0]
+        b = p2[1] - p1[1]
+        return np.sqrt((a ** 2) + (b ** 2))
+
     def crop_and_warp(img, crop_rect):
         """Crops and warps a rectangular section from an image into a square of similar size."""
         # Rectangle described by top left, top right, bottom right and bottom left points
@@ -95,10 +101,10 @@ class Preprocess:
         src = np.array([top_left, top_right, bottom_right, bottom_left], dtype='float32')
         # Get the longest side in the rectangle
         side = max([
-            distance_between(bottom_right, top_right),
-            distance_between(top_left, bottom_left),
-            distance_between(bottom_right, bottom_left),
-            distance_between(top_left, top_right)
+            Preprocess.distance_between(bottom_right, top_right),
+            Preprocess.distance_between(top_left, bottom_left),
+            Preprocess.distance_between(bottom_right, bottom_left),
+            Preprocess.distance_between(top_left, top_right)
         ])
         # Describe a square with side of the calculated length, this is the new perspective we want to warp to
         dst = np.array([[0, 0], [side - 1, 0], [side - 1, side - 1], [0, side - 1]], dtype='float32')
@@ -107,11 +113,7 @@ class Preprocess:
         # Performs the transformation on the original image
         return cv2.warpPerspective(img, m, (int(side), int(side)))
 
-    def distance_between(p1, p2):
-        """Returns the scalar distance between two points"""
-        a = p2[0] - p1[0]
-        b = p2[1] - p1[1]
-        return np.sqrt((a ** 2) + (b ** 2))
+
 
     def resize(img):
         W = 1000
@@ -134,7 +136,7 @@ class Preprocess:
 
         return sharpened
 
-    def boxes(self, sharpened):
+    def boxes(sharpened):
         rows = [(15,125), (125,225), (235,335), (340,440), (455,555), (570,670), (680,780), (775,875), (890,990)]
         columns = [(30,130), (130,230), (240,340), (355,455), (455,555), (565,665), (670,770), (800,900),(890,990)]
         images_list = []
