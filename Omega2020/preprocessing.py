@@ -1,6 +1,15 @@
-import cv2
-import operator
+import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from IPython.display import Image
+import cv2
+import os
+import torch
+import pickle
+from random import shuffle
+import operator
+
 class Preprocess:
     """
     Class based preprocessing functions to transform, resize, and
@@ -70,7 +79,6 @@ class Preprocess:
         top_right, _ = max(enumerate([pt[0][0] - pt[0][1] for pt in polygon]), key=operator.itemgetter(1))
         for point in points:
             img = cv2.circle(img, tuple(int(x) for x in point), radius, colour, -1)
-        #show_image(img)
         return img
 
     def show_image(img):
@@ -78,12 +86,6 @@ class Preprocess:
         cv2.imshow('image', img)  # Display the image
         cv2.waitKey(0)  # Wait for any key to be pressed (with the image window active)
         cv2.destroyAllWindows()  # Close all windows
-    
-    def distance_between( p1, p2):
-        """Returns the scalar distance between two points"""
-        a = p2[0] - p1[0]
-        b = p2[1] - p1[1]
-        return np.sqrt((a ** 2) + (b ** 2))
 
     def crop_and_warp(img, crop_rect):
         """Crops and warps a rectangular section from an image into a square of similar size."""
@@ -93,10 +95,10 @@ class Preprocess:
         src = np.array([top_left, top_right, bottom_right, bottom_left], dtype='float32')
         # Get the longest side in the rectangle
         side = max([
-            Preprocess.distance_between(bottom_right, top_right),
-            Preprocess.distance_between(top_left, bottom_left),
-            Preprocess.distance_between(bottom_right, bottom_left),
-            Preprocess.distance_between(top_left, top_right)
+            distance_between(bottom_right, top_right),
+            distance_between(top_left, bottom_left),
+            distance_between(bottom_right, bottom_left),
+            distance_between(top_left, top_right)
         ])
         # Describe a square with side of the calculated length, this is the new perspective we want to warp to
         dst = np.array([[0, 0], [side - 1, 0], [side - 1, side - 1], [0, side - 1]], dtype='float32')
@@ -105,14 +107,18 @@ class Preprocess:
         # Performs the transformation on the original image
         return cv2.warpPerspective(img, m, (int(side), int(side)))
 
+    def distance_between(p1, p2):
+        """Returns the scalar distance between two points"""
+        a = p2[0] - p1[0]
+        b = p2[1] - p1[1]
+        return np.sqrt((a ** 2) + (b ** 2))
+
     def resize(img):
         W = 1000
         heigh, width, depth = img.shape
         imgScale = W/width
         newX, newY = img.shape[1]*imgScale, img.shape[0]*imgScale
         new_img = cv2.resize(img, (int(newX), int(newY)))
-        #cv2.imshow("Show by CV2", new_img)
-        
 
         return new_img
 
@@ -124,12 +130,13 @@ class Preprocess:
                                     [-1,-1,-1]])
         # applying the sharpening kernel to the input image & displaying it.
         sharpened = cv2.filter2D(invert_img[1], -1, kernel_sharpening)
+        sharpened = cv2.bitwise_not(sharpened)
 
         return sharpened
 
-    def boxes(sharpened):
-        rows = [(30,110), (125,205), (235,315), (350,430), (455,535), (580,660), (680,760), (785,865), (890,970)]
-        columns = [(30,110), (130,210), (240,320), (355,435), (455,535), (575,655), (680,760), (800,880),(890,970)]
+    def boxes(self, sharpened):
+        rows = [(15,125), (125,225), (235,335), (340,440), (455,555), (570,670), (680,780), (775,875), (890,990)]
+        columns = [(30,130), (130,230), (240,340), (355,455), (455,555), (565,665), (670,770), (800,900),(890,990)]
         images_list = []
         for unit in rows:
             for units in columns:
@@ -141,6 +148,7 @@ class Preprocess:
         #   img_array = cv2.imread(os.path.join(IMG_DIR, images))
             img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
             resize_img = cv2.resize(img_array, (28,28))
+            resize_img = ~resize_img
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
 
