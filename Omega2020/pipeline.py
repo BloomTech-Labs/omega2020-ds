@@ -21,7 +21,7 @@ import urllib.request
 import numpy as np
 from skimage import io
 from .preprocessing import Preprocess
-from .model import Predict, ConvolutionalNetwork
+from .model import Predict, ConvolutionalNetwork, Net
 #import argparse
 
 #parser = argparse.ArgumentParser()
@@ -48,8 +48,9 @@ def pipeline(imgpath):
     return inverted, cells
 
 def predict(cells):
-    model = ConvolutionalNetwork()
-    model.load_state_dict(torch.load('Omega2020/model1.pth'))
+    model = Net()
+    model_state_dict = torch.load('Omega2020/model.pth')
+    model.load_state_dict(model_state_dict)
     model.eval()
 
     transform = transforms.Compose([transforms.ToTensor(),

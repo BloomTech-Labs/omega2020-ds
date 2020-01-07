@@ -69,8 +69,6 @@ def create_app():
             in_mem_file_cropped.seek(0)
             processed_url = upload_file_to_s3(in_mem_file_cropped, config('S3_BUCKET'), imghash+'_processed.png')
 
-
-
         processed_cells = []
         i = 0
         for array in imgarray:

@@ -133,6 +133,7 @@ class Preprocess:
                                     [-1,-1,-1]])
         # applying the sharpening kernel to the input image & displaying it.
         sharpened = cv2.filter2D(invert_img[1], -1, kernel_sharpening)
+        sharpened = cv2.bitwise_not(sharpened)
 
         return sharpened
 
@@ -150,6 +151,7 @@ class Preprocess:
         #    img_array = cv2.imread(os.path.join(IMG_DIR, images))
             img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
             resize_img = cv2.resize(img_array, (28,28))
+            resize_img = ~resize_img
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
 

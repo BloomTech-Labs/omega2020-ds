@@ -112,7 +112,7 @@ class Preprocess:
         newX, newY = img.shape[1]*imgScale, img.shape[0]*imgScale
         new_img = cv2.resize(img, (int(newX), int(newY)))
         #cv2.imshow("Show by CV2", new_img)
-        cv2.waitKey(0)
+        
 
         return new_img
 
@@ -128,8 +128,8 @@ class Preprocess:
         return sharpened
 
     def boxes(sharpened):
-        rows = [(15,125), (125,225), (235,335), (340,440), (455,555), (570,670), (680,780), (775,875), (890,990)]
-        columns = [(30,130), (130,230), (240,340), (355,455), (455,555), (565,665), (670,770), (800,900),(890,990)]
+        rows = [(30,110), (125,205), (235,315), (350,430), (455,535), (580,660), (680,760), (785,865), (890,970)]
+        columns = [(30,110), (130,210), (240,320), (355,435), (455,535), (575,655), (680,760), (800,880),(890,970)]
         images_list = []
         for unit in rows:
             for units in columns:
@@ -138,7 +138,7 @@ class Preprocess:
 
         final_images = []
         for i in range(len(images_list)):
-        #    img_array = cv2.imread(os.path.join(IMG_DIR, images))
+        #   img_array = cv2.imread(os.path.join(IMG_DIR, images))
             img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
             resize_img = cv2.resize(img_array, (28,28))
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
