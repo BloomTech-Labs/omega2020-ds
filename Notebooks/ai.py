@@ -34,7 +34,6 @@ class Sudoku:
         self.peers = dict((s, set(sum(self.units[s], [])) - set([s])) for s in self.boxes)
         self.values = dict(zip(self.boxes, ["123456789" if element == "." else element for element in self.puzzle]))
 
-
     def single_position(self):
 
         solved_values = [box for box in self.values.keys() if len(self.values[box]) == 1]
@@ -54,7 +53,40 @@ class Sudoku:
                     self.values[dplaces[0]] = digit
 
         return self.values
+    
+    #### Naked Twins:
+    def naked_twins(self):
+        for unit in self.unitlist:
+            ###
+            values = dict([[box, ''.join(sorted(self.values[box]))] for box in unit])
+            
+            ###
+            double_digits = dict([[box, values[box]] for box in values if len(values[box])==2])
+            
+            ###
+            double_digits_occuring_twice = dict([[box, val] for box, val in double_digits.items() if list(double_digits.values()).count(val)==2])
+            
+            if len(double_digits_occuring_twice.items()) != 0:
+                # reverse the dictionary to get the key-pairs easily
+                reverse_dict = {}
+                for k, v in double_digits_occuring_twice.items():
+                    reverse_dict.setdefault(v, []).append(k)
 
+                # it is a list of 2 items(keys | boxes) only
+                naked_twins = list(reverse_dict.items())[0][1]
+
+                # remove the naked_twins digits from other boxes in the unit
+                for k,v in values.items():
+                    if (k not in naked_twins) and (len(v) > 1):
+                        values[k] = ''.join(set(values[k]) - set(values[naked_twins[0]]))
+            
+            # replace the values in grid_dict with the updated values
+            for k,v in values.items():
+                self.values[k] = v
+        return self.values
+    
+    def search(self):
+        
 
     def solve(self):
 
@@ -80,9 +112,9 @@ class Sudoku:
                     return False
 
             if solved_values_before == 81:
-                return ("Solved", self.values, f"Number of iterations made: {start}")
+                return ("Solved", str(self.values), f"Number of iterations made: {start}")
             else:
-                return ("Not solved", self.values, f"Number of iterations made: {start}")
+                return ("Not solved", str(self.values), f"Number of iterations made: {start}")
 
         elif self.technique == "single_candidate":
             stalled = False
@@ -90,17 +122,35 @@ class Sudoku:
             while not stalled:
                 start += 1
                 solved_values_before = len([box for box in self.values.keys() if len(self.values[box]) == 1])
-                self.values = self.single_position()
+#                 self.values = self.single_position()
                 self.values = self.single_candidate()
                 solved_values_after = len([box for box in self.values.keys() if len(self.values[box]) == 1])
                 stalled = solved_values_before == solved_values_after
                 if len([box for box in self.values.keys() if len(self.values[box]) == 0]):
                     return False
 
-            if solved_values_before == 81:
-                return ("Solved", self.values, f"Number of iterations made: {start}")
+            if solved_values_before == 81: 
+                return ("Solved", str(self.values), f"Number of iterations made: {start}")
             else:
-                return ("Not solved", self.values, f"Number of iterations made: {start}")
+                return ("Not solved", str(self.values), f"Number of iterations made: {start}")
+            
+        elif self.technique == "naked_twins":
+            stalled = False
+            start = 0
+            while not stalled:
+                start += 1
+                solved_values_before = len([box for box in self.values.keys() if len(self.values[box]) == 1])
+                self.values = self.single_position()
+                self.values = self.naked_twins()
+                solved_values_after = len([box for box in self.values.keys() if len(self.values[box]) == 1])
+                stalled = solved_values_before == solved_values_after
+                if len([box for box in self.values.keys() if len(self.values[box]) == 0]):
+                    return False
+
+            if solved_values_before == 81: 
+                return ("Solved", str(self.values), f"Number of iterations made: {start}")
+            else:
+                return ("Not solved", str(self.values), f"Number of iterations made: {start}")
 
         else:
             print("That is not an option.")
