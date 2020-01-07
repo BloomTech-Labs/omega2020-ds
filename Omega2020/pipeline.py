@@ -1,3 +1,4 @@
+
 from flask import Flask, redirect, url_for, flash, request, render_template
 import torch
 import torch.nn as nn
@@ -17,11 +18,13 @@ import os
 import pickle
 from random import shuffle
 import operator
+
 import urllib.request
 import numpy as np
 from skimage import io
 from .preprocessing import Preprocess
 from .model import Predict, ConvolutionalNetwork, Net
+
 #import argparse
 
 #parser = argparse.ArgumentParser()

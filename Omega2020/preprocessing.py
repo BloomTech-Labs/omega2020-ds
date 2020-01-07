@@ -86,6 +86,8 @@ class Preprocess:
         cv2.imshow('image', img)  # Display the image
         cv2.waitKey(0)  # Wait for any key to be pressed (with the image window active)
         cv2.destroyAllWindows()  # Close all windows
+        
+
 
     def distance_between(p1, p2):
         """Returns the scalar distance between two points"""
@@ -114,13 +116,15 @@ class Preprocess:
         return cv2.warpPerspective(img, m, (int(side), int(side)))
 
 
-
     def resize(img):
         W = 1000
         heigh, width, depth = img.shape
         imgScale = W/width
         newX, newY = img.shape[1]*imgScale, img.shape[0]*imgScale
         new_img = cv2.resize(img, (int(newX), int(newY)))
+        #cv2.imshow("Show by CV2", new_img)
+        cv2.waitKey(0)
+
 
         return new_img
 
@@ -133,6 +137,7 @@ class Preprocess:
         # applying the sharpening kernel to the input image & displaying it.
         sharpened = cv2.filter2D(invert_img[1], -1, kernel_sharpening)
         sharpened = cv2.bitwise_not(sharpened)
+
 
         return sharpened
 
@@ -147,6 +152,7 @@ class Preprocess:
 
         final_images = []
         for i in range(len(images_list)):
+
         #   img_array = cv2.imread(os.path.join(IMG_DIR, images))
             img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
             resize_img = cv2.resize(img_array, (28,28))

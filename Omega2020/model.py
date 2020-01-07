@@ -1,6 +1,7 @@
-
 import torch.nn.functional as F
 import torch.nn as nn
+
+#First NN Built
 class ConvolutionalNetwork(nn.Module):
     def __init__(self):
         super().__init__()
@@ -21,8 +22,10 @@ class ConvolutionalNetwork(nn.Module):
         X = self.fc3(X)
         return F.log_softmax(X, dim=1)
 
+
 # Build the model
 
+#Hira's Second NN Build
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
