@@ -52,7 +52,7 @@ def pipeline(imgpath):
 
 def predict(cells):
     model = Net()
-    model_state_dict = torch.load('./Omega2020-ds/Omega2020/model.pth')
+    model_state_dict = torch.load('C://Users/Billi/repos/Omega2020-ds/Omega2020/model.pth')
     model.load_state_dict(model_state_dict)
     model.eval()
 
