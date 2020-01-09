@@ -22,7 +22,7 @@ class Preprocess:
 
     def pre_process_image(img, skip_dilate=False):
         """Uses a blurring function, adaptive thresholding and dilation to expose the main features of an image."""
-        # Gaussian blur with a kernal size (height, width) of 9.
+         # Gaussian blur with a kernal size (height, width) of 9.
         # Note that kernal sizes must be positive and odd and the kernel must be square.
         proc = cv2.GaussianBlur(img.copy(), (9, 9), 0)
         # Adaptive threshold using 11 nearest neighbour pixels
@@ -35,10 +35,9 @@ class Preprocess:
         #    kernel = np.array([[0., 1., 0.], [1., 1., 1.], [0., 1., 0.]])
         #    proc = cv2.dilate(proc, kernel)
         return proc
-        
+
     def find_corners_of_largest_polygon(img):
         """Finds the 4 extreme corners of the largest contour in the image."""
-        contours, h = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
         contours = sorted(contours, key=cv2.contourArea, reverse=True)  # Sort by area, descending
         polygon = contours[0]  # Largest image
         # Use of `operator.itemgetter` with `max` and `min` allows us to get the index of the point
@@ -86,7 +85,6 @@ class Preprocess:
         cv2.imshow('image', img)  # Display the image
         cv2.waitKey(0)  # Wait for any key to be pressed (with the image window active)
         cv2.destroyAllWindows()  # Close all windows
-        
 
 
     def distance_between(p1, p2):
@@ -124,20 +122,18 @@ class Preprocess:
         new_img = cv2.resize(img, (int(newX), int(newY)))
         #cv2.imshow("Show by CV2", new_img)
         cv2.waitKey(0)
-
-
         return new_img
 
     def invert(new_img):
-        invert_img = cv2.bitwise_not(new_img)
-        invert_img = (cv2.threshold(invert_img, 125, 255, cv2.THRESH_BINARY))
-        kernel_sharpening = np.array([[-1,-1,-1], 
+        just_img, thresh1 = cv2.threshold(new_img, 200, 255, cv2.THRESH_BINARY)
+        invert_img = cv2.bitwise_not(thresh1)
+#        invert_img = (cv2.threshold(invert_img, 125, 255, cv2.THRESH_BINARY))
+        kernel_sharpening = np.array([[-1,-1,-1],
                                     [-1, 9,-1],
                                     [-1,-1,-1]])
         # applying the sharpening kernel to the input image & displaying it.
-        sharpened = cv2.filter2D(invert_img[1], -1, kernel_sharpening)
+        sharpened = cv2.filter2D(invert_img, -1, kernel_sharpening)
         sharpened = cv2.bitwise_not(sharpened)
-
 
         return sharpened
 
@@ -152,7 +148,6 @@ class Preprocess:
 
         final_images = []
         for i in range(len(images_list)):
-
         #   img_array = cv2.imread(os.path.join(IMG_DIR, images))
             img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
             resize_img = cv2.resize(img_array, (28,28))
@@ -160,4 +155,20 @@ class Preprocess:
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
 
-        return final_images
+        cntr_img= []
+        for i in range(len(final_images)):
+            ret, thresh = cv2.threshold(final_images[i], 200, 255, 0)
+            contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+            for c in contours:
+                (x, y, w, h) = cv2.boundingRect(contours[0])
+                crop = final_images[i][y:y+h, x:x+w]
+                borderType = cv2.BORDER_CONSTANT
+                top = int(0.35 * crop.shape[0])
+                bottom = top
+                left = int(0.35 * crop.shape[1])
+                right = left
+                border_img = cv2.copyMakeBorder(crop, top, bottom, left, right, borderType)
+                border_img = cv2.resize(border_img, (28,28))
+            cntr_img.append(border_img)
+
+        return cntr_img
