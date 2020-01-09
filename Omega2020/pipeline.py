@@ -44,15 +44,15 @@ def pipeline(imgpath):
 
     # Press q on keyboard to  exit
     #cv2.waitKey(25) & 0xFF == ord('q')
-    
-    
+
+
     cells = Preprocess.boxes(inverted)
 
     return inverted, cells
 
 def predict(cells):
     model = Net()
-    model_state_dict = torch.load('Omega2020/model.pth')
+    model_state_dict = torch.load('./Omega2020-ds/Omega2020/model.pth')
     model.load_state_dict(model_state_dict)
     model.eval()
 
@@ -62,7 +62,7 @@ def predict(cells):
     tensors = []
     for cell in cells:
             tensors.append((transform(cell).view(1,28,28).type(torch.FloatTensor)))
-    
+
     grid = []
     for i in range(len(tensors)):
             if tensors[i].mean().item() <= -10:
