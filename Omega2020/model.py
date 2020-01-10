@@ -121,5 +121,3 @@ class KNN:
         img_array = data.reshape(1,-1)
         pred = self.model.predict(img_array)
         return pred
-        
-        
