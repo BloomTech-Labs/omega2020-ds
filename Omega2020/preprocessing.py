@@ -38,6 +38,7 @@ class Preprocess:
 
     def find_corners_of_largest_polygon(img):
         """Finds the 4 extreme corners of the largest contour in the image."""
+        contours, h = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
         contours = sorted(contours, key=cv2.contourArea, reverse=True)  # Sort by area, descending
         polygon = contours[0]  # Largest image
         # Use of `operator.itemgetter` with `max` and `min` allows us to get the index of the point
