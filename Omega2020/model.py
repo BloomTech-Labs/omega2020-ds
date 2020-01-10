@@ -67,3 +67,59 @@ class Predict:
             else:
                 grid.append(str(model(tensor[i].view(1,1,28,28)).argmax().item()))
         return grid
+
+class KNN:
+    def __init__(self,k):
+        self.k = k
+        self.mnist = datasets.fetch_openml('mnist_784', data_home='mnist_dataset/')
+        nonzero_indexes = []
+        for i in range(len(self.mnist['target'])):
+            if int(self.mnist['target'][i]) > 0:
+                nonzero_indexes.append(i)
+            else:
+                pass
+        
+        self.digits = self.mnist['data'][nonzero_indexes]
+        self.target = self.mnist['target'][nonzero_indexes]
+        self.classifier = KNeighborsClassifier(n_neighbors=k)
+        
+        share_of_values = int(len(self.digits)//9)
+        blank_img = np.zeros((share_of_values,784))
+        test_dig = self.digits
+        test_dig = np.append(blank_img, test_dig)
+        test_dig = test_dig.reshape((len(self.digits)+share_of_values),784)
+        
+        blank_class = np.repeat(str(999),share_of_values)
+        class_targets = self.target
+        class_targets = np.append(blank_class,class_targets)
+        
+        self.digits = test_dig
+        self.target = class_targets
+        
+        
+    def mk_dataset(self, test_size=0.20):
+        X_Train, X_Test, y_train, y_test = train_test_split(self.digits, self.target, test_size=test_size, random_state=1337)
+        return np.array(X_Train), np.array(X_Test), np.array(y_train), np.array(y_test)
+    
+    def skl_knn(self):
+        X_Train, X_Test, y_train, y_test = KNN.mk_dataset(self)
+        self.classifier.fit(X_Train,y_train)
+        y_pred = self.classifier.predict(X_Test)
+        report = classification_report(y_test,y_pred)
+        filename = str(self.k)+"_"+'knn.sav'
+        pickle.dump(self.classifier, open(filename, 'wb'))
+        print(report)
+    
+    def load_knn (self,modelpath):
+        self.modelpath = modelpath
+        self.model = pickle.load(open(self.modelpath, 'rb'))
+    
+    def predict(self,imgpath):
+        img = Image.fromarray( imgpath )
+        img.load()
+        data = np.asarray(img, dtype="int32")
+        img_array = data.reshape(1,-1)
+        pred = self.model.predict(img_array)
+        return pred
+        
+        
