@@ -26,7 +26,7 @@ class Preprocess:
         # Note that kernal sizes must be positive and odd and the kernel must be square.
         proc = cv2.GaussianBlur(img.copy(), (9, 9), 0)
         # Adaptive threshold using 11 nearest neighbour pixels
-        proc = cv2.adaptiveThreshold(proc, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+        proc = cv2.adaptiveThreshold(proc, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
         # Invert colours, so gridlines have non-zero pixel values.
         # Necessary to dilate the image, otherwise will look like erosion instead.
         proc = cv2.bitwise_not(proc, proc)
@@ -122,21 +122,22 @@ class Preprocess:
         newX, newY = img.shape[1]*imgScale, img.shape[0]*imgScale
         new_img = cv2.resize(img, (int(newX), int(newY)))
         #cv2.imshow("Show by CV2", new_img)
-        cv2.waitKey(0)
+        #cv2.waitKey(0)
         return new_img
 
     def invert(new_img):
-        just_img, thresh1 = cv2.threshold(new_img, 200, 255, cv2.THRESH_BINARY)
-        invert_img = cv2.bitwise_not(thresh1)
-#        invert_img = (cv2.threshold(invert_img, 125, 255, cv2.THRESH_BINARY))
-        kernel_sharpening = np.array([[-1,-1,-1],
-                                    [-1, 9,-1],
-                                    [-1,-1,-1]])
+        #just_img, thresh1 = cv2.threshold(new_img, 200, 255, cv2.THRESH_BINARY)
+        #nvert_img = cv2.bitwise_not(new_img)
+        invert_gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
+        threshold = cv2.adaptiveThreshold(invert_gray,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,11,2)
+        #kernel_sharpening = np.array([[-1,-1,-1],
+        #                            [-1, 9,-1],
+        #                            [-1,-1,-1]])
         # applying the sharpening kernel to the input image & displaying it.
-        sharpened = cv2.filter2D(invert_img, -1, kernel_sharpening)
-        sharpened = cv2.bitwise_not(sharpened)
+        #sharpened = cv2.filter2D(th3, -1, kernel_sharpening)
+        #sharpened = cv2.bitwise_not(sharpened)
 
-        return sharpened
+        return ~threshold
 
     def boxes(sharpened):
         rows = [(15,125), (125,225), (235,335), (340,440), (455,555), (570,670), (680,780), (775,875), (890,990)]
@@ -149,10 +150,8 @@ class Preprocess:
 
         final_images = []
         for i in range(len(images_list)):
-        #   img_array = cv2.imread(os.path.join(IMG_DIR, images))
-            img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
-            resize_img = cv2.resize(img_array, (28,28))
-            resize_img = ~resize_img
+            resize_img = cv2.resize(images_list[i], (28,28))
+            #resize_img = ~resize_img
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
 
@@ -172,4 +171,4 @@ class Preprocess:
                 border_img = cv2.resize(border_img, (28,28))
             cntr_img.append(border_img)
 
-        return cntr_img
+        return final_images

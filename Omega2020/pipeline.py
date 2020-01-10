@@ -44,7 +44,7 @@ def pipeline(imgpath):
     inverted = Preprocess.invert(resized)
     #cv2.imshow('Inverted', inverted)
 
-    # Press q on keyboard to  exit
+    #Press q on keyboard to  exit
     #cv2.waitKey(25) & 0xFF == ord('q')
 
 
@@ -75,6 +75,11 @@ def predict(cells):
     return grid
 
 
-
-if __name__ == '__main__':
-    pipeline(img)
+def predict_knn(filepath, cells):
+    knn = KNN(3)
+    knn.load_knn(filepath)
+    grid = []
+    for cell in cells:
+        pred = knn.predict(cell)
+        grid.append(str(pred))
+    return grid
