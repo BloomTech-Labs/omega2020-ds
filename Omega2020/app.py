@@ -28,6 +28,7 @@ def create_app():
     app.config['DEBUG'] = config('FLASK_DEBUG')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     DB.init_app(app)
+    model_path = config('MODEL_FILEPATH')
 
     AWS = {
     'aws_access_key_id': config('S3_KEY'),
@@ -79,13 +80,17 @@ def create_app():
                 processed_cell_url = upload_file_to_s3(in_mem_file, config('S3_BUCKET'), imghash+"_"+str(i)+'_cell.png')
             i = i+1
             processed_cells.append(processed_cell_url)
+        
+        #CNN Model Here:
         pred = predict(imgarray)
+        #KNN Prediction Here:
+        #pred = predict_knn('Omega2020/3_knn.sav',imgarray)
         return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells)
 
     #route that will reset the database.
     @app.route("/reset")
     def reset():
-        path = 'C://Users/Billi/repos/Omega2020-ds/Omega2020/data/dataset.csv'
+        path = 'Omega2020/data/dataset.csv'
         df = pd.read_csv(path)
 
         DB.drop_all()

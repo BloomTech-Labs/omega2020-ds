@@ -26,7 +26,7 @@ class Preprocess:
         # Note that kernal sizes must be positive and odd and the kernel must be square.
         proc = cv2.GaussianBlur(img.copy(), (9, 9), 0)
         # Adaptive threshold using 11 nearest neighbour pixels
-        proc = cv2.adaptiveThreshold(proc, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+        proc = cv2.adaptiveThreshold(proc, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
         # Invert colours, so gridlines have non-zero pixel values.
         # Necessary to dilate the image, otherwise will look like erosion instead.
         proc = cv2.bitwise_not(proc, proc)
@@ -123,10 +123,11 @@ class Preprocess:
         newX, newY = img.shape[1]*imgScale, img.shape[0]*imgScale
         new_img = cv2.resize(img, (int(newX), int(newY)))
         #cv2.imshow("Show by CV2", new_img)
-        cv2.waitKey(0)
+        #cv2.waitKey(0)
         return new_img
 
     def invert(new_img):
+
 #        just_img, thresh1 = cv2.threshold(new_img, 200, 255, cv2.THRESH_BINARY)
         gray_img = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
         # convert the BGR to gray to perform adaptive thresholding
@@ -180,5 +181,6 @@ class Preprocess:
 #                border_img = cv2.copyMakeBorder(crop, top, bottom, left, right, borderType)
 #                border_img = cv2.resize(border_img, (28,28))
 #            cntr_images.append(border_img)
+
 
         return final_images

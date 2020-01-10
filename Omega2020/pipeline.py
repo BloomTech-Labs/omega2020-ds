@@ -18,12 +18,13 @@ import os
 import pickle
 from random import shuffle
 import operator
+from decouple import config
 
 import urllib.request
 import numpy as np
 from skimage import io
 from .preprocessing import Preprocess
-from .model import Predict, ConvolutionalNetwork, Net
+from .model import Predict, ConvolutionalNetwork, Net, KNN
 
 #import argparse
 
@@ -33,6 +34,7 @@ from .model import Predict, ConvolutionalNetwork, Net
 #args = parser.parse_args()
 
 def pipeline(imgpath):
+    
     img = io.imread(imgpath)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed = Preprocess.pre_process_image(gray)
@@ -42,7 +44,7 @@ def pipeline(imgpath):
     inverted = Preprocess.invert(resized)
     #cv2.imshow('Inverted', inverted)
 
-    # Press q on keyboard to  exit
+    #Press q on keyboard to  exit
     #cv2.waitKey(25) & 0xFF == ord('q')
 
 
@@ -51,8 +53,9 @@ def pipeline(imgpath):
     return inverted, cells
 
 def predict(cells):
+    model_path = config('MODEL_FILEPATH')
     model = Net()
-    model_state_dict = torch.load('C://Users/Billi/repos/Omega2020-ds/Omega2020/model.pth')
+    model_state_dict = torch.load(model_path)
     model.load_state_dict(model_state_dict)
     model.eval()
 
@@ -72,6 +75,11 @@ def predict(cells):
     return grid
 
 
-
-if __name__ == '__main__':
-    pipeline(img)
+def predict_knn(filepath, cells):
+    knn = KNN(3)
+    knn.load_knn(filepath)
+    grid = []
+    for cell in cells:
+        pred = knn.predict(cell)
+        grid.append(str(pred))
+    return grid
