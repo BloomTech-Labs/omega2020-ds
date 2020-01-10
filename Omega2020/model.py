@@ -1,5 +1,15 @@
+
 import torch.nn.functional as F
 import torch.nn as nn
+from sklearn import datasets, svm, metrics
+from sklearn.metrics import classification_report
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+import numpy as np
+import pickle
+from PIL import Image
+import cv2
+
 
 #First NN Built
 class ConvolutionalNetwork(nn.Module):
@@ -120,4 +130,4 @@ class KNN:
         data = np.asarray(img, dtype="int32")
         img_array = data.reshape(1,-1)
         pred = self.model.predict(img_array)
-        return pred
+        return pred[0]

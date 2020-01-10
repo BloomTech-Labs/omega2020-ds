@@ -80,7 +80,11 @@ def create_app():
                 processed_cell_url = upload_file_to_s3(in_mem_file, config('S3_BUCKET'), imghash+"_"+str(i)+'_cell.png')
             i = i+1
             processed_cells.append(processed_cell_url)
+        
+        #CNN Model Here:
         pred = predict(imgarray)
+        #KNN Prediction Here:
+        #pred = predict_knn('Omega2020/3_knn.sav',imgarray)
         return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells)
 
     #route that will reset the database.
