@@ -28,6 +28,7 @@ def create_app():
     app.config['DEBUG'] = config('FLASK_DEBUG')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     DB.init_app(app)
+    model_path = config('MODEL_FILEPATH')
 
     AWS = {
     'aws_access_key_id': config('S3_KEY'),
@@ -85,7 +86,7 @@ def create_app():
     #route that will reset the database.
     @app.route("/reset")
     def reset():
-        path = 'C://Users/Billi/repos/Omega2020-ds/Omega2020/data/dataset.csv'
+        path = 'Omega2020/data/dataset.csv'
         df = pd.read_csv(path)
 
         DB.drop_all()
