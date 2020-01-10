@@ -135,6 +135,8 @@ class Preprocess:
         smooth_img = cv2.bilateralFilter(thresh_img, 15, 25, 25)
         # invert the image again to black and white
         invert_img = cv2.bitwise_not(smooth_img)
+
+        return invert_img
 #        invert_img = (cv2.threshold(invert_img, 125, 255, cv2.THRESH_BINARY))
 #        kernel_sharpening = np.array([[-1,-1,-1],
 #                                    [-1, 9,-1],
@@ -157,27 +159,26 @@ class Preprocess:
         final_images = []
         for i in range(len(images_list)):
         #   img_array = cv2.imread(os.path.join(IMG_DIR, images))
-            img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
-            resize_img = cv2.resize(img_array, (28,28))
-            resize_img = ~resize_img
+        #    img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
+            resize_img = cv2.resize(images_list[i], (28,28))
+        #    resize_img = ~resize_img
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
 
-        cntr_images= []
-        for i in range(len(final_images)):
+#        cntr_images= []
+#        for i in range(len(final_images)):
             # ret, thresh = cv2.threshold(final_images[i], 200, 255, 0)
-            gray = cv2.adaptiveThreshold(final_images[i], 255, cv2.ADAPTIVE_THRESH_MEAN_C | cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 5, 2)
-            conts, hierarchy = cv2.findContours(gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-            for c in conts:
-                (x, y, w, h) = cv2.boundingRect(conts[0])
-                crop = final_images[i][y:y+h, x:x+w]
-                borderType = cv2.BORDER_CONSTANT
-                top = int(0.35 * crop.shape[0])
-                bottom = top
-                left = int(0.35 * crop.shape[1])
-                right = left
-                border_img = cv2.copyMakeBorder(crop, top, bottom, left, right, borderType)
-                border_img = cv2.resize(border_img, (28,28))
-            cntr_images.append(border_img)
+#            gray = cv2.adaptiveThreshold(final_images[i], 255, cv2.ADAPTIVE_THRESH_MEAN_C | cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 5, 2)
+#            conts, hierarchy = cv2.findContours(final_images[i], cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+#            for c in conts:
+#                (x, y, w, h) = cv2.boundingRect(conts[0])
+#                crop = final_images[i][y:y+h, x:x+w]
+##                top = int(0.35 * crop.shape[0])
+#                bottom = top
+#                left = int(0.35 * crop.shape[1])
+#                right = left
+#                border_img = cv2.copyMakeBorder(crop, top, bottom, left, right, borderType)
+#                border_img = cv2.resize(border_img, (28,28))
+#            cntr_images.append(border_img)
 
-        return cntr_images
+        return final_images
