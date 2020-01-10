@@ -86,7 +86,7 @@ def create_app():
     #route that will reset the database.
     @app.route("/reset")
     def reset():
-        path = model_path
+        path = 'Omega2020/data/dataset.csv'
         df = pd.read_csv(path)
 
         DB.drop_all()
