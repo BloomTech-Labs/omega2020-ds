@@ -166,21 +166,76 @@ class Preprocess:
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
 
-#        cntr_images= []
-#        for i in range(len(final_images)):
-            # ret, thresh = cv2.threshold(final_images[i], 200, 255, 0)
-#            gray = cv2.adaptiveThreshold(final_images[i], 255, cv2.ADAPTIVE_THRESH_MEAN_C | cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 5, 2)
-#            conts, hierarchy = cv2.findContours(final_images[i], cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-#            for c in conts:
-#                (x, y, w, h) = cv2.boundingRect(conts[0])
-#                crop = final_images[i][y:y+h, x:x+w]
-##                top = int(0.35 * crop.shape[0])
-#                bottom = top
-#                left = int(0.35 * crop.shape[1])
-#                right = left
-#                border_img = cv2.copyMakeBorder(crop, top, bottom, left, right, borderType)
-#                border_img = cv2.resize(border_img, (28,28))
-#            cntr_images.append(border_img)
-
-
         return final_images
+    
+    def process_cells(img):
+        rows = np.shape(img)[0]
+
+        #First we need to remove the outermost white pixels.
+        #This can be achieved by flood filling with some of the outer points as seeds.
+        #After looking at the cell images, I concluded that it's enough if we
+        #Flood fill with all the points from the three outermost layers as seeds
+        # for i in range(rows):
+        #     #Floodfilling the outermost layer
+        #     cv2.floodFill(img, None, (0, i), 0)
+        #     cv2.floodFill(img, None, (i, 0), 0)
+        #     cv2.floodFill(img, None, (rows-1, i), 0)
+        #     cv2.floodFill(img, None, (i, rows-1), 0)
+        #     #Floodfilling the second outermost layer
+        #     cv2.floodFill(img, None, (1, i), 1)
+        #     cv2.floodFill(img, None, (i, 1), 1)
+        #     cv2.floodFill(img, None, (rows - 2, i), 1)
+        #     cv2.floodFill(img, None, (i, rows - 2), 1)
+        #Finding the bounding box of the number in the cell
+        rowtop = None
+        rowbottom = None
+        colleft = None
+        colright = None
+        thresholdBottom = 50
+        thresholdTop = 50
+        thresholdLeft = 50
+        thresholdRight = 50
+        center = rows // 2
+        for i in range(center, rows):
+            if rowbottom is None:
+                temp = img[i]
+                if sum(temp) < thresholdBottom or i == rows-1:
+                    rowbottom = i
+            if rowtop is None:
+                temp = img[rows-i-1]
+                if sum(temp) < thresholdTop or i == rows-1:
+                    rowtop = rows-i-1
+            if colright is None:
+                temp = img[:, i]
+                if sum(temp) < thresholdRight or i == rows-1:
+                    colright = i
+            if colleft is None:
+                temp = img[:, rows-i-1]
+                if sum(temp) < thresholdLeft or i == rows-1:
+                    colleft = rows-i-1
+
+        # Centering the bounding box's contents
+        newimg = np.zeros(np.shape(img))
+        startatX = (rows + colleft - colright)//2
+        startatY = (rows - rowbottom + rowtop)//2
+        for y in range(startatY, (rows + rowbottom - rowtop)//2):
+            for x in range(startatX, (rows - colleft + colright)//2):
+                newimg[y, x] = img[rowtop + y - startatY, colleft + x - startatX]
+        return newimg
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
