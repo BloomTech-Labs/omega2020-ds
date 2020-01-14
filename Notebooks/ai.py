@@ -93,4 +93,29 @@ def search(values):
         attempt = search(new_sudoku)
         if attempt:
             return attempt
-        
+
+def display(values):
+    """
+    Display the values as a 2-D grid.
+    Input: The sudoku in dictionary form
+    Output: None
+    """
+    width = 1+max(len(values[s]) for s in boxes)
+    line = '+'.join(['-'*(width*3)]*3)
+    for r in rows:
+        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
+                      for c in cols))
+        if r in 'CF': print(line)
+    print()
+
+def validator(grid):
+    valuesv = dict(zip(boxes,["." if element == "." else element for element in grid]))  
+    answ=[]
+    values_grid = dict(filter(lambda n: n[1]!=".", valuesv.items()))
+    a=[(valuesv[n],[valuesv[p] for p in peers[n]],n) for n in list(values_grid.keys())]
+    for x in a:
+        if x[0] in x[1]:
+            answ.append([False,x[0],x[2]])
+        else: 
+            pass
+    return answ

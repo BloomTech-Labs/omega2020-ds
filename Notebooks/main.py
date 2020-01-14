@@ -12,14 +12,20 @@ def solve(grid):
     Output: None
     """
     values = dict(zip(boxes, ["123456789" if element == "." else element for element in grid]))
-
-    #solving the sudoku
-    values = search(values)
-    values_solved = len([box for box in values.keys() if len(values[box]) == 1])
-    if values_solved == 81:
-        return ("Solved", values)
-    else:
-        return ("Not solved", str(values))
+    validation = validator(grid)
+    if len(validation) is 0:
+        
+#         #solving the sudoku
+        values = search(values)
+        values_solved = len([box for box in values.keys() if len(values[box]) == 1])
+        solution = "".join([value if len(value) == 1 else "." for value in values.values()])
+        if values_solved == 81:
+            return ("Solved", solution)
+#             return ("Solved", values, solution)
+        else:
+            return ("Not solved", values)
+    else: 
+        return('Ivalid Sudoku, check these values:',validation[0][1:],validation[1][1:])
 
 
 def solve_technique(grid,technique):
@@ -77,5 +83,7 @@ def solve_technique(grid,technique):
             
 
 if __name__ == '__main__':
+#     if validator(grid) is True:
+        
     solve(grid)
     solve_technique(grid,tecnique)
