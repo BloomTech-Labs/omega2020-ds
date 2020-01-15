@@ -30,6 +30,7 @@ def solve(grid):
 
 def solve_technique(grid,technique):
     values = dict(zip(boxes, ["123456789" if element == "." else element for element in grid]))
+    
     if technique == "single_position":
             stalled = False
             start = 0
@@ -43,9 +44,9 @@ def solve_technique(grid,technique):
                     return False
 
             if solved_values_before == 81:
-                return ("Solved", str(values), f"Number of iterations made: {start}")
+                return ("Solved", values, f"Number of iterations made: {start}")
             else:
-                return ("Not solved", str(values), f"Number of iterations made: {start}")
+                return ("Not solved", values, f"Number of iterations made: {start}")
             
     if technique == "single_candidate":
             stalled = False
@@ -53,6 +54,7 @@ def solve_technique(grid,technique):
             while not stalled:
                 start += 1
                 solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
+                values = single_position(values)
                 values = single_candidate(values)
                 solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
                 stalled = solved_values_before == solved_values_after
@@ -60,9 +62,9 @@ def solve_technique(grid,technique):
                     return False
 
             if solved_values_before == 81:
-                return ("Solved", str(values), f"Number of iterations made: {start}")
+                return ("Solved", values, f"Number of iterations made: {start}")
             else:
-                return ("Not solved", str(values), f"Number of iterations made: {start}")
+                return ("Not solved", values, f"Number of iterations made: {start}")
             
     if technique == "naked_twins":
             stalled = False
@@ -70,6 +72,7 @@ def solve_technique(grid,technique):
             while not stalled:
                 start += 1
                 solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
+                values = single_position(values)
                 values = naked_twins(values)
                 solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
                 stalled = solved_values_before == solved_values_after
@@ -77,9 +80,9 @@ def solve_technique(grid,technique):
                     return False
 
             if solved_values_before == 81:
-                return ("Solved", str(values), f"Number of iterations made: {start}")
+                return ("Solved", values, f"Number of iterations made: {start}")
             else:
-                return ("Not solved", str(values), f"Number of iterations made: {start}")
+                return ("Not solved", values, f"Number of iterations made: {start}")
             
 
 if __name__ == '__main__':
