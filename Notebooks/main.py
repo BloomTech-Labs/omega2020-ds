@@ -20,7 +20,7 @@ def solve(grid):
         values_solved = len([box for box in values.keys() if len(values[box]) == 1])
         solution = "".join([value if len(value) == 1 else "." for value in values.values()])
         if values_solved == 81:
-            return ("Solved", solution)
+            return ("Solved", solution, values)
 #             return ("Solved", values, solution)
         else:
             return ("Not solved", values)
