@@ -50,7 +50,12 @@ def pipeline(imgpath):
 
     cells = Preprocess.boxes(inverted)
 
-    return inverted, cells
+    new_cells = []
+    for cell in cells:
+        new_cell = Preprocess.process_cells(cell)
+        new_cells.append(new_cell)
+
+    return inverted, new_cells
 
 def predict(cells):
     model_path = config('MODEL_FILEPATH')
@@ -80,6 +85,7 @@ def predict_knn(filepath, cells):
     knn.load_knn(filepath)
     grid = []
     for cell in cells:
+        cell = cell.reshape(1,-1)
         pred = knn.predict(cell)
         grid.append(str(pred))
     return grid
