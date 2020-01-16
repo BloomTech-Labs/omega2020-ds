@@ -9,7 +9,17 @@ def solve(grid):
     """
     Solving the sudoku using function in utils.py
     Input: The sudoku in string format of 81 characters
-    Output: None
+    Output: return 4 things
+         1.   Message: “Solved” or “Not solved”
+         2.   Solution:
+               if
+               a.  Solved: string with a length of 81 or 
+               b.  Not solved:  Message “404 solve not found”
+         3.   Values:
+              if
+              a. Solved: dict(solution)
+              b.  Not solved: dict(values it could solved)
+        4.   Valuesb: dict(values before solve)
     """
     values = dict(zip(boxes, ["123456789" if element == "." else element for element in grid]))
     valuesb = dict(zip(boxes,["." if element == "." else element for element in grid]))
