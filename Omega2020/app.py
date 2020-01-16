@@ -14,11 +14,20 @@ from PIL import Image
 from io import BytesIO, StringIO
 from werkzeug.utils import secure_filename
 import urllib.request
+import sys
+
+
+
+from .ai import * 
+from .solver import *
 
 def init_db():
     path = 'data/dataset.csv'
     df = pd.read_csv(path)
 
+def chunks(l, n):
+    n = max(1, n)
+    return (l[i:i+n] for i in range(0, len(l), n))
 
 
 def create_app():
@@ -94,6 +103,7 @@ def create_app():
 
         processed_cells = []
         i = 0
+        j = 0
         for array in imgarray:
             proc_img = Image.fromarray(array)
             with BytesIO() as in_mem_file:
@@ -102,12 +112,23 @@ def create_app():
                 processed_cell_url = upload_file_to_s3(in_mem_file, config('S3_BUCKET'), imghash+"_"+str(i)+'_cell.png')
             i = i+1
             processed_cells.append(processed_cell_url)
+
+        processed_cells = chunks(processed_cells,9)
+
         
         #CNN Model Here:
         #pred = predict(imgarray)
         #KNN Prediction Here:
-        pred = predict_knn('Omega2020/3_knn.sav',imgarray)
-        return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells)
+        pred = predict_knn('/Users/rob/Desktop/lambda/labs/Omega2020/KNN_sagemaker_model.sav',imgarray)
+        
+        original_grid = "."
+        #import pdb; pdb.set_trace()
+        solved_grid = solve(pred)[2]
+        solved= display(solved_grid)
+
+
+        
+        return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells,original_grid=original_grid,solved=solved)
 
 
 

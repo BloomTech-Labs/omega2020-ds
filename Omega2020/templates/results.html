@@ -9,8 +9,18 @@
          <p> Cropped Photo</p>
          <img src={{processed_url}} alt="Original" height="250" width="250">
          <p>Cell Pictures</p>
-         {% for cell in processed_cells %}
+         {% for row in processed_cells %}
+         {% for cell in row %}
          <img src={{cell}}>
+         {% endfor %}
+         <br>
+         {% endfor %}
+         <p>Loaded Puzzle:</p>
+         <p>{{original_grid}}</p>
+         <p>Proposed Solution:</p> 
+         {% for row in solved %}
+         {{row}}
+         <br>
          {% endfor %}
       </div>
       <H1>Sudoku Puzzle Predictions:</H1>

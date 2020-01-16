@@ -83,9 +83,11 @@ def predict(cells):
 def predict_knn(filepath, cells):
     knn = KNN(3)
     knn.load_knn(filepath)
-    grid = []
+    grid = ""
     for cell in cells:
         cell = cell.reshape(1,-1)
         pred = knn.predict(cell)
-        grid.append(str(pred))
+        if pred == 0:
+            pred = "."
+        grid+=str(pred)
     return grid

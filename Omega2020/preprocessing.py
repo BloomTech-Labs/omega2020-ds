@@ -148,6 +148,7 @@ class Preprocess:
 
 #        return sharpened
 
+
     def boxes(invert_img):
         rows = [(30,110), (125,205), (235,315), (350,430), (455,535), (580,660), (680,760), (785,865), (890,970)]
         columns = [(30,110), (130,210), (240,320), (355,435), (455,535), (575,655), (680,760), (800,880),(890,970)]
@@ -165,8 +166,11 @@ class Preprocess:
         #    resize_img = ~resize_img
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
+            
 
         return final_images
+    
+
     
     def process_cells(img):
         rows = np.shape(img)[0]
