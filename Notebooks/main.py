@@ -12,6 +12,7 @@ def solve(grid):
     Output: None
     """
     values = dict(zip(boxes, ["123456789" if element == "." else element for element in grid]))
+    valuesb = dict(zip(boxes,["." if element == "." else element for element in grid]))
     validation = validator(grid)
     if len(validation) is 0:
         
@@ -20,12 +21,12 @@ def solve(grid):
         values_solved = len([box for box in values.keys() if len(values[box]) == 1])
         solution = "".join([value if len(value) == 1 else "." for value in values.values()])
         if values_solved == 81:
-            return ("Solved", solution, values)
+            return ("Solved", solution, values, valuesb)
 #             return ("Solved", values, solution)
         else:
-            return ("Not solved", values)
+            return ("Not solved",'Error 404: Solve not found', values, valuesb)
     else: 
-        return('Ivalid Sudoku, check these values:',validation[0][1:],validation[1][1:])
+        return('Ivalid Sudoku',validation[0][1:],validation[1][1:])
 
 
 def solve_technique(grid,technique):
