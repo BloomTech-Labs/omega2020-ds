@@ -1,0 +1,13 @@
+{% extends "bulk.html" %}
+{% block content %}
+<div id="parent">
+   <article class="flex two" style="padding: 3em 4em 3em 4em;">
+      <div class="child">
+         <p>Uploaded Files</p>
+         {% for uploaded_file in uploaded_files %}
+         <p>{{uploaded_file}}</p>
+         {% endfor %}
+      </div>
+   </article>
+</div>
+{% endblock %}
