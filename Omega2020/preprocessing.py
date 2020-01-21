@@ -9,6 +9,7 @@ import torch
 import pickle
 from random import shuffle
 import operator
+from skimage import io
 
 class Preprocess:
     """
@@ -118,7 +119,10 @@ class Preprocess:
 
     def resize(img):
         W = 1000
-        heigh, width, depth = img.shape
+        if len(img.shape) == 3:
+            height, width, depth = img.shape
+        else:
+            height, width= img.shape
         imgScale = W/width
         newX, newY = img.shape[1]*imgScale, img.shape[0]*imgScale
         new_img = cv2.resize(img, (int(newX), int(newY)))
@@ -129,7 +133,11 @@ class Preprocess:
     def invert(new_img):
 
 #        just_img, thresh1 = cv2.threshold(new_img, 200, 255, cv2.THRESH_BINARY)
-        gray_img = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
+        try:
+            gray_img = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
+        except cv2.error:
+            print("Image already in Grayscale")
+            gray_img = new_img
         # convert the BGR to gray to perform adaptive thresholding
         thresh_img = cv2.adaptiveThreshold(gray_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 5)
         # do a smoothing fitler to clear the noise

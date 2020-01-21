@@ -23,6 +23,7 @@ from .ai import *
 from .solver import *
 
 def init_db():
+© 2020 GitHub, Inc.
     path = 'data/dataset.csv'
     df = pd.read_csv(path)
 
@@ -39,12 +40,11 @@ def create_app():
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.ERROR)
     app.logger.addHandler(stream_handler)
-    logging.basicConfig(level=logging.WARNING)
+    logging.basicConfig(level=logging.ERROR)
     app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
     app.config['ENV'] = config('FLASK_ENV')
     app.config['DEBUG'] = config('FLASK_DEBUG')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    #app.config['data_dir'] = 'Omega2020/temp/'
     DB.init_app(app)
     model_path = config('MODEL_FILEPATH')
 
@@ -129,8 +129,14 @@ def create_app():
         
         original_grid = "."
         #import pdb; pdb.set_trace()
-        solved_grid = solve(pred)[2]
-        solved= display(solved_grid)
+        grid_status = solve(pred)[0]
+        if grid_status == 'Ivalid Sudoku, check these values:':
+            solved_grid = "Invalid Puzzle"
+            solved = "Invalid Puzzle"
+        else:
+            solved_grid = solve(pred)[2]
+            #import pdb; pdb.set_trace()
+            solved = display(solved_grid)
 
 
         
