@@ -15,6 +15,7 @@ from io import BytesIO, StringIO
 from werkzeug.utils import secure_filename
 import urllib.request
 import sys
+import logging
 
 
 
@@ -22,6 +23,7 @@ from .ai import *
 from .solver import *
 
 def init_db():
+© 2020 GitHub, Inc.
     path = 'data/dataset.csv'
     df = pd.read_csv(path)
 
@@ -34,11 +36,15 @@ def create_app():
     #global variables within the flask app including the app name, and the DB Configuration path
     #.env file will specify production vs. development enviornment.
     app = Flask(__name__)
+    app.debug = True
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.ERROR)
+    app.logger.addHandler(stream_handler)
+    logging.basicConfig(level=logging.ERROR)
     app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
     app.config['ENV'] = config('FLASK_ENV')
     app.config['DEBUG'] = config('FLASK_DEBUG')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    #app.config['data_dir'] = 'Omega2020/temp/'
     DB.init_app(app)
     model_path = config('MODEL_FILEPATH')
 
@@ -119,12 +125,18 @@ def create_app():
         #CNN Model Here:
         #pred = predict(imgarray)
         #KNN Prediction Here:
-        pred = predict_knn('/Users/rob/Desktop/lambda/labs/Omega2020/KNN_sagemaker_model.sav',imgarray)
+        pred = predict_knn(config('MODEL_FILEPATH'),imgarray)
         
         original_grid = "."
         #import pdb; pdb.set_trace()
-        solved_grid = solve(pred)[2]
-        solved= display(solved_grid)
+        grid_status = solve(pred)[0]
+        if grid_status == 'Ivalid Sudoku, check these values:':
+            solved_grid = "Invalid Puzzle"
+            solved = "Invalid Puzzle"
+        else:
+            solved_grid = solve(pred)[2]
+            #import pdb; pdb.set_trace()
+            solved = display(solved_grid)
 
 
         

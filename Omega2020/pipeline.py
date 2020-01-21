@@ -36,7 +36,11 @@ from .model import Predict, ConvolutionalNetwork, Net, KNN
 def pipeline(imgpath):
     
     img = io.imread(imgpath)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    try:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    except cv2.error:
+        print("Image already in Grayscale")
+        gray = img
     processed = Preprocess.pre_process_image(gray)
     corners = Preprocess.find_corners_of_largest_polygon(processed)
     cropped = Preprocess.crop_and_warp(img, corners)
