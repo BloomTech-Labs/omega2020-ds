@@ -23,7 +23,6 @@ from .ai import *
 from .solver import *
 
 def init_db():
-© 2020 GitHub, Inc.
     path = 'data/dataset.csv'
     df = pd.read_csv(path)
 
