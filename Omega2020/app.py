@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, flash, request, render_template, copy_current_request_context
+from flask import Flask, redirect, url_for, flash, request, render_template, copy_current_request_context, jsonify
 from .schema import DB, PuzzleTable
 from decouple import config
 from .pipeline import *
@@ -139,8 +139,8 @@ def create_app():
 
 
         
-        return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells,original_grid=original_grid,solved=solved)
-
+        #return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells,original_grid=original_grid,solved=solved)
+        return jsonify(values =pred, puzzle_status=grid_status, solution=solve(pred)[1])
 
 
 
