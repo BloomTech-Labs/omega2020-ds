@@ -1,4 +1,5 @@
 import copy
+from collections import Counter
 
 rows = 'ABCDEFGHI'
 cols = '123456789'
@@ -57,6 +58,23 @@ def naked_twins(values):
                     values[box] = values[box].replace(digit, "")
     return values
 
+
+def naked_triple(values):
+    values_triples = [a for a,b in Counter([v for k,v in values.items() if len(v)==3]).items() if b>2]
+    triples= [([k for k,v in values.items() if v == value_triple]) for value_triple in values_triples]
+    for triple in triples:
+        for unit in unitlist:
+            if(set(triple).issubset(set(unit))): 
+                values_remove= [x for x in unit if x not in triple]
+                digits = values[triple[0]]
+                for value_remove in values_remove: 
+                    for digit in digits:
+                        values[value_remove] = values[value_remove].replace(digit, "")
+    
+    return values
+            
+    
+
 def reduce_puzzle(values):
     """
     Iterate eliminate() and only_choice(). If at some point, there is a box with no available values, return False.
@@ -70,8 +88,9 @@ def reduce_puzzle(values):
     while not stalled:
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
         values = single_position(values)
-        values = naked_twins(values)
         values = single_candidate(values)
+        values = naked_twins(values)
+        values = naked_triple(values)
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
         if len([box for box in values.keys() if len(values[box]) == 0]):
