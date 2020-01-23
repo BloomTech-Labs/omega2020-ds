@@ -5,7 +5,7 @@ import matplotlib.image as mpimg
 from IPython.display import Image
 import cv2
 import os
-import torch
+#import torch
 import pickle
 from random import shuffle
 import operator
