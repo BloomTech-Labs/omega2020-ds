@@ -38,7 +38,6 @@ def create_app():
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.ERROR)
     application.logger.addHandler(stream_handler)
-    logging.basicConfig(filename='/opt/python/log/my.log',level=logging.INFO)
     application.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
     application.config['ENV'] = config('FLASK_ENV')
     application.config['DEBUG'] = config('FLASK_DEBUG')
