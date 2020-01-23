@@ -197,7 +197,7 @@ def create_app():
     #route that will reset the database.
     @application.route("/reset", methods=['GET'])
     def reset():
-        path = 'Omega2020/data/dataset.csv'
+        path = 'data/dataset.csv'
         df = pd.read_csv(path)
 
         DB.drop_all()
@@ -217,5 +217,6 @@ def create_app():
             entry = PuzzleTable(id= aid,sudoku= asudoku,solution=asolution,level=alevel,people=apeople,avg_time=aavg_time,sudoku_hash=asudoku_hash)
             DB.session.add(entry)
             DB.session.commit()
+            print("Row "+str(i)+" out of: "+str(len(df))+" completed.")
         return "Database Reset!"
     return application
