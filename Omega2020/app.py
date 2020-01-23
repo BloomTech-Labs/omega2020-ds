@@ -128,9 +128,9 @@ def create_app():
         #KNN Prediction Here:
         pred = predict_knn(config('MODEL_FILEPATH'),imgarray)
         
-        original_grid = "."
+        original_grid = "test_value"
         #import pdb; pdb.set_trace()
-        grid_status = solve(pred)[0]
+        grid_status = solve(str(pred))[0]
 
         translation_dictionary = {
             "A1": "00",
@@ -221,12 +221,15 @@ def create_app():
             errors.pop(0)
             solution = []
             for e in errors:
-                guess_pair = []
-                guess = e[0] 
-                cell = find_replace_multi(e[1],translation_dictionary)
-                guess_pair.append(guess)
-                guess_pair.append(cell)
-                solution.append(guess_pair) 
+                if e == '':
+                    pass
+                else:
+                    guess_pair = []
+                    guess = e[0] 
+                    cell = find_replace_multi(e[1],translation_dictionary)
+                    guess_pair.append(guess)
+                    guess_pair.append(cell)
+                    solution.append(guess_pair) 
         else:
             solved_grid = solve(pred)[2]
             #import pdb; pdb.set_trace()
@@ -235,7 +238,7 @@ def create_app():
         
         
         #return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells,original_grid=original_grid,solved=solved)
-        return jsonify(values = pred, puzzle_status=grid_status, solution=solve(pred))
+        return jsonify(values = pred, puzzle_status=grid_status, solution=solution)
 
 
 
