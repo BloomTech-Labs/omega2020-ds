@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, flash, request, render_template, copy_current_request_context, jsonify
-from .schema import DB, PuzzleTable
+from schema import DB, PuzzleTable
 from decouple import config
-from .pipeline import *
+from pipeline import *
 import boto3
 import requests
 import hashlib
@@ -18,9 +18,8 @@ import sys
 import logging
 
 
-
-from .ai import * 
-from .solver import *
+from ai import * 
+from solver import *
 
 def init_db():
     path = 'data/dataset.csv'
@@ -34,17 +33,17 @@ def chunks(l, n):
 def create_app():
     #global variables within the flask app including the app name, and the DB Configuration path
     #.env file will specify production vs. development enviornment.
-    app = Flask(__name__)
-    app.debug = True
+    application = Flask(__name__)
+    application.debug = True
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.ERROR)
-    app.logger.addHandler(stream_handler)
-    logging.basicConfig(level=logging.ERROR)
-    app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
-    app.config['ENV'] = config('FLASK_ENV')
-    app.config['DEBUG'] = config('FLASK_DEBUG')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    DB.init_app(app)
+    application.logger.addHandler(stream_handler)
+    logging.basicConfig(filename='/opt/python/log/my.log',level=logging.INFO)
+    application.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
+    application.config['ENV'] = config('FLASK_ENV')
+    application.config['DEBUG'] = config('FLASK_DEBUG')
+    application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    DB.init_app(application)
     model_path = config('MODEL_FILEPATH')
 
     AWS = {
@@ -81,19 +80,19 @@ def create_app():
 
 
 
-    @app.route("/")
+    @application.route("/", methods=['GET'])
     def hello():
         return "Hello World!"
 
-    @app.route("/upload")
+    @application.route("/upload", methods=['GET'])
     def upload():
         return render_template('base.html')
 
-    @app.route("/bulk_upload")
+    @application.route("/bulk_upload", methods=['GET'])
     def bulk_upload():
         return render_template('bulk.html')
 
-    @app.route("/demo_file", methods=['GET', 'POST'])
+    @application.route("/demo_file", methods=['GET', 'POST'])
     def demo_file():
         image_file = request.files['file']
         imghash = hashlib.md5(image_file.read()).hexdigest()
@@ -140,12 +139,12 @@ def create_app():
 
         
         #return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells,original_grid=original_grid,solved=solved)
-        return jsonify(values =pred, puzzle_status=grid_status, solution=solve(pred)[1])
+        return jsonify(values = pred, puzzle_status=grid_status, solution=solve(pred)[1])
 
 
 
     
-    @app.route("/bulk_processing", methods=['GET'])
+    @application.route("/bulk_processing", methods=['GET'])
     def bulk_processing():
         start_url = 'https://omega2020.s3.amazonaws.com/'
 
@@ -197,7 +196,7 @@ def create_app():
     
 
     #route that will reset the database.
-    @app.route("/reset")
+    @application.route("/reset", methods=['GET'])
     def reset():
         path = 'Omega2020/data/dataset.csv'
         df = pd.read_csv(path)
@@ -220,4 +219,4 @@ def create_app():
             DB.session.add(entry)
             DB.session.commit()
         return "Database Reset!"
-    return app
+    return application
