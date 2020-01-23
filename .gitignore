@@ -137,3 +137,13 @@ dmypy.json
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+#misc omega files/folders
+Notebooks/cell_data/*
+Notebooks/restorted_arrays/*
+Omega2020/mnist_dataset/*
+Omega2020/omega2020-env/*
+omega2020env/*
+Notebooks/resorted_arrays/*
+Notebooks/KNN_sagemaker_model.sav
+Omega2020/models/*
