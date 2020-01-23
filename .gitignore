@@ -147,5 +147,4 @@ omega2020env/*
 Notebooks/resorted_arrays/*
 Notebooks/KNN_sagemaker_model.sav
 Omega2020/models/*
-Omega2020/data/*
-Omega2020/data/all_cell_arrays_unique.npy
+Omega2020/data/arrays/*
