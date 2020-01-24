@@ -25,16 +25,17 @@ def solve(grid):
     valuesb = dict(zip(boxes,["." if element == "." else element for element in grid]))
     validation = validator(grid)
     if len(validation) is 0:
-        
-#         #solving the sudoku
         values = search(values)
-        values_solved = len([box for box in values.keys() if len(values[box]) == 1])
-        solution = "".join([value if len(value) == 1 else "." for value in values.values()])
-        if values_solved == 81:
-            return ("Solved", solution, values, valuesb)
-#             return ("Solved", values, solution)
+        if values is False:
+            return ("Invalid Sudoku: Error 404",'Solution not found', valuesb) #
         else:
-            return ("Not solved",'Error 404: Solve not found', values, valuesb)
+            values_solved = len([box for box in values.keys() if len(values[box]) == 1])
+            solution = "".join([value if len(value) == 1 else "." for value in values.values()])
+            if values_solved == 81:
+                return ("Solved", solution, values, valuesb)
+    #             return ("Solved", values, solution)
+            else:
+                return ("Not solved",'Error 404: Solution not found', values, valuesb)
     else: 
         return('Ivalid Sudoku',validation[0][1:],validation[1][1:])
 
@@ -52,8 +53,7 @@ def solve_technique(grid,technique):
                 solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
                 stalled = solved_values_before == solved_values_after
                 if len([box for box in values.keys() if len(values[box]) == 0]):
-                    return False
-
+                    return ("Not solved", values, f"Number of iterations made: {start}")
             if solved_values_before == 81:
                 return ("Solved", values, f"Number of iterations made: {start}")
             else:
