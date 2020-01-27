@@ -1,4 +1,5 @@
 import copy
+from collections import Counter
 
 rows = 'ABCDEFGHI'
 cols = '123456789'
@@ -57,6 +58,23 @@ def naked_twins(values):
                     values[box] = values[box].replace(digit, "")
     return values
 
+
+def naked_triple(values):
+    values_triples = [a for a,b in Counter([v for k,v in values.items() if len(v)==3]).items() if b>2]
+    triples= [([k for k,v in values.items() if v == value_triple]) for value_triple in values_triples]
+    for triple in triples:
+        for unit in unitlist:
+            if(set(triple).issubset(set(unit))): 
+                values_remove= [x for x in unit if x not in triple]
+                digits = values[triple[0]]
+                for value_remove in values_remove: 
+                    for digit in digits:
+                        values[value_remove] = values[value_remove].replace(digit, "")
+    
+    return values
+            
+    
+
 def reduce_puzzle(values):
     """
     Iterate eliminate() and only_choice(). If at some point, there is a box with no available values, return False.
@@ -70,8 +88,9 @@ def reduce_puzzle(values):
     while not stalled:
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
         values = single_position(values)
-        values = naked_twins(values)
         values = single_candidate(values)
+        values = naked_twins(values)
+        values = naked_triple(values)
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
         if len([box for box in values.keys() if len(values[box]) == 0]):
@@ -94,7 +113,6 @@ def search(values):
         if attempt:
             return attempt
 
-
 def display(values):
     """
     Display the values as a 2-D grid.
@@ -102,15 +120,12 @@ def display(values):
     Output: None
     """
     width = 1+max(len(values[s]) for s in boxes)
-    line = '+'.join(['-'*(width*4)]*3)
-    clean = []
+    line = '+'.join(['-'*(width*3)]*3)
     for r in rows:
-        clean.append(''.join(values[r+c].center(width)+('|' if c in '36' else '')
+        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
                       for c in cols))
-    
-    clean.insert(3,line)
-    clean.insert(7,line)
-    return clean
+        if r in 'CF': print(line)       
+    print()
 
 def validator(grid):
     valuesv = dict(zip(boxes,["." if element == "." else element for element in grid]))  
@@ -122,8 +137,4 @@ def validator(grid):
             answ.append([False,x[0],x[2]])
         else: 
             pass
-    if len(answ)==0:
-        answ = grid
-    else:
-        pass
     return answ

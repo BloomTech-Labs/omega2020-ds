@@ -44,8 +44,7 @@ def solve(grid):
                 return ("Not solved")
     else: 
         for element in validation :
-            element.remove(False)
-            
+            element.remove(False)       
         return(2,validation)
 
 
