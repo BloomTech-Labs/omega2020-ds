@@ -7,11 +7,11 @@
 # machine and combined with the account and region to form the repository name for ECR.
 image=$1
 
-if [ "$image" == "" ]
-then
-    echo "Usage: $0 <image-name>"
-    exit 1
-fi
+# if ["$image" == ""]
+# then
+#     echo "Usage: $0 <image-name>"
+#     exit 1
+# fi
 
 chmod +x decision_trees/train
 chmod +x decision_trees/serve

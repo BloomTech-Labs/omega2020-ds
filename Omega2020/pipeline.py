@@ -85,7 +85,7 @@ def pipeline(imgpath):
 
 
 def predict_knn(filepath, cells):
-    knn = KNN(3)
+    knn = KNN(3,train=False)
     knn.load_knn(filepath)
     grid = ""
     for cell in cells:

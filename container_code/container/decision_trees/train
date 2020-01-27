@@ -15,9 +15,11 @@ import boto3
 from decouple import config
 import pandas as pd
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
+#from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 
+import xgboost as xgb
 # These are the paths to where SageMaker mounts interesting things in your container.
 
 prefix = '/opt/ml/'
@@ -56,24 +58,37 @@ def train():
         train_all = pd.concat(raw_data)
         train_all = train_all = train_all.iloc[1:]
 
-        train_y = train_all[train_all.columns[0]]
-        train_X = train_all[train_all.columns[1:]]
+        train_data , validation_data = train_test_split(train_all, test_size=0.20)
+
+        train_y = train_data[train_data.columns[0]]
+        train_X = train_data[train_data.columns[1:]]
+        validation_y = validation_data[validation_data.columns[0]]
+        validation_X = validation_data[validation_data.columns[1:]]
+
+        data_header = list(range(1, 785))
+
+        train_X.columns = data_header
+        validation_X.columns = data_header
         #train_y = pd.read_csv(str(training_path)+"/all_train.csv")
         #print("y split")
         #train_X = pd.read_csv(str(training_path)+"/train_X.csv")
-        
-        print(train_y.shape)
-        print(train_X.shape)
 
         # Now use scikit-learn's decision tree classifier to train the model.
         print("running model")
-        clf = KNeighborsClassifier(n_neighbors=3)
+        clf = xgb.XGBClassifier(objective="multi:softprob")
         clf.fit(train_X, train_y)
+        print("model fit!")
+        print('Validation Accuracy',clf.score(validation_X,validation_y))
 
         # save the model
         print("saving model")
-        with open(os.path.join(model_path, 'KNN-model.pkl'), 'wb') as out:
+        with open(os.path.join(model_path, 'xgboost-model.pkl'), 'wb') as out:
             pickle.dump(clf, out)
+        print("model complete")
+        print("starting validation test")
+        y_pred = clf.predict(validation_X)
+        print(classification_report(validation_y, y_pred))
+        print("Exiting train script!")
     except Exception as e:
         # Write out an error file. This will be returned as the failureReason in the
         # DescribeTrainingJob result.

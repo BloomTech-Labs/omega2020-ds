@@ -10,6 +10,7 @@ from io import StringIO
 import sys
 import signal
 import traceback
+import time
 
 import flask
 
@@ -28,7 +29,7 @@ class ScoringService(object):
     def get_model(cls):
         """Get the model object for this instance, loading it if it's not already loaded."""
         if cls.model == None:
-            with open(os.path.join(model_path, 'KNN-model.pkl'), 'rb') as inp:
+            with open(os.path.join(model_path, 'xgboost-model.pkl'), 'rb') as inp:
                 cls.model = pickle.load(inp)
         return cls.model
 
@@ -72,6 +73,8 @@ def transformation():
 
     print('Invoked with {} records'.format(data.shape[0]))
 
+    data_header = list(range(1, 785))
+    data.columns = data_header 
     # Do the prediction
     predictions = ScoringService.predict(data)
 
@@ -79,5 +82,4 @@ def transformation():
     out = StringIO()
     pd.DataFrame({'results':predictions}).to_csv(out, header=False, index=False)
     result = out.getvalue()
-
     return flask.Response(response=result, status=200, mimetype='text/csv')

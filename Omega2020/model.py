@@ -79,32 +79,36 @@ import cv2
 #         return grid
 
 class KNN:
-    def __init__(self,k):
+    def __init__(self,k,train=True):
+        self.train_state = train
         self.k = k
-        self.mnist = datasets.fetch_openml('mnist_784', data_home='mnist_dataset/')
-        nonzero_indexes = []
-        for i in range(len(self.mnist['target'])):
-            if int(self.mnist['target'][i]) > 0:
-                nonzero_indexes.append(i)
-            else:
-                pass
-        
-        self.digits = self.mnist['data'][nonzero_indexes]
-        self.target = self.mnist['target'][nonzero_indexes]
-        self.classifier = KNeighborsClassifier(n_neighbors=k)
-        
-        share_of_values = int(len(self.digits)//9)
-        blank_img = np.zeros((share_of_values,784))
-        test_dig = self.digits
-        test_dig = np.append(blank_img, test_dig)
-        test_dig = test_dig.reshape((len(self.digits)+share_of_values),784)
-        
-        blank_class = np.repeat(str(999),share_of_values)
-        class_targets = self.target
-        class_targets = np.append(blank_class,class_targets)
-        
-        self.digits = test_dig
-        self.target = class_targets
+        if self.train_state == True:
+            self.mnist = datasets.fetch_openml('mnist_784', data_home='mnist_dataset/')
+            nonzero_indexes = []
+            for i in range(len(self.mnist['target'])):
+                if int(self.mnist['target'][i]) > 0:
+                    nonzero_indexes.append(i)
+                else:
+                    pass
+            
+            self.digits = self.mnist['data'][nonzero_indexes]
+            self.target = self.mnist['target'][nonzero_indexes]
+            self.classifier = KNeighborsClassifier(n_neighbors=k)
+            
+            share_of_values = int(len(self.digits)//9)
+            blank_img = np.zeros((share_of_values,784))
+            test_dig = self.digits
+            test_dig = np.append(blank_img, test_dig)
+            test_dig = test_dig.reshape((len(self.digits)+share_of_values),784)
+            
+            blank_class = np.repeat(str(999),share_of_values)
+            class_targets = self.target
+            class_targets = np.append(blank_class,class_targets)
+            
+            self.digits = test_dig
+            self.target = class_targets
+        else:
+            pass
         
         
     def mk_dataset(self, test_size=0.20):
