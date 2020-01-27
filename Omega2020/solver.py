@@ -13,16 +13,17 @@ def solve(grid):
             STATE 1: Valid and solvable Sudoku
                 a) State
                 b) Solution: String with length of 81
-                c) Dictionary of the solution 
-                d) Dictionary of the initial puzzle
+                c) Solution
+                d) Prediction initial puzzle (String)
             STATE 2: Invaid Sudoku
                 a) State
                 b) Invalid cells
+                c) Prediction initial puzzle (String)
             STATE 3: Valid Sudoku(the initial puzzle follows the Sudoku rules) 
             but doesn't have a solution
                 a) State
-                b) Message --> "Solution not found"
-                c) Dictionary of the initial puzzle
+                b) Message --> "Not Solution"
+                c) Prediction initial puzzle (String)
 
     """
     values = dict(zip(boxes, ["123456789" if element == "." else element for element in grid]))
@@ -33,19 +34,18 @@ def solve(grid):
 
         values = search(values)
         if values is False:
-            return (3,'Solution not found', valuesb) #
+            return (3,'Not Solution', valuesb) #
         else:
             values_solved = len([box for box in values.keys() if len(values[box]) == 1])
             solution = "".join([value if len(value) == 1 else "." for value in values.values()])
             if values_solved == 81:
-                return (1, solution, values, valuesb)
-    #             return ("Solved", values, solution)
+                return (1, solution, valuesb)
             else:
                 return ("Not solved")
     else: 
         for element in validation :
             element.remove(False)       
-        return(2,validation)
+        return(2,validation, valuesb)
 
 
 def solve_technique(grid,technique):
