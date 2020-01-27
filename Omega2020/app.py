@@ -213,23 +213,23 @@ def create_app():
             "I8": "87",
             "I9": "88",
         }
-        # if grid_status != '0':
-        #     grid_status = "Invalid"
-        #     errors = list(solve(pred))
-        #     errors.pop(0)
-        #     solution = []
-        #     for e in errors:
-        #         if e == '':
-        #             pass
-        #         else:
-        #             guess_pair = []
-        #             guess = e[0] 
-        #             cell = find_replace_multi(e[1],translation_dictionary)
-        #             guess_pair.append(guess)
-        #             guess_pair.append(cell)
-        #             solution.append(guess_pair) 
-        # else:
-        
+        if grid_status is not "0":
+
+            errors = list(solve(str(pred))[1])
+            for e in errors:
+                error_pairs = []
+                if e =='':
+                    pass
+                else:
+                    guess_pair = []
+                    guess = e[0]
+                    cell = find_replace_multi(e[1],translation_dictionary)
+                    guess_pair.append(guess)
+                    guess_pair.append(cell)
+                    error_pairs.append(guess_pair)
+                solution = error_pairs
+        else:
+            pass
         
         #return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells,original_grid=original_grid,solved=solved)
         return jsonify(values = pred, puzzle_status=grid_status, solution=solution)
