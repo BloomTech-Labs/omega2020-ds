@@ -34,18 +34,18 @@ def solve(grid):
 
         values = search(values)
         if values is False:
-            return (3,'Not Solution', valuesb) #
+            return (3,'Not Solution', grid) #
         else:
             values_solved = len([box for box in values.keys() if len(values[box]) == 1])
             solution = "".join([value if len(value) == 1 else "." for value in values.values()])
             if values_solved == 81:
-                return (1, solution, valuesb)
+                return (1, solution, grid)
             else:
                 return ("Not solved")
     else: 
         for element in validation :
             element.remove(False)       
-        return(2,validation, valuesb)
+        return(2,validation, grid)
 
 
 def solve_technique(grid,technique):
