@@ -5,11 +5,10 @@ import matplotlib.image as mpimg
 from IPython.display import Image
 import cv2
 import os
-#import torch
+import torch
 import pickle
 from random import shuffle
 import operator
-from skimage import io
 
 class Preprocess:
     """
@@ -119,10 +118,7 @@ class Preprocess:
 
     def resize(img):
         W = 1000
-        if len(img.shape) == 3:
-            height, width, depth = img.shape
-        else:
-            height, width= img.shape
+        heigh, width, depth = img.shape
         imgScale = W/width
         newX, newY = img.shape[1]*imgScale, img.shape[0]*imgScale
         new_img = cv2.resize(img, (int(newX), int(newY)))
@@ -133,11 +129,7 @@ class Preprocess:
     def invert(new_img):
 
 #        just_img, thresh1 = cv2.threshold(new_img, 200, 255, cv2.THRESH_BINARY)
-        try:
-            gray_img = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
-        except cv2.error:
-            print("Image already in Grayscale")
-            gray_img = new_img
+        gray_img = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
         # convert the BGR to gray to perform adaptive thresholding
         thresh_img = cv2.adaptiveThreshold(gray_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 5)
         # do a smoothing fitler to clear the noise
@@ -156,7 +148,6 @@ class Preprocess:
 
 #        return sharpened
 
-
     def boxes(invert_img):
         rows = [(30,110), (125,205), (235,315), (350,430), (455,535), (580,660), (680,760), (785,865), (890,970)]
         columns = [(30,110), (130,210), (240,320), (355,435), (455,535), (575,655), (680,760), (800,880),(890,970)]
@@ -174,11 +165,8 @@ class Preprocess:
         #    resize_img = ~resize_img
             #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
-            
 
         return final_images
-    
-
     
     def process_cells(img):
         rows = np.shape(img)[0]
@@ -187,17 +175,17 @@ class Preprocess:
         #This can be achieved by flood filling with some of the outer points as seeds.
         #After looking at the cell images, I concluded that it's enough if we
         #Flood fill with all the points from the three outermost layers as seeds
-        # for i in range(rows):
-        #     #Floodfilling the outermost layer
-        #     cv2.floodFill(img, None, (0, i), 0)
-        #     cv2.floodFill(img, None, (i, 0), 0)
-        #     cv2.floodFill(img, None, (rows-1, i), 0)
-        #     cv2.floodFill(img, None, (i, rows-1), 0)
-        #     #Floodfilling the second outermost layer
-        #     cv2.floodFill(img, None, (1, i), 1)
-        #     cv2.floodFill(img, None, (i, 1), 1)
-        #     cv2.floodFill(img, None, (rows - 2, i), 1)
-        #     cv2.floodFill(img, None, (i, rows - 2), 1)
+        for i in range(rows):
+            #Floodfilling the outermost layer
+            cv2.floodFill(img, None, (0, i), 0)
+            cv2.floodFill(img, None, (i, 0), 0)
+            cv2.floodFill(img, None, (rows-1, i), 0)
+            cv2.floodFill(img, None, (i, rows-1), 0)
+            #Floodfilling the second outermost layer
+            cv2.floodFill(img, None, (1, i), 1)
+            cv2.floodFill(img, None, (i, 1), 1)
+            cv2.floodFill(img, None, (rows - 2, i), 1)
+            cv2.floodFill(img, None, (i, rows - 2), 1)
         #Finding the bounding box of the number in the cell
         rowtop = None
         rowbottom = None

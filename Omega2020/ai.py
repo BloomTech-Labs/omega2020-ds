@@ -122,4 +122,8 @@ def validator(grid):
             answ.append([False,x[0],x[2]])
         else: 
             pass
+    if len(answ)==0:
+        answ = grid
+    else:
+        pass
     return answ
