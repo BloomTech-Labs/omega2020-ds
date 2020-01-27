@@ -20,6 +20,9 @@ def solve(grid):
               a. Solved: dict(solution)
               b.  Not solved: dict(values it could solved)
         4.   Valuesb: dict(values before solve)
+    STATE 1 : VALID SUDOKU(FOLLOWING SUDOKU RULES) BUT NOT SOLUTION
+    STATE 2: INVALID SUDOKU()
+    STATE 3: VALID SUDOKU AND HAS A SOLUTION 
     """
     values = dict(zip(boxes, ["123456789" if element == "." else element for element in grid]))
     valuesb = dict(zip(boxes,["." if element == "." else element for element in grid]))
@@ -27,17 +30,17 @@ def solve(grid):
     if len(validation) is 0:
         values = search(values)
         if values is False:
-            return ("Invalid Sudoku: Error 404",'Solution not found', valuesb) #
+            return (1,'Solution not found', valuesb) #
         else:
             values_solved = len([box for box in values.keys() if len(values[box]) == 1])
             solution = "".join([value if len(value) == 1 else "." for value in values.values()])
             if values_solved == 81:
-                return ("Solved", solution, values, valuesb)
+                return (3, solution, values, valuesb)
     #             return ("Solved", values, solution)
             else:
-                return ("Not solved",'Error 404: Solution not found', values, valuesb)
+                return ("Not solved")
     else: 
-        return('Ivalid Sudoku',validation[0][1:],validation[1][1:])
+        return(2,validation[0][1:],validation[1][1:])
 
 
 def solve_technique(grid,technique):
