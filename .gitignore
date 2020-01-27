@@ -133,3 +133,29 @@ dmypy.json
 
 #sqlite3 DB
 .sqlite
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+#misc omega files/folders
+Notebooks/cell_data/*
+Notebooks/restorted_arrays/*
+Omega2020/mnist_dataset/*
+Omega2020/omega2020-env/*
+omega2020env/*
+Notebooks/resorted_arrays/*
+Notebooks/KNN_sagemaker_model.sav
+Omega2020/models/*
+Omega2020/data/arrays/*
+.DS_Store
+environment_droplet.yml
+Notebooks/PATH_TO_STORE_TESTSET/*
+Notebooks/PATH_TO_STORE_TRAINSET/*
+container_code/test_notebooks/*
+Notebooks/mnist_digits.npy
+Notebooks/mnist_targets.npy
+Notebooks/Rob MNIST Notebook.ipynb
+Notebooks/Rob MNIST Notebook.ipynb
+container_code/container/local_test/test_dir/input/data/training/all_train.csv
+container_code/data/all_train.csv

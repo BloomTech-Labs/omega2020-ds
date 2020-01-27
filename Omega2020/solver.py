@@ -1,4 +1,4 @@
-from .ai import *
+from ai import *
 import copy
 
 rows = 'ABCDEFGHI'

@@ -1,17 +1,17 @@
 
 from flask import Flask, redirect, url_for, flash, request, render_template
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader
-from torchvision import datasets, transforms
-from torchvision.utils import make_grid
+#import torch
+#import torch.nn as nn
+#import torch.nn.functional as F
+#from torch.utils.data import DataLoader
+#from torchvision import datasets, transforms
+#from torchvision.utils import make_grid
 import cv2
 import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
-from torch import optim
+#from torch import optim
 import matplotlib.image as mpimg
 from IPython.display import Image
 import os
@@ -23,8 +23,8 @@ from decouple import config
 import urllib.request
 import numpy as np
 from skimage import io
-from .preprocessing import Preprocess
-from .model import Predict, ConvolutionalNetwork, Net, KNN
+from preprocessing import Preprocess
+from model import KNN
 
 #import argparse
 
@@ -61,31 +61,31 @@ def pipeline(imgpath):
 
     return inverted, new_cells
 
-def predict(cells):
-    model_path = config('MODEL_FILEPATH')
-    model = Net()
-    model_state_dict = torch.load(model_path)
-    model.load_state_dict(model_state_dict)
-    model.eval()
+# def predict(cells):
+#     model_path = config('MODEL_FILEPATH')
+#     model = Net()
+#     model_state_dict = torch.load(model_path)
+#     model.load_state_dict(model_state_dict)
+#     model.eval()
 
-    transform = transforms.Compose([transforms.ToTensor(),
-                              transforms.Normalize((0.5,), (0.5,)),
-                              ])
-    tensors = []
-    for cell in cells:
-            tensors.append((transform(cell).view(1,28,28).type(torch.FloatTensor)))
+#     transform = transforms.Compose([transforms.ToTensor(),
+#                               transforms.Normalize((0.5,), (0.5,)),
+#                               ])
+#     tensors = []
+#     for cell in cells:
+#             tensors.append((transform(cell).view(1,28,28).type(torch.FloatTensor)))
 
-    grid = []
-    for i in range(len(tensors)):
-            if tensors[i].mean().item() <= -10:
-                grid.append(".")
-            else:
-                grid.append(str(model(tensors[i].view(1,1,28,28)).argmax().item()))
-    return grid
+#     grid = []
+#     for i in range(len(tensors)):
+#             if tensors[i].mean().item() <= -10:
+#                 grid.append(".")
+#             else:
+#                 grid.append(str(model(tensors[i].view(1,1,28,28)).argmax().item()))
+#     return grid
 
 
 def predict_knn(filepath, cells):
-    knn = KNN(3)
+    knn = KNN(3,train=False)
     knn.load_knn(filepath)
     grid = ""
     for cell in cells:
