@@ -159,3 +159,5 @@ Notebooks/Rob MNIST Notebook.ipynb
 Notebooks/Rob MNIST Notebook.ipynb
 container_code/container/local_test/test_dir/input/data/training/all_train.csv
 container_code/data/all_train.csv
+mnist_dataset/*
+.gitignore.swp
