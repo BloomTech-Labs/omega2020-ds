@@ -3,4 +3,4 @@
 from .app import create_app
 
 application = create_app()
-application.debug = True
+application.run(host="0.0.0.0")

@@ -17,6 +17,8 @@ import urllib.request
 import sys
 import logging
 import re
+from flask_cors import CORS
+
 
 from ai import * 
 from solver import *
@@ -34,6 +36,7 @@ def create_app():
     #global variables within the flask app including the app name, and the DB Configuration path
     #.env file will specify production vs. development enviornment.
     application = Flask(__name__)
+    CORS(application)
     application.debug = True
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.ERROR)
@@ -213,7 +216,7 @@ def create_app():
             "I8": "87",
             "I9": "88",
         }
-        if grid_status is not "0":
+        if len(list(solve(str(pred))[1])) != 81:
 
             errors = list(solve(str(pred))[1])
             for e in errors:
