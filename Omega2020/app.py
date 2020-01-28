@@ -17,6 +17,8 @@ import urllib.request
 import sys
 import logging
 import re
+from flask_cors import CORS
+
 
 from ai import * 
 from solver import *
@@ -34,6 +36,7 @@ def create_app():
     #global variables within the flask app including the app name, and the DB Configuration path
     #.env file will specify production vs. development enviornment.
     application = Flask(__name__)
+    CORS(application)
     application.debug = True
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.ERROR)
@@ -119,9 +122,6 @@ def create_app():
                 processed_cell_url = upload_file_to_s3(in_mem_file, config('S3_BUCKET'), imghash+"_"+str(i)+'_cell.png')
             i = i+1
             processed_cells.append(processed_cell_url)
-
-        processed_cells = chunks(processed_cells,9)
-
         
         #CNN Model Here:
         #pred = predict(imgarray)
@@ -131,6 +131,7 @@ def create_app():
         original_grid = "test_value"
         #import pdb; pdb.set_trace()
         grid_status = solve(str(pred))[0]
+        solution = solve(str(pred))[1]
 
         translation_dictionary = {
             "A1": "00",
@@ -215,27 +216,23 @@ def create_app():
             "I8": "87",
             "I9": "88",
         }
-        if grid_status == 'Ivalid Sudoku, check these values:':
-            grid_status = "Invalid"
-            errors = list(solve(pred))
-            errors.pop(0)
-            solution = []
+        if len(list(solve(str(pred))[1])) != 81:
+
+            errors = list(solve(str(pred))[1])
             for e in errors:
-                if e == '':
+                error_pairs = []
+                if e =='':
                     pass
                 else:
                     guess_pair = []
-                    guess = e[0] 
+                    guess = e[0]
                     cell = find_replace_multi(e[1],translation_dictionary)
                     guess_pair.append(guess)
                     guess_pair.append(cell)
-                    solution.append(guess_pair) 
+                    error_pairs.append(guess_pair)
+                solution = error_pairs
         else:
-            solved_grid = solve(pred)[2]
-            #import pdb; pdb.set_trace()
-            solved = display(solved_grid)
-            solution = solve(pred)
-        
+            pass
         
         #return render_template('results.html', imghash = imghash, imgurl = imgurl, pred=pred, processed_url=processed_url, processed_cells=processed_cells,original_grid=original_grid,solved=solved)
         return jsonify(values = pred, puzzle_status=grid_status, solution=solution)
