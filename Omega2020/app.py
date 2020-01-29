@@ -18,7 +18,8 @@ import sys
 import logging
 import re
 from flask_cors import CORS
-
+from urllib.request import urlopen
+import json
 
 from ai import * 
 from solver import *
@@ -69,6 +70,11 @@ def create_app():
         try: s3.upload_fileobj(*args, ExtraArgs=ExtraArgs)
         except Exception as e: return str(e)
         return "{}{}".format(config('S3_LOCATION'), args[2])
+    
+    def upload_file_to_s3_sagemaker(*args):
+        try: s3.upload_fileobj(*args, ExtraArgs=ExtraArgs)
+        except Exception as e: return str(e)
+        return "{}{}".format(config('S3_LOCATION_SAGEMAKER'), args[2])
     
     def get_matching_s3_keys(bucket, prefix='', suffix=''):
         kwargs = {'Bucket': bucket, 'Prefix': prefix}
@@ -123,13 +129,36 @@ def create_app():
             i = i+1
             processed_cells.append(processed_cell_url)
         
-        #CNN Model Here:
-        #pred = predict(imgarray)
-        #KNN Prediction Here:
+        allArrays = np.empty((784,))
+        #it appears 82 arrays are being returned from pipeline
+        #I think the first one is bad, but need to verify.
+        for array in imgarray[1:]:
+            an_array = array.flatten().reshape(784,)
+            allArrays = np.concatenate([allArrays, an_array])
+        
+        allArrays = allArrays.reshape(81,784)
+        csv_array = pd.DataFrame(allArrays)
+        csv_array = csv_array.drop(csv_array.columns[0],axis=1)
+
+        csv_buffer = StringIO()
+        csv_array.to_csv(csv_buffer)
+        s3_resource = boto3.resource('s3')
+        s3_resource.Object(config('S3_BUCKET_SAGEMAKER'), 'predict_payloads/'+str(imghash)+'.csv').put(Body=csv_buffer.getvalue())
+
+        csv_url = 'https://omega2020-sagemaker.s3.amazonaws.com/predict_payloads/'+str(imghash)
+        SAGEMAKER_API_URL = 'https://9g1ep6et2m.execute-api.us-east-1.amazonaws.com/test/omega-predict-digits/'
+        data = {'true': csv_url}
+        sagermaker_response = requests.post(SAGEMAKER_API_URL,data)
+        import pdb; pdb.set_trace()
+
+
+
+        
+        
         pred = predict_knn(config('MODEL_FILEPATH'),imgarray)
         
         original_grid = "test_value"
-        #import pdb; pdb.set_trace()
+        
         grid_status = solve(str(pred))[0]
         solution = solve(str(pred))[1]
 
