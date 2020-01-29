@@ -129,32 +129,34 @@ def create_app():
             i = i+1
             processed_cells.append(processed_cell_url)
         
-        allArrays = np.empty((784,))
+        allArrays = np.empty((0,))
         #it appears 82 arrays are being returned from pipeline
         #I think the first one is bad, but need to verify.
-        for array in imgarray[1:]:
+        for array in imgarray:
             an_array = array.flatten().reshape(784,)
             allArrays = np.concatenate([allArrays, an_array])
         
+        
         allArrays = allArrays.reshape(81,784)
+        allArrays = np.rint(allArrays)
         csv_array = pd.DataFrame(allArrays)
-        csv_array = csv_array.drop(csv_array.columns[0],axis=1)
-
         csv_buffer = StringIO()
-        csv_array.to_csv(csv_buffer)
+        csv_array.to_csv(csv_buffer,header=False,index=False)
+
         s3_resource = boto3.resource('s3')
         s3_resource.Object(config('S3_BUCKET_SAGEMAKER'), 'predict_payloads/'+str(imghash)+'.csv').put(Body=csv_buffer.getvalue())
 
-        csv_url = 'https://omega2020-sagemaker.s3.amazonaws.com/predict_payloads/'+str(imghash)
+        
+        csv_url = 'https://omega2020-sagemaker.s3.amazonaws.com/predict_payloads/'+str(imghash)+".csv"
         SAGEMAKER_API_URL = 'https://9g1ep6et2m.execute-api.us-east-1.amazonaws.com/test/omega-predict-digits/'
-        data = {'true': csv_url}
-        sagermaker_response = requests.post(SAGEMAKER_API_URL,data)
-        import pdb; pdb.set_trace()
+        data = {'data': csv_url}
+        sagermaker_response = requests.post(SAGEMAKER_API_URL,json=data)
 
-
+        pred = sagermaker_response.content.decode('utf-8').replace("\n","").replace("0",".")
+        
 
         
-        
+        #KNN predictions ran locally, not needed with sagemaker online.
         pred = predict_knn(config('MODEL_FILEPATH'),imgarray)
         
         original_grid = "test_value"
