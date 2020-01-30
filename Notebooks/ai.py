@@ -1,5 +1,10 @@
-import copy
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
 from collections import Counter
+import pickle
+import copy
 
 rows = 'ABCDEFGHI'
 cols = '123456789'
@@ -58,7 +63,6 @@ def naked_twins(values):
                     values[box] = values[box].replace(digit, "")
     return values
 
-
 def naked_triple(values):
     values_triples = [a for a,b in Counter([v for k,v in values.items() if len(v)==3]).items() if b>2]
     triples= [([k for k,v in values.items() if v == value_triple]) for value_triple in values_triples]
@@ -70,11 +74,8 @@ def naked_triple(values):
                 for value_remove in values_remove: 
                     for digit in digits:
                         values[value_remove] = values[value_remove].replace(digit, "")
-    
     return values
             
-    
-
 def reduce_puzzle(values):
     """
     Iterate eliminate() and only_choice(). If at some point, there is a box with no available values, return False.
@@ -138,3 +139,75 @@ def validator(grid):
         else: 
             pass
     return answ
+
+def transf(values):
+    return len("".join([value for value in values.values()]))
+
+def tracker(values):
+    stalled = False
+    start=0
+    answ=[0,0,0,0,0]
+    while not stalled:
+        initial = transf(values)
+        values_before = values.values()
+        values = single_position(values)
+        values_after = transf(values)
+        answ = (answ if values_before == values_after else np.add(answ, [1,0,0,0,0]))
+        
+        values_before = values_after
+        values = single_candidate(values)
+        values_after = transf(values)
+        answ = (answ if values_before == values_after else np.add(answ, [0,1,0,0,0])) 
+
+        values_before = values_after
+        values = naked_twins(values)
+        values_after = transf(values)
+        answ = (answ if values_before == values_after else np.add(answ, [0,0,1,0,0])) 
+        
+        values_before = values_after
+        values = naked_triple(values)
+        values_after = transf(values)
+        answ = (answ if values_before == values_after else np.add(answ, [0,0,0,1,0])) 
+            
+        solved_values = len([box for box in values.keys() if len(values[box]) == 1])
+        if solved_values is 81:
+            break
+ 
+        stalled = solved_values == 81    
+        
+        if initial == values_after: 
+            start += 1
+            aa = [(len(values[s]), s) for s in boxes if len(values[s]) > 1]
+            if len(aa) is 0:
+                pass
+            if len(aa) > 0:
+                answ = np.add(answ, [0,0,0,0,1])
+                _,s = min(aa)
+                for value in values[s]:
+                    new_sudoku = values.copy()
+                    new_sudoku[s] = value
+                    values = new_sudoku
+            if start is 10:
+                break
+    return(answ)
+
+
+def conv_values(grid):
+     return dict(zip(boxes, ["123456789" if element == "." else element for element in grid]))
+    
+def train_model():
+    df = pd.read_csv('../Omega2020/data/dataset.csv').drop('Unnamed: 0', axis=1)
+    df = df.drop(df[df.Level == 'TEST'].index)
+    df['Tracker'] = df['Sudoku'].apply(lambda x: tracker(conv_values(x)))
+    df[['Single', 'Candidate', 'Twins', 'Triples', 'Guess']]=  pd.DataFrame(df['Tracker'].values.tolist(), index= df.index)
+    target =['Level']
+    features = ['Single','Candidate','Twins','Triples','Guess']
+    y = df[target]
+    X = df[features]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    model = LogisticRegression(solver='lbfgs', multi_class='auto',max_iter=1000)
+#Create Pickle
+    outfile = open('difficulty_level_model','wb')
+    pickle.dump(model.fit(X_train, y_train.values.ravel()),outfile)
+    outfile.close()
+    
