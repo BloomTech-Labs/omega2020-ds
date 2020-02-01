@@ -3,21 +3,19 @@
 <div id="parent">
     <article class="flex two" style="padding: 3em 4em 3em 4em;">
         <div class="child">
-            <p>Photo ID:{{ imghash }}</p>
-            <!-- <p> Original Photo</p>
+            <p>Puzzle ID:{{ imghash }}</p>
+            <p>Puzzle Status: {{grid_status}}</p>
+            <p> Original Photo</p>
             <img src={{imgurl}} alt="Original" height="250" width="250">
-            <p> Cropped Photo</p>
+            <p> Cropped and Processed Photo</p>
             <img src={{processed_url}} alt="Original" height="250" width="250">
             <p>Cell Pictures</p>
-            {% for row in processed_cells %} {% for cell in row %}
+            {% for cell in processed_cells %}
             <img src={{cell}}> {% endfor %}
-            <br> {% endfor %}
-            <p>Loaded Puzzle:</p>
-            <p>{{original_grid}}</p>
+            <br>
             <p>Proposed Solution:</p>
-            {% for row in solved %} {{row}}
-            <br> {% endfor %}
-            <H1>Sudoku Puzzle Predictions:</H1> {{ pred }} -->
+            {{ solved}} <br> 
+            <H1>Sudoku Puzzle Predictions:</H1> {{ pred }}
         </div>
     </article>
 </div>
