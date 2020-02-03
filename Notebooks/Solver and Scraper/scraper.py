@@ -1,3 +1,15 @@
+##################################################
+## Omega2020 Flask App
+##################################################
+## MIT License
+##################################################
+## Authors: Leydy Johana Luna
+## References:  Web Scraping with Python: Collecting Data from the Modern Web. 
+##.             Book by Ryan Mitchell
+## Version: 1.0.0
+##################################################
+
+
 from bs4 import BeautifulSoup
 import urllib3
 import requests
@@ -16,23 +28,28 @@ from ai import *
 
 """
 Extract all the HTML code from the web site
-in which the daily Sudoku is posted.
+in which the daily Sudoku is posted and create a 
+CSV file with all the data scraped.
 """
 
 
 def total_sudoku():
+    """
+    Extract from the most recent day the total number of puzzles
+    posted in the web site.
+    """
     r = requests.get("http://www.sudoku.org.uk/Daily.asp")
     soup = BeautifulSoup(r.content, 'html5lib')
     return(soup.find('span', attrs={
-        'class': 'newtitle'
-    }).get_text().split(",")[0].replace("#", ""))
+                                    'class': 'newtitle'
+                                    }).get_text().split(",")[0].replace("#", ""))
 
 
 def list_dates(total):
     '''
     check if the website is working or not(for each day)
     and save this link in a list.
-    Input: Website information
+    Input: total of puzzles posted
     Output: URL list with the websites that are running correctly
     '''
     dates = []
@@ -57,8 +74,7 @@ def list_dates(total):
 
 def get_html(url):
     '''
-    Using the list of the days we're going to open each URL
-    and extract all the HTML code.
+    Extract all the HTML code.
     Input: url list
     Output: html code
     '''
@@ -68,11 +84,11 @@ def get_html(url):
 
 def consolidate(urls):
     '''
-    extract all the informatiom
-    Input: list urls
-    Output: ursl, level of difficulty, number of people
+    Extract all the information
+    Input: list of urls
+    Output: urls, difficulty levels, number of people
     that solved the puzzle, average time solving the puzzle
-    in minutes, initial Sudoku and solution.
+    in minutes, initial Sudoku and its solution.
     '''
     solution, sudoku, level, people, av_time, unit = ([] for i in range(6))
 
@@ -80,10 +96,10 @@ def consolidate(urls):
         a, b = ([] for i in range(2))
         soup = get_html(url)
         for link in soup.find_all(
-            'td',
-            attrs={'class': ['InnerTDone2',
-                             'InnerTDone']}
-        ):
+                                'td',
+                                attrs={'class': ['InnerTDone2',
+                                                 'InnerTDone']}
+                                ):
             if link.attrs['class'] == ['InnerTDone2']:
                 b.append(link.text)
             else:
@@ -101,36 +117,29 @@ def consolidate(urls):
 
 def scraper():
     """
-    Select just the urls that have information that we need
-    and extract data like url, diifuclty level, people,
-    av_time, unit, sudoku, solution
+    Scrape the data automatically
     """
     print('Extracting all the dates when the website has posted a puzzle and its solution')
     urls = list_dates(pd.to_numeric(total_sudoku()))
     index = urls.index([x for x in urls if '=7/3/2006' in x][0])
     new_urls = urls[:index]
     print('Extracting urls, level, people, av_time, unit, sudoku and solution ')
-    urls, level, people, av_time, unit, sudoku, solution = consolidate(
-        new_urls)
+    urls, level, people, av_time, unit, sudoku, solution = consolidate(new_urls)
     df = pd.DataFrame(list(
-        zip(urls, level, people, av_time, unit, sudoku, solution)),
-        columns=['URL', 'Level', 'People',
-                 'Average-Time', 'Unit-Time',
-                 'Sudoku', 'Solution'])
+                    zip(urls, level, people, av_time, unit, sudoku, solution)),
+                   columns=['URL', 'Level', 'People',
+                            'Average-Time', 'Unit-Time',
+                            'Sudoku', 'Solution'])
     df['Id'] = df.index
     df = df[['Id', 'Level', 'Sudoku',
              'Solution', 'People', 'Average-Time',
              'Unit-Time', 'URL']]
-    techniques = [
-        'single_position',
-        'single_candidate',
-        'naked_twins',
-        'naked_triple']
+    techniques= ['single_position', 'single_candidate', 'naked_twins','naked_triple']
     for technique in techniques:
-        df[technique] = df['Sudoku'].apply(
-            lambda x: solve_technique(x, technique)[0])
+        df[technique] = df['Sudoku'].apply(lambda x: solve_technique(x, technique)[0])  
     df.to_csv('../Omega2020/data/dataset.csv')
 #     df = pd.read_csv('../Omega2020/data/dataset.csv')
+    
 
 
 if __name__ == '__main__':
