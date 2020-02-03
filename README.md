@@ -41,30 +41,12 @@ Sudoku Puzzle Difficulty Model:
 
 
 -   [Reference Sudoku Puzzles Scraped] (http://www.sudoku.org.uk/Daily.asp)
--   [Source 2] (🚫add link to python notebook here)
--   [Source 3] (🚫add link to python notebook here)
--   [Source 4] (🚫add link to python notebook here)
--   [Source 5] (🚫add link to python notebook here)
-
-### Python Notebooks
-
-🚫  Add to or delete python notebook links as needed for your project
-
-[Python Notebook 1](🚫add link to python notebook here)
-
-[Python Notebook 2](🚫add link to python notebook here)
-
-[Python Notebook 3](🚫add link to python notebook here)
+-   [Paper Sudoku Puzzles Processed] (https://www.amazon.com/gp/product/1680524755/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1)
+-   [MNIST] (http://yann.lecun.com/exdb/mnist/)
 
 ### How to connect to the DS API
 
 🚫 List directions on how to connect to the API here
-
-## Contributing
-
-When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
-
-Please note we have a [code of conduct](./code_of_conduct.md.md). Please follow it in all your interactions with the project.
 
 ### Issue/Bug Request
 
@@ -95,6 +77,14 @@ Remember that this project is licensed under the MIT license, and by submitting 
 ### Attribution
 
 These contribution guidelines have been adapted from [this good-Contributing.md-template](https://gist.github.com/PurpleBooth/b24679402957c63ec426).
+
+Sudoku Image Processing was developed with reference to: Sarthak Vajpayee's https://medium.com/swlh/how-to-solve-sudoku-using-artificial-intelligence-8d5d3841b872
+
+Use your own Algorithim with AWS Sagemaker: https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms.html
+AWS: Bring Your own Container: https://github.com/awslabs/amazon-sagemaker-examples/tree/master/advanced_functionality/scikit_bring_your_own/container
+
+Call an Amazon SageMaker model endpoint using Amazon API Gateway and AWS Lambda: https://aws.amazon.com/blogs/machine-learning/call-an-amazon-sagemaker-model-endpoint-using-amazon-api-gateway-and-aws-lambda/
+
 
 ## Documentation
 
