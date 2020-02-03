@@ -17,7 +17,7 @@ square_units = [[s + t for s in rs for t in cs] for
                 cs in ('123', '456', '789')]
 unitlist = row_units + column_units + square_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers = dict((s, set(sum(units[s], []))-set([s])) for s in boxes)
+peers = dict((s, set(sum(units[s], [])) - set([s])) for s in boxes)
 
 
 def single_position(values):
@@ -72,7 +72,7 @@ def naked_twins(values):
 
 def naked_triple(values):
     values_triples = [a for a, b in Counter([v for k, v in values.items() if
-                      len(v) == 3]).items() if b > 2]
+                                             len(v) == 3]).items() if b > 2]
     triples = [([k for k, v in values.items() if v == value_triple]) for
                value_triple in values_triples]
     for triple in triples:
@@ -144,8 +144,8 @@ def display(values):
     width = 1 + max(len(values[s]) for s in boxes)
     line = '+'.join(['-' * (width * 3)] * 3)
     for r in rows:
-        print(''.join(values[r+c].center(width) +
-              ('|' if c in '36' else '')
+        print(''.join(values[r + c].center(width) +
+                      ('|' if c in '36' else '')
                       for c in cols))
         if r in 'CF':
             print(line)
@@ -154,7 +154,7 @@ def display(values):
 
 def validator(grid):
     valuesv = dict(zip(boxes, ["." if element == "." else
-                   element for element in grid]))
+                               element for element in grid]))
     answ = []
     values_grid = dict(filter(lambda n: n[1] != ".", valuesv.items()))
     a = [(valuesv[n], [valuesv[p] for p in peers[n]], n) for
@@ -222,13 +222,13 @@ def tracker(values):
 
 def conv_values(grid):
     return dict(zip(boxes, ["123456789" if
-                    element == "." else element for element in grid]))
+                            element == "." else element for element in grid]))
 
 
 def train_model():
     df = pd.read_csv(
-                     '../Omega2020/data/dataset.csv').drop('Unnamed: 0',
-                                                           axis=1)
+        '../Omega2020/data/dataset.csv').drop('Unnamed: 0',
+                                              axis=1)
     df = df.drop(df[df.Level == 'TEST'].index)
     df['Tracker'] = df['Sudoku'].apply(lambda x: tracker(conv_values(x)))
     df[['Single', 'Candidate', 'Twins',
@@ -247,4 +247,3 @@ def train_model():
     outfile = open('difficulty_level_model', 'wb')
     pickle.dump(model.fit(X_train, y_train.values.ravel()), outfile)
     outfile.close()
-

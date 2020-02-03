@@ -33,8 +33,9 @@ from model import KNN
 #parser.add_argument("path_image", help="path to input image to be displayed")
 #args = parser.parse_args()
 
+
 def pipeline(imgpath):
-    
+
     img = io.imread(imgpath)
     try:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -48,9 +49,8 @@ def pipeline(imgpath):
     inverted = Preprocess.invert(resized)
     #cv2.imshow('Inverted', inverted)
 
-    #Press q on keyboard to  exit
+    # Press q on keyboard to  exit
     #cv2.waitKey(25) & 0xFF == ord('q')
-
 
     cells = Preprocess.boxes(inverted)
 
@@ -85,13 +85,13 @@ def pipeline(imgpath):
 
 
 def predict_knn(filepath, cells):
-    knn = KNN(3,train=False)
+    knn = KNN(3, train=False)
     knn.load_knn(filepath)
     grid = ""
     for cell in cells:
-        cell = cell.reshape(1,-1)
+        cell = cell.reshape(1, -1)
         pred = knn.predict(cell)
         if pred == 0:
             pred = "."
-        grid+=str(pred)
+        grid += str(pred)
     return grid

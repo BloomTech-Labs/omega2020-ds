@@ -18,7 +18,7 @@ import urllib.request
 import sys
 import logging
 
-from ai import * 
+from ai import *
 from solver import *
 
 application = create_app()
