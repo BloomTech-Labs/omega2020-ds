@@ -1,3 +1,15 @@
+##################################################
+## Omega2020 Flask App
+##################################################
+## MIT License
+##################################################
+## Authors: Leydy Johana Luna
+## Contributors: Rudy Enriquez
+## References:  Peter Norvig, http://hodoku.sourceforge.net/en/tech_naked.php
+## Version: 1.0.0
+##################################################
+
+
 from ai import *
 import pickle
 import copy
@@ -69,6 +81,9 @@ def solve(grid):
 
 
 def solve_technique(grid, technique):
+    """
+    Check if a puzzle can be solved using a specific technique
+    """
     values = dict(zip(boxes, ["123456789"
                   if element == "." else element for element in grid]))
     if technique == "single_position":

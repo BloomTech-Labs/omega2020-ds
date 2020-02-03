@@ -1,3 +1,15 @@
+##################################################
+## Omega2020 Flask App
+##################################################
+## MIT License
+##################################################
+## Authors: Leydy Johana Luna
+## References:  Web Scraping with Python: Collecting Data from the Modern Web. 
+##.             Book by Ryan Mitchell
+## Version: 1.0.0
+##################################################
+
+
 from bs4 import BeautifulSoup
 import urllib3
 import requests
@@ -16,11 +28,16 @@ from ai import *
 
 """
 Extract all the HTML code from the web site
-in which the daily Sudoku is posted.
+in which the daily Sudoku is posted and create a 
+CSV file with all the data scraped.
 """
 
 
 def total_sudoku():
+    """
+    Extract from the most recent day the total number of puzzles
+    posted in the web site.
+    """
     r = requests.get("http://www.sudoku.org.uk/Daily.asp")
     soup = BeautifulSoup(r.content, 'html5lib')
     return(soup.find('span', attrs={
@@ -32,7 +49,7 @@ def list_dates(total):
     '''
     check if the website is working or not(for each day)
     and save this link in a list.
-    Input: Website information
+    Input: total of puzzles posted
     Output: URL list with the websites that are running correctly
     '''
     dates = []
@@ -57,8 +74,7 @@ def list_dates(total):
 
 def get_html(url):
     '''
-    Using the list of the days we're going to open each URL
-    and extract all the HTML code.
+    Extract all the HTML code.
     Input: url list
     Output: html code
     '''
@@ -68,11 +84,11 @@ def get_html(url):
 
 def consolidate(urls):
     '''
-    extract all the informatiom
-    Input: list urls
-    Output: ursl, level of difficulty, number of people
+    Extract all the information
+    Input: list of urls
+    Output: urls, difficulty levels, number of people
     that solved the puzzle, average time solving the puzzle
-    in minutes, initial Sudoku and solution.
+    in minutes, initial Sudoku and its solution.
     '''
     solution, sudoku, level, people, av_time, unit = ([] for i in range(6))
 
@@ -101,9 +117,7 @@ def consolidate(urls):
 
 def scraper():
     """
-    Select just the urls that have information that we need
-    and extract data like url, diifuclty level, people,
-    av_time, unit, sudoku, solution
+    Scrape the data automatically
     """
     print('Extracting all the dates when the website has posted a puzzle and its solution')
     urls = list_dates(pd.to_numeric(total_sudoku()))
