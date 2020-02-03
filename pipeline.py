@@ -1,17 +1,10 @@
 
 from flask import Flask, redirect, url_for, flash, request, render_template
-#import torch
-#import torch.nn as nn
-#import torch.nn.functional as F
-#from torch.utils.data import DataLoader
-#from torchvision import datasets, transforms
-#from torchvision.utils import make_grid
 import cv2
 import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
-#from torch import optim
 import matplotlib.image as mpimg
 from IPython.display import Image
 import os
@@ -26,16 +19,10 @@ from skimage import io
 from preprocessing import Preprocess
 from model import KNN
 
-#import argparse
-
-#parser = argparse.ArgumentParser()
-
-#parser.add_argument("path_image", help="path to input image to be displayed")
-#args = parser.parse_args()
 
 
+#this function stitches together the intermediary steps leveraged in the processing Script
 def pipeline(imgpath):
-
     img = io.imread(imgpath)
     try:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -61,6 +48,7 @@ def pipeline(imgpath):
 
     return inverted, new_cells
 
+#This Predict function is a deprecated pipeline using PyTorch to predict images
 # def predict(cells):
 #     model_path = config('MODEL_FILEPATH')
 #     model = Net()
@@ -84,6 +72,8 @@ def pipeline(imgpath):
 #     return grid
 
 
+#This function is to load the local KNN reference model to issue predictions.
+#Should be deprecated as the Sagemaker modeling is iterated on, but this model is helpful for quick validation the overall pipeline functions.
 def predict_knn(filepath, cells):
     knn = KNN(3, train=False)
     knn.load_knn(filepath)
@@ -91,6 +81,7 @@ def predict_knn(filepath, cells):
     for cell in cells:
         cell = cell.reshape(1, -1)
         pred = knn.predict(cell)
+        #period character was used as the wildcard value, but on the backend the model is trained to predict a 0, so it is remapped.
         if pred == 0:
             pred = "."
         grid += str(pred)

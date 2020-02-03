@@ -79,6 +79,9 @@ import cv2
 #         return grid
 
 class KNN:
+    #this KNN class will pull in MNIST data to bootstrap an end to end KNN model for predictions.
+    #this should not be used in production, but is handy for loading the reference .sav model file
+    #set train to false to skip the downloading and formatting of the MNIST dataset.
     def __init__(self, k, train=True):
         self.train_state = train
         self.k = k
@@ -96,6 +99,7 @@ class KNN:
             self.target = self.mnist['target'][nonzero_indexes]
             self.classifier = KNeighborsClassifier(n_neighbors=k)
 
+            #share of values is created because to bootstrap a blank class, it is necessary to create a collection of blank arrays with the same class so the KNN model knows what a blank cell looks like.
             share_of_values = int(len(self.digits) // 9)
             blank_img = np.zeros((share_of_values, 784))
             test_dig = self.digits
@@ -128,6 +132,7 @@ class KNN:
         print(report)
 
     def load_knn(self, modelpath):
+        #loads the .sav reference model file
         self.modelpath = modelpath
         self.model = pickle.load(open(self.modelpath, 'rb'))
 
@@ -135,6 +140,7 @@ class KNN:
         img = Image.fromarray(imgpath)
         img.load()
         data = np.asarray(img, dtype="int32")
+        #need to flatten the numpy array for predictions.
         img_array = data.reshape(1, -1)
         pred = self.model.predict(img_array)
         return pred[0]

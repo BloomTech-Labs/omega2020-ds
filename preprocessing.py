@@ -5,7 +5,6 @@ import matplotlib.image as mpimg
 from IPython.display import Image
 import cv2
 import os
-#import torch
 import pickle
 from random import shuffle
 import operator
@@ -188,17 +187,9 @@ class Preprocess:
         invert_img = cv2.bitwise_not(smooth_img)
 
         return invert_img
-#        invert_img = (cv2.threshold(invert_img, 125, 255, cv2.THRESH_BINARY))
-#        kernel_sharpening = np.array([[-1,-1,-1],
-#                                    [-1, 9,-1],
-#                                    [-1,-1,-1]])
-        # applying the sharpening kernel to the input image & displaying it.
-#        sharpened = cv2.filter2D(invert_img, -1, kernel_sharpening)
-#        sharpened = cv2.bitwise_not(sharpened)
-
-#        return sharpened
 
     def boxes(invert_img):
+        #This sets the coordinates of the grid lines to to splice a processed image to a individual sudoku cells.
         rows = [(30, 110), (125, 205), (235, 315), (350, 430),
                 (455, 535), (580, 660), (680, 760), (785, 865), (890, 970)]
         columns = [(30, 110), (130, 210), (240, 320), (355, 435),
@@ -212,34 +203,13 @@ class Preprocess:
 
         final_images = []
         for i in range(len(images_list)):
-            #   img_array = cv2.imread(os.path.join(IMG_DIR, images))
-            #    img_array = cv2.cvtColor(images_list[i], cv2.COLOR_BGR2GRAY)
             resize_img = cv2.resize(images_list[i], (28, 28))
-        #    resize_img = ~resize_img
-            #new_img = cv2.threshold(resize_img, 115, 255, cv2.THRESH_BINARY)
             final_images.append(resize_img)
 
         return final_images
 
     def process_cells(img):
         rows = np.shape(img)[0]
-
-        # First we need to remove the outermost white pixels.
-        # This can be achieved by flood filling with some of the outer points as seeds.
-        # After looking at the cell images, I concluded that it's enough if we
-        # Flood fill with all the points from the three outermost layers as seeds
-        # for i in range(rows):
-        #     #Floodfilling the outermost layer
-        #     cv2.floodFill(img, None, (0, i), 0)
-        #     cv2.floodFill(img, None, (i, 0), 0)
-        #     cv2.floodFill(img, None, (rows-1, i), 0)
-        #     cv2.floodFill(img, None, (i, rows-1), 0)
-        #     #Floodfilling the second outermost layer
-        #     cv2.floodFill(img, None, (1, i), 1)
-        #     cv2.floodFill(img, None, (i, 1), 1)
-        #     cv2.floodFill(img, None, (rows - 2, i), 1)
-        #     cv2.floodFill(img, None, (i, rows - 2), 1)
-        # Finding the bounding box of the number in the cell
         rowtop = None
         rowbottom = None
         colleft = None
