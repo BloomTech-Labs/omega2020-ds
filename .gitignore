@@ -161,3 +161,9 @@ container_code/container/local_test/test_dir/input/data/training/all_train.csv
 container_code/data/all_train.csv
 mnist_dataset/*
 .gitignore.swp
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
