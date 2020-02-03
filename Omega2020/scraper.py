@@ -24,8 +24,8 @@ def total_sudoku():
     r = requests.get("http://www.sudoku.org.uk/Daily.asp")
     soup = BeautifulSoup(r.content, 'html5lib')
     return(soup.find('span', attrs={
-                                    'class': 'newtitle'
-                                    }).get_text().split(",")[0].replace("#", ""))
+        'class': 'newtitle'
+    }).get_text().split(",")[0].replace("#", ""))
 
 
 def list_dates(total):
@@ -80,10 +80,10 @@ def consolidate(urls):
         a, b = ([] for i in range(2))
         soup = get_html(url)
         for link in soup.find_all(
-                                'td',
-                                attrs={'class': ['InnerTDone2',
-                                                 'InnerTDone']}
-                                ):
+            'td',
+            attrs={'class': ['InnerTDone2',
+                             'InnerTDone']}
+        ):
             if link.attrs['class'] == ['InnerTDone2']:
                 b.append(link.text)
             else:
@@ -110,22 +110,27 @@ def scraper():
     index = urls.index([x for x in urls if '=7/3/2006' in x][0])
     new_urls = urls[:index]
     print('Extracting urls, level, people, av_time, unit, sudoku and solution ')
-    urls, level, people, av_time, unit, sudoku, solution = consolidate(new_urls)
+    urls, level, people, av_time, unit, sudoku, solution = consolidate(
+        new_urls)
     df = pd.DataFrame(list(
-                    zip(urls, level, people, av_time, unit, sudoku, solution)),
-                   columns=['URL', 'Level', 'People',
-                            'Average-Time', 'Unit-Time',
-                            'Sudoku', 'Solution'])
+        zip(urls, level, people, av_time, unit, sudoku, solution)),
+        columns=['URL', 'Level', 'People',
+                 'Average-Time', 'Unit-Time',
+                 'Sudoku', 'Solution'])
     df['Id'] = df.index
     df = df[['Id', 'Level', 'Sudoku',
              'Solution', 'People', 'Average-Time',
              'Unit-Time', 'URL']]
-    techniques= ['single_position', 'single_candidate', 'naked_twins','naked_triple']
+    techniques = [
+        'single_position',
+        'single_candidate',
+        'naked_twins',
+        'naked_triple']
     for technique in techniques:
-        df[technique] = df['Sudoku'].apply(lambda x: solve_technique(x, technique)[0])  
+        df[technique] = df['Sudoku'].apply(
+            lambda x: solve_technique(x, technique)[0])
     df.to_csv('../Omega2020/data/dataset.csv')
 #     df = pd.read_csv('../Omega2020/data/dataset.csv')
-    
 
 
 if __name__ == '__main__':
