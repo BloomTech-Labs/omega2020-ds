@@ -85,6 +85,10 @@ AWS: Bring Your own Container: https://github.com/awslabs/amazon-sagemaker-examp
 
 Call an Amazon SageMaker model endpoint using Amazon API Gateway and AWS Lambda: https://aws.amazon.com/blogs/machine-learning/call-an-amazon-sagemaker-model-endpoint-using-amazon-api-gateway-and-aws-lambda/
 
+Help with Sudoku Solver Code: Peter Norvig, https://norvig.com/sudoku.html
+
+Naked Twins Solver Technique Reference: http://hodoku.sourceforge.net/en/tech_naked.php
+
 
 ## Documentation
 
