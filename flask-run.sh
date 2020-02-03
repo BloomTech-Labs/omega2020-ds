@@ -1,1 +1,0 @@
-FLASK_APP=Omega2020:APP flask run
