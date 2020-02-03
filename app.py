@@ -111,7 +111,7 @@ def create_app():
         imgurl = upload_file_to_s3(
             image_file,
             config('S3_BUCKET'),
-            imghash + '.png')
+            "raw_images/"+imghash + '.png')
         processed, imgarray = pipeline(imgurl)
         processed_image = Image.fromarray(processed)
         with BytesIO() as in_mem_file_cropped:
@@ -119,7 +119,7 @@ def create_app():
             in_mem_file_cropped.seek(0)
             processed_url = upload_file_to_s3(
                 in_mem_file_cropped,
-                config('S3_BUCKET'), "processed_puzzles" +
+                config('S3_BUCKET'), "processed_puzzles/" +
                 imghash + '_processed.png')
 
         processed_cells = []
@@ -393,10 +393,6 @@ def create_app():
             final_df[(i + 1)] = pixels_df[i]
 
         final_df[0] = df['predicted_value']
-
-        #pixel_df = pd.DataFrame((df['numpy_array'].str.split(',')))
-        # for i in range(len(pixel_df)):
-        #     pixel_df[i].str.split(",")
 
         train_csv_path = "pre_validated_data/new_data.csv"
         csv_buffer_train = StringIO()

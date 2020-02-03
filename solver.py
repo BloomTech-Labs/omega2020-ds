@@ -5,7 +5,7 @@ import copy
 rows = 'ABCDEFGHI'
 cols = '123456789'
 boxes = [s + t for s in rows for t in cols]
-picklefile = open('difficulty_level_model', 'rb')
+picklefile = open('data/difficulty_level_model', 'rb')
 model_level = pickle.load(picklefile)
 picklefile.close()
 
@@ -152,6 +152,6 @@ def solve_technique(grid, technique):
             return (0, values)
 
 
-if __name__ == '__main__':
-    solve(grid)
-    solve_technique(grid, tecnique)
+# if __name__ == '__main__':
+#     solve(grid)
+#     solve_technique(grid, tecnique)
