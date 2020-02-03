@@ -1,3 +1,15 @@
+##################################################
+## Omega2020 Image Processing Script
+##################################################
+## MIT License
+##################################################
+## Authors: Hira Khan, Sarthak Vajpayee
+## Contributors: Rob Hamilton
+## References: https://medium.com/swlh/how-to-solve-sudoku-using-artificial-intelligence-8d5d3841b872
+## Version: 1.0.0
+##################################################
+
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -189,7 +201,8 @@ class Preprocess:
         return invert_img
 
     def boxes(invert_img):
-        #This sets the coordinates of the grid lines to to splice a processed image to a individual sudoku cells.
+        # This sets the coordinates of the grid lines to to splice a processed
+        # image to a individual sudoku cells.
         rows = [(30, 110), (125, 205), (235, 315), (350, 430),
                 (455, 535), (580, 660), (680, 760), (785, 865), (890, 970)]
         columns = [(30, 110), (130, 210), (240, 320), (355, 435),

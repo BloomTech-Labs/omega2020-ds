@@ -1,3 +1,14 @@
+##################################################
+## Omega2020 Solver
+##################################################
+## MIT License
+##################################################
+## Authors: Johana Luna
+## Contributors: Rudy Enriquez
+## References: 
+## Version: 1.0.0
+##################################################
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split

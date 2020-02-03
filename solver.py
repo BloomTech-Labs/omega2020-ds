@@ -1,3 +1,14 @@
+##################################################
+## Omega2020 Solver
+##################################################
+## MIT License
+##################################################
+## Authors: Johana Luna
+## Contributors: Rudy Enriquez
+## References: 
+## Version: 1.0.0
+##################################################
+
 from ai import *
 import pickle
 import copy
