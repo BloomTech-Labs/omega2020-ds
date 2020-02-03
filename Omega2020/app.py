@@ -1,5 +1,5 @@
 from flask import Flask, redirect, flash, request, render_template, jsonify
-from schema import DB, PuzzleTable
+from schema import DB, PuzzleTable, ModelTrainer
 from decouple import config
 from pipeline import *
 import boto3
@@ -20,10 +20,13 @@ import re
 from flask_cors import CORS
 from urllib.request import urlopen
 import json
+from tempfile import TemporaryFile
+import psycopg2
 
 from ai import *
 from solver import *
 from dictionary import translation_dictionary
+
 
 def init_db():
     path = 'data/dataset.csv'
@@ -116,7 +119,7 @@ def create_app():
             in_mem_file_cropped.seek(0)
             processed_url = upload_file_to_s3(
                 in_mem_file_cropped,
-                config('S3_BUCKET'), "/processed_puzzles" + 
+                config('S3_BUCKET'), "processed_puzzles" +
                 imghash + '_processed.png')
 
         processed_cells = []
@@ -128,7 +131,13 @@ def create_app():
                 proc_img.convert('RGB').save(in_mem_file, format='PNG')
                 in_mem_file.seek(0)
                 processed_cell_url = upload_file_to_s3(
-                    in_mem_file, config('S3_BUCKET'), "processed_cells/" + imghash + "_" + str(i) + '_cell.png')
+                    in_mem_file,
+                    config('S3_BUCKET'),
+                    "processed_cells/" +
+                    imghash +
+                    "_" +
+                    str(i) +
+                    '_cell.png')
             i = i + 1
             processed_cells.append(processed_cell_url)
 
@@ -159,11 +168,11 @@ def create_app():
         data = {'data': csv_url}
         sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
 
-        pred = sagermaker_response.content.decode('utf-8').replace("\n","").replace("0",".")
+        #pred = sagermaker_response.content.decode('utf-8').replace("\n","").replace("0",".")
         #import pdb; pdb.set_trace()
 
         # KNN predictions ran locally, not needed with sagemaker online.
-        #pred = predict_knn(config('MODEL_FILEPATH'), imgarray)
+        pred = predict_knn(config('MODEL_FILEPATH'), imgarray)
 
         original_grid = "test_value"
 
@@ -171,7 +180,6 @@ def create_app():
         solution = solve(str(pred))[1]
         difficulty = solve(str(pred))[3]
 
-        
         if len(list(solve(str(pred))[1])) != 81 & grid_status == 2:
 
             errors = list(solve(str(pred))[1])
@@ -189,7 +197,29 @@ def create_app():
                 solution = error_pairs
         else:
             pass
-        #import pdb; pdb.set_trace()
+
+        # db_csv = pd.DataFrame()
+        # for i in range(len(pred)):
+        #     db_csv['pred'][i] = pred[i]
+        # for i in range(len(processed_cell_url)):
+        #     db_csv['cell_url'][i] =  processed_cell_url[i]
+
+        if grid_status == 1:
+            for i in range(len(imgarray)):
+                #outfile = TemporaryFile()
+                #np.save(outfile, imgarray[i])
+                #import pdb; pdb.set_trace()
+                # stitch predicted class with S3 URL and Numpy Array
+
+                entry = ModelTrainer(
+                    sudoku_hash=imghash,
+                    procesed_puzzle_url=processed_url,
+                    cell_url=processed_cells[i],
+                    numpy_array=imgarray[i].flatten().tolist(),
+                    predicted_value=pred[i])
+                DB.session.add(entry)
+                DB.session.commit()
+
         # return render_template(
         #     'results.html',
         #     imghash=imghash,
@@ -200,8 +230,8 @@ def create_app():
         #     original_grid=original_grid,
         #     solved=solution,
         #     grid_status=grid_status)
-        return jsonify(values = pred, puzzle_status=grid_status,
-        solution=solution,difficulty= difficulty)
+        return jsonify(values=pred, puzzle_status=grid_status,
+                       solution=solution, difficulty=difficulty)
 
     @application.route("/bulk_processing", methods=['GET'])
     def bulk_processing():
@@ -268,7 +298,8 @@ def create_app():
         DB.drop_all()
         DB.create_all()
 
-        for i in range(len(df)):
+        # for i in range(len(df)):
+        for i in range(100):
             aid = df['Id'][i]
             aid = int(aid)
             asudoku = df['Sudoku'][i]
@@ -320,5 +351,61 @@ def create_app():
             puzzle_status=grid_status,
             solution=solution,
             difficulty=difficulty)
+
+    @application.route("/train", methods=['GET', 'POST'])
+    def train_model():
+        # Function to pull in Values from Database matching train_data format
+        # remove duplicate values
+        # pass array and predicted class into .csv format
+        # first column is predicted outcome, then 784 columns for each value in
+        # the array.
+
+        t_host = config('TRAIN_DATABASE_HOST')
+        t_port = "5432"
+        t_dbname = config('TRAIN_DATABASE_TABLE')
+        t_user = config('TRAIN_DATABASE_USER')
+        t_pw = config('TRAIN_DATABASE_PW')
+        db_conn = psycopg2.connect(
+            host=t_host,
+            port=t_port,
+            dbname=t_dbname,
+            user=t_user,
+            password=t_pw)
+        db_cursor = db_conn.cursor()
+
+        new_data = pd.DataFrame(columns=range(785))
+        model_train_query = '''SELECT predicted_value, numpy_array FROM "model_trainer";'''
+        values = ModelTrainer.query.all()
+        df = pd.read_sql_query(model_train_query, con=db_conn)
+
+        df['numpy_array'] = df['numpy_array'].str.strip("}")
+        df['numpy_array'] = df['numpy_array'].str.strip("{")
+        df['predicted_value'] = df['predicted_value'].replace(".", "0")
+        pixel_values = []
+        for i in range(len(df['numpy_array'])):
+            pixels = df['numpy_array'][i].split(",")
+            pixel_values.append(pixels)
+
+        pixels_df = pd.DataFrame(pixel_values)
+
+        final_df = pd.DataFrame(columns=range(785))
+        for i in range(784):
+            final_df[(i + 1)] = pixels_df[i]
+
+        final_df[0] = df['predicted_value']
+
+        #pixel_df = pd.DataFrame((df['numpy_array'].str.split(',')))
+        # for i in range(len(pixel_df)):
+        #     pixel_df[i].str.split(",")
+
+        train_csv_path = "pre_validated_data/new_data.csv"
+        csv_buffer_train = StringIO()
+        final_df.to_csv(csv_buffer_train, header=False, index=False)
+        csv_buffer_train.seek(0)
+        s3.put_object(
+            Body=csv_buffer_train.read(),
+            Bucket='omega2020-sagemaker',
+            Key=train_csv_path)
+        return "Done! Scored images uploaded to s3 to sagemaker pipeline!"
 
     return application
