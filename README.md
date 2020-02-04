@@ -31,7 +31,7 @@ The Omega2020 DS API serves as the backbone for image processing and computer vi
 
 Below is an annotated breakout of the Cloud Architecture for the Omega 2020 Solution. Each step is also explained below.
 
-[<img src="https://raw.githubusercontent.com/Lambda-School-Labs/omega2020-ds/master/Omega2020%20-%20Annotated.png"/>](https://cloudcraft.co/view/7b1de017-7406-43f3-a54e-682fcdc7b28f?key=ZZYfXAD9cYsLAA_galrUGw)
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20Annotated.png"/>](https://cloudcraft.co/view/7b1de017-7406-43f3-a54e-682fcdc7b28f?key=ZZYfXAD9cYsLAA_galrUGw)
 
 * (Black Arrow) - Standard Inflow of Data for uploading a Paper Sudoku Puzzle
 * (Orange Arrow) - Querying a Sudoku Puzzle String to solve
@@ -95,21 +95,21 @@ Here is an example of the intermediary steps for taking a raw image and formatti
 
 Original Photo:
 
-[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/raw_puzzle.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/raw_puzzle.png)  
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/raw_puzzle.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/raw_puzzle.png)  
 
 Processed Image:
 
-[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/processed_puzzle.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/processed_puzzle.png)  
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/processed_puzzle.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/processed_puzzle.png)  
 
 Cell Splicing:
 
-[<img src="https://raw.githubusercontent.com/Lambda-School-Labs/omega2020-ds/master/sudoku_cell.png" width = "300" />](https://raw.githubusercontent.com/Lambda-School-Labs/omega2020-ds/master/sudoku_cell.png)  
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/sudoku_cell.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/sudoku_cell.png)  
 
 Each Cell is then casted into a Numpy Array (each cell is 28x28 pixels, reshaped to a Numpy vector with length 784) and then fed into the Model.
 
 Predicted Sudoku Grid and Solution Grid.
 
-[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/display_grid.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/display_grid.png)  
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/display_grid.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/display_grid.png)  
 
 
 
