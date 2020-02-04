@@ -112,6 +112,7 @@ Predicted Sudoku Grid and Solution Grid.
 [<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/display_grid.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/display_grid.png)  
 
 
+****Note: For the modeling, the "blank" classifier is a `0`, but for the front end it is a `.` . ****
 
 #### Sudoku Puzzle Difficulty Model:
 
@@ -135,6 +136,56 @@ Predicted Sudoku Grid and Solution Grid.
 | `/bulk_processing` | Batch Processing of images in raw_images folder in S3, useful for upates to image processing|
 | `/train` | Submit all valid Sudoku Puzzles images (as numpy arrays) and predicted values to a validation S3 folder to be fed into Sagemaker Training |
 | `/upload` | Simple HTML page to test image upload independent of front end (used for DS testing) |
+
+
+#### Postman API Request Examples
+
+GET Request for the puzzle solution:
+
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Solution%20Request.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Solution%20Request.png) 
+
+API Request:
+
+```
+https://api.lambda-omega2020.com/solve?puzzle=.7.8..6.4.36..5.1...514...2369.78.....2...5.....46.3987...319...9.2..18.5.4..7.6.
+```
+
+API Response:
+
+```
+{
+  "difficulty": "Gentle",
+  "puzzle_status": 1,
+  "solution": "271893654436725819985146732369578421842319576157462398728631945693254187514987263",
+  "values": ".7.8..6.4.36..5.1...514...2369.78.....2...5.....46.3987...319...9.2..18.5.4..7.6."
+}
+
+```
+
+POST Request for image upload:
+
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Upload%20Request.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Upload%20Request.png) 
+
+
+API Request:
+
+```
+https://api.lambda-omega2020.com/demo_file
+
+Image in the file paramater.
+```
+
+API Response:
+
+```
+{
+  "difficulty": "Gentle",
+  "puzzle_status": 1,
+  "solution": "271893654436725819985146732369578421842319576157462398728631945693254187514987263",
+  "values": ".7.8..6.4.36..5.1...514...2369.78.....2...5.....46.3987...319...9.2..18.5.4..7.6."
+}
+
+```
 
 
 ### Deployment and Configuration
