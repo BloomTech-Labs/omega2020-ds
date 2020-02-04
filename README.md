@@ -41,9 +41,13 @@ Data Pipeline:
 1. Web Team's Front end Deployed on Netlify at Omega2020.netlify.com
 2. Elastic Beanstalk endpoint, redirected from an HTTPS: hosted website.
 3. Auto scales between 1-4 servers to be able to handle spikes in demand.
-4. **(Black Arrow)** First entry point within the Flask App, posts the raw image to S3. _**(Orange Arrow)** Passes Puzzle string To Solver
+4. 
+  1. **(Black Arrow)** First entry point within the Flask App, posts the raw image to S3.
+  2. **(Orange Arrow)** Passes Puzzle string To Solver
 5. After the raw image is uploaded, it goes the Image Processing Script. Cropping out the Sudoku Puzzle from the image background, and subdivides a Sudoku Puzzle to 81 cells, stored as a list of 81 Numpy Arrays. Each Numpy Array is 784 integers long, representing a 28x28 pixel image.
-6. **(Orange Arrow)** With Digits Passed via GET request from front end, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty. **(Green Arrow)** With predicted digits passed back from Sagemaker API Endpoint, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty. 
+6. 
+  1. **(Orange Arrow)** With Digits Passed via GET request from front end, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty.
+  2. **(Green Arrow)** With predicted digits passed back from Sagemaker API Endpoint, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty. 
 7. Amazon API Endpoint called for Analysis. Acts as a handler between Flask App and Sagemaker back end.
 8. Lambda Function receives URL metadata from the API Gateway, and transforms it into the Sagemaker format.
 9. Amazon Sagemaker Scores the inbound predictions.
