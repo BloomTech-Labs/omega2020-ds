@@ -112,7 +112,7 @@ Predicted Sudoku Grid and Solution Grid.
 [<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/display_grid.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/display_grid.png)  
 
 
-**** Note: For the modeling, the "blank" classifier is a `0`, but for the front end it is a `.` . ****
+**Note: For the modeling, the "blank" classifier is a `0`, but for the front end it is a `.` .**
 
 #### Sudoku Puzzle Difficulty Model:
 
