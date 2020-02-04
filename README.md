@@ -112,7 +112,7 @@ Predicted Sudoku Grid and Solution Grid.
 [<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/display_grid.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/display_grid.png)  
 
 
-****Note: For the modeling, the "blank" classifier is a `0`, but for the front end it is a `.` . ****
+**** Note: For the modeling, the "blank" classifier is a `0`, but for the front end it is a `.` . ****
 
 #### Sudoku Puzzle Difficulty Model:
 
@@ -142,7 +142,7 @@ Predicted Sudoku Grid and Solution Grid.
 
 GET Request for the puzzle solution:
 
-[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Solution%20Request.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Solution%20Request.png) 
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Solution%20Request.png" width = "600" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Solution%20Request.png) 
 
 API Request:
 
@@ -164,7 +164,7 @@ API Response:
 
 POST Request for image upload:
 
-[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Upload%20Request.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Upload%20Request.png) 
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Upload%20Request.png" width = "600" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/readme_files/Omega2020%20-%20API%20Puzzle%20Upload%20Request.png) 
 
 
 API Request:
