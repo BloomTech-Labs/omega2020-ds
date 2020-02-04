@@ -29,7 +29,9 @@ The Omega2020 DS API serves as the backbone for image processing and computer vi
 
 ### Tech Stack
 
-Tech Stack Diagram to be inserted here.
+Below is an annotated breakout of the Cloud Architecture for the Omega 2020 Solution. Each step is also explained below.
+
+[<img src="https://files.slack.com/files-pri/T4JUEB3ME-FTH17UJBA/omega2020_-_annotated.png"/>](https://cloudcraft.co/view/7b1de017-7406-43f3-a54e-682fcdc7b28f?key=ZZYfXAD9cYsLAA_galrUGw)
 
 
 ###  Models:
