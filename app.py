@@ -191,13 +191,13 @@ def create_app():
         csv_array.to_csv(csv_buffer, header=False, index=False)
 
         csv_path = 'predict_payloads/' + str(imghash) + '.csv'
-        csv_url = "https://omega2020-sagemaker.s3.amazonaws.com/" + \
+        csv_url = config('S3_LOCATION') + \
             str(csv_path)
 
         csv_buffer.seek(0)
         s3.put_object(
             Body=csv_buffer.read(),
-            Bucket='omega2020-sagemaker',
+            Bucket=config('S3_BUCKET'),
             Key=csv_path)
 
         # Sends an POST request to the sagemaker API URL, appending the created
@@ -476,7 +476,7 @@ def create_app():
         csv_buffer_train.seek(0)
         s3.put_object(
             Body=csv_buffer_train.read(),
-            Bucket='omega2020-sagemaker',
+            Bucket=config('S3_BUCKET'),
             Key=train_csv_path)
         return "Done! Scored images uploaded to s3 to sagemaker pipeline!"
 
