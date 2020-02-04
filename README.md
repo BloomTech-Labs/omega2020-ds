@@ -58,8 +58,38 @@ C. Reference Puzzles generated from our scraper is pulled on request to the fron
 
 ###  Models:
 
-Sudoku Puzzle Difficulty Model:
-##### To predict the difficulty level of a Sudoku we used a Logistic Regression that uses the result from the tracker after solve the puzzle to predict a level 
+#### Digit Recognition
+##### Using an XGBClassifier model, we have Digit recognition at +95% accuracy across all classes, trained on over 100,000 images, and a validation dataset of over 25,000 digits. Here is an output of our most recent classification report and validation score: (0.0 represents blank/noise cells that are not any single number)
+
+```
+Validation Accuracy 0.9552200984651028
+
+starting validation test
+              precision    recall  f1-score   support
+
+         0.0       0.99      0.98      0.99      1624
+         1.0       0.95      0.99      0.97      2936
+         2.0       0.96      0.96      0.96      3010
+         3.0       0.95      0.94      0.95      2958
+         4.0       0.94      0.96      0.95      2787
+         5.0       0.95      0.94      0.95      2680
+         6.0       0.97      0.98      0.98      2894
+         7.0       0.97      0.95      0.96      3026
+         8.0       0.95      0.93      0.94      2802
+         9.0       0.93      0.93      0.93      2907
+
+   micro avg       0.96      0.96      0.96     27624
+   macro avg       0.96      0.96      0.96     27624
+weighted avg       0.96      0.96      0.96     27624
+
+```
+
+
+
+#### Sudoku Puzzle Difficulty Model:
+
+##### To predict the difficulty level of a Sudoku we used a Logistic Regression, by counting the number of times different techniques are used to solve a given puzzle, we can forecast an accurate difficulty tracking at above 70%.
+
 
 ### Data Sources
 
