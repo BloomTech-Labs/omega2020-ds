@@ -137,6 +137,34 @@ Predicted Sudoku Grid and Solution Grid.
 | `/upload` | Simple HTML page to test image upload independent of front end (used for DS testing) |
 
 
+### Deployment and Configuration
+
+This package uses enviornment variables stored in a .env file to store secrets, example of used variables here:
+
+
+#### .env file
+```
+FLASK_ENV=development
+FLASK_DEBUG=TRUE
+DATABASE_URL='postgres://username:password@hostname:5432/database'
+S3_KEY = 'KEY_HERE'
+S3_SECRET = 'SECRET_HERE'
+S3_BUCKET = 'omega2020-ds' #S3 Buket Name
+S3_LOCATION = 'https://omega2020-ds.s3.amazonaws.com/' #S3 Bucket URL
+ExtraArgs='{"ACL": "public-read", "ContentType": "image/png", "ContentDisposition": "inline"}' #extra arguments for image uploads
+MODEL_FILEPATH='data/reference_knn_model.sav' #relative path for where local model files are scored in with the reference KNN model in the package
+TRAIN_DATABASE_HOST= 'database-1.us-east-1.rds.amazonaws.com'#Deployed on AWS RDS
+TRAIN_DATABASE_PW = 'databasepassword' 
+TRAIN_DATABASE_USER = 'postgres' #default value for postgres RDS databaes
+TRAIN_DATABASE_TABLE = 'postgres' #default value for postgres RDS databaes
+SAGEMAKER_API_URL = 'https://execute-api.us-east-1.amazonaws.com/test/omega-predict-digits-s3/' #used if sagemaker endpoint is sued
+```
+
+#### Deployment
+
+This app as structured is intended to be deployed using AWS Elastic Beanstalk. The .ebextensions folder contains configuration for CORS as well as HTTPS certification, but requires an updated Role with the ARN linked to the AWS Certificate Manager role for the signed SSL certificate. (SSL Is required to work in production with netlify, as netlify will not accept HTTP traffic).
+
+
 ### Issue/Bug Request
 
  **If you are having an issue with the existing project code, please submit a bug report under the following guidelines:**
