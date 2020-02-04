@@ -95,11 +95,11 @@ Here is an example of the intermediary steps for taking a raw image and formatti
 
 Original Photo:
 
-[<img src="https://omega2020-ds.s3.amazonaws.com/raw_puzzles/5b650e9219fd077773d668c27916bd70.png" width = "300" />](https://omega2020-ds.s3.amazonaws.com/raw_puzzles/5b650e9219fd077773d668c27916bd70.png)  
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/raw_puzzle.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/raw_puzzle.png)  
 
 Processed Image:
 
-[<img src="https://omega2020-ds.s3.amazonaws.com/processed_puzzles/5b650e9219fd077773d668c27916bd70_processed.png" width = "300" />](https://omega2020-ds.s3.amazonaws.com/processed_puzzles/5b650e9219fd077773d668c27916bd70_processed.png)  
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/processed_puzzle.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/processed_puzzle.png)  
 
 Cell Splicing:
 
@@ -107,6 +107,8 @@ Cell Splicing:
 
 Each Cell is then casted into a Numpy Array (each cell is 28x28 pixels, reshaped to a Numpy vector with length 784) and then fed into the Model.
 
+Predicted Sudoku Grid and Solution Grid.
+[<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/display_grid.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/display_grid.png)  
 
 
 
