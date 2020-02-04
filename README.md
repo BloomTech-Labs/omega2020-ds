@@ -64,7 +64,7 @@ Auxiliary Services:
 ###  Models:
 
 #### Digit Recognition
-##### Using an XGBClassifier model, we have Digit recognition at +95% accuracy across most classes, trained on over 100,000 images (combination of manually scrapped and MNIST), and a validation dataset of over 25,000 digits. Here is an output of our most recent classification report and validation score: (0.0 represents blank/noise cells that are not any single number)
+##### Using an XGBClassifier model, we a weighted have Digit recognition at +95% precision and recall across all classes, trained on over 100,000 images (combination of manually scrapped and MNIST), and a validation dataset of over 25,000 digits. Here is an output of our most recent classification report and validation score: (0.0 represents blank/noise cells that are not any single number)
 
 ```
 Validation Accuracy 0.9552200984651028
