@@ -33,9 +33,9 @@ Below is an annotated breakout of the Cloud Architecture for the Omega 2020 Solu
 
 [<img src="https://raw.githubusercontent.com/Lambda-School-Labs/omega2020-ds/master/Omega2020%20-%20Annotated.png"/>](https://cloudcraft.co/view/7b1de017-7406-43f3-a54e-682fcdc7b28f?key=ZZYfXAD9cYsLAA_galrUGw)
 
-(Black Arrow) - Standard Inflow of Data for uploading a Paper Sudoku Puzzle
-(Orange Arrow) - Querying a Sudoku Puzzle String to solve
-(Green Arrow) - Responses to Front End
+* (Black Arrow) - Standard Inflow of Data for uploading a Paper Sudoku Puzzle
+* (Orange Arrow) - Querying a Sudoku Puzzle String to solve
+* (Green Arrow) - Responses to Front End
 
 Data Pipeline:
 1. Web Team's Front end Deployed on Netlify at Omega2020.netlify.com
