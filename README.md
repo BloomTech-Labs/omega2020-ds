@@ -5,11 +5,11 @@ You can find the project at [Omega2020 DS API](https://api.lambda-omega2020.com/
 ## Contributors
 
 
-|                                       [Rob Hamilton](https://github.com/rob1ham)                                        |                                       [Johana Luna](https://github.com/johanaluna)                                        |                                       [Hira Khan](https://github.com/Hira63S)                                        |                                       [Rudy Enriquez](https://github.com/RNEnriquez)                                        |                                       [Student 5](https://github.com/)                                        |
-| :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
-|                      [<img src="https://i.imgur.com/HQryRZs.jpg" width = "200" />](https://github.com/)                       |                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-female.png" width = "200" />](https://github.com/)                       |                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-male.png" width = "200" />](https://github.com/)                       |                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-female.png" width = "200" />](https://github.com/)                       |                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-male.png" width = "200" />](https://github.com/)                       |
-|                 [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/)                 |            [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/honda0306)             |           [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/Mister-Corn)            |          [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/NandoTheessen)           |            [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/wvandolah)             |
-| [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/in/rob1ham/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) |
+|[Rob Hamilton](https://github.com/rob1ham)|[Johana Luna](https://github.com/johanaluna)|  [Hira Khan](https://github.com/Hira63S)|[Rudy Enriquez](https://github.com/RNEnriquez)|               
+|:-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
+|                      [<img src="https://ca.slack-edge.com/T4JUEB3ME-ULJ9DTDKL-246bfe8730a9-512" width = "200" />](https://github.com/)                       |                      [<img src="https://ca.slack-edge.com/T4JUEB3ME-ULJAKAQ66-88214d54e62a-512" width = "200" />](https://github.com/)                       |                      [<img src="https://ca.slack-edge.com/T4JUEB3ME-UG8U1EMQC-23707ef54cc3-512" width = "200" />](https://github.com/)                       |                      [<img src="https://avatars1.githubusercontent.com/u/53521744?s=400&v=4" width = "200" />](https://github.com/)                       
+|                 [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/)                 |            [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/honda0306)             |           [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/Hira63S)            |          [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/RNEnriquez)          
+| [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/in/rob1ham/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) |
 
 
 
@@ -29,24 +29,89 @@ The Omega2020 DS API serves as the backbone for image processing and computer vi
 
 ### Tech Stack
 
-Tech Stack Diagram to be inserted here.
+Below is an annotated breakout of the Cloud Architecture for the Omega 2020 Solution. Each step is also explained below.
 
+[<img src="https://raw.githubusercontent.com/Lambda-School-Labs/omega2020-ds/master/Omega2020%20-%20Annotated.png"/>](https://cloudcraft.co/view/7b1de017-7406-43f3-a54e-682fcdc7b28f?key=ZZYfXAD9cYsLAA_galrUGw)
+
+(Black Arrow) - Standard Inflow of Data for uploading a Paper Sudoku Puzzle
+(Orange Arrow) - Querying a Sudoku Puzzle String to solve
+(Green Arrow) - Responses to Front End
+
+Data Pipeline:
+1. Web Team's Front end Deployed on Netlify at Omega2020.netlify.com
+2. Elastic Beanstalk endpoint, redirected from an HTTPS: hosted website.
+3. Auto scales between 1-4 servers to be able to handle spikes in demand.
+4. Entrypoint to Flask App
+    * **(Black Arrow)** First entry point within the Flask App, posts the raw image to S3.
+    * **(Orange Arrow)** Passes Puzzle string To Solver
+5. After the raw image is uploaded, it goes the Image Processing Script. Cropping out the Sudoku Puzzle from the image background, and subdivides a Sudoku Puzzle to 81 cells, stored as a list of 81 Numpy Arrays. Each Numpy Array is 784 integers long, representing a 28x28 pixel image.
+6. Solver Module
+    * **(Orange Arrow)** With Digits Passed via GET request from front end, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty.
+    * **(Green Arrow)** With predicted digits passed back from Sagemaker API Endpoint, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty. 
+7. Amazon API Endpoint called for Analysis. Acts as a handler between Flask App and Sagemaker back end.
+8. Lambda Function receives URL metadata from the API Gateway, and transforms it into the Sagemaker format.
+9. Amazon Sagemaker Scores the inbound predictions.
+10. S3 Bucket is organized into different folders of Raw Images, Processed Images, Individual Sudoku Cells, 
+
+Auxiliary Services:
+
+* A. AWS Ground Truth was used to initially bootstrap the training of our model where our team individually scored 5,000 digits from a Sudoku Puzzle Book.
+* B. The Sagemaker Train Function reads a specific folder in the S3 Bucket, and runs on a scheduled basis allowing **Omega2020 learns over time as more data is shared.**
+* C. Reference Puzzles generated from our scraper is pulled on request to the front end, organized by difficulty.
 
 ###  Models:
 
-Sudoku Puzzle Difficulty Model:
-##### To predict the difficulty level of a Sudoku we used a Logistic Regression that uses the result from the tracker after solve the puzzle to predict a level 
+#### Digit Recognition
+##### Using an XGBClassifier model, we have Digit recognition at +95% accuracy across all classes, trained on over 100,000 images, and a validation dataset of over 25,000 digits. Here is an output of our most recent classification report and validation score: (0.0 represents blank/noise cells that are not any single number)
+
+```
+Validation Accuracy 0.9552200984651028
+
+starting validation test
+              precision    recall  f1-score   support
+
+         0.0       0.99      0.98      0.99      1624
+         1.0       0.95      0.99      0.97      2936
+         2.0       0.96      0.96      0.96      3010
+         3.0       0.95      0.94      0.95      2958
+         4.0       0.94      0.96      0.95      2787
+         5.0       0.95      0.94      0.95      2680
+         6.0       0.97      0.98      0.98      2894
+         7.0       0.97      0.95      0.96      3026
+         8.0       0.95      0.93      0.94      2802
+         9.0       0.93      0.93      0.93      2907
+
+   micro avg       0.96      0.96      0.96     27624
+   macro avg       0.96      0.96      0.96     27624
+weighted avg       0.96      0.96      0.96     27624
+
+```
+
+
+
+#### Sudoku Puzzle Difficulty Model:
+
+##### To predict the difficulty level of a Sudoku we used a Logistic Regression, by counting the number of times different techniques are used to solve a given puzzle, we can forecast an accurate difficulty tracking at above 70%.
+
 
 ### Data Sources
 
 
--   [Reference Sudoku Puzzles Scraped] (http://www.sudoku.org.uk/Daily.asp)
--   [Paper Sudoku Puzzles Processed] (https://www.amazon.com/gp/product/1680524755/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1)
--   [MNIST] (http://yann.lecun.com/exdb/mnist/)
+-   [Reference Sudoku Puzzles Scraped](http://www.sudoku.org.uk/Daily.asp)
+-   [Paper Sudoku Puzzles Processed](https://www.amazon.com/gp/product/1680524755/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1)
+-   [MNIST](http://yann.lecun.com/exdb/mnist/)
 
 ### How to connect to the DS API
 
-🚫 List directions on how to connect to the API here
+| route               | description                       |
+|:----------------------------|:----------------------------------|
+| `POST: /demo_file`              | With an image attached, the predicted digits, sudoku solution (if applicable), and puzzle difficulty (if applicable) |
+| `GET: /solve?puzzle=*puzzle_string*`      | For submitted Sudoku String, returns sudoku solution (if applicable), and difficulty (if applicable) |
+| `DEV ONLY /reset` | Drops Tables and reinitiates database. Use only in testing. |
+| `/bulk_processing` | Batch Processing of images in raw_images folder in S3, useful for upates to image processing|
+| `/train` | Submit all valid Sudoku Puzzles images (as numpy arrays) and predicted values to a validation S3 folder to be fed into Sagemaker Training |
+| `/upload` | Simple HTML page to test image upload independent of front end (used for DS testing) |
+
 
 ### Issue/Bug Request
 
@@ -95,4 +160,3 @@ Naked Twins Solver Technique Reference: http://hodoku.sourceforge.net/en/tech_na
 See [Backend Documentation](https://github.com/Lambda-School-Labs/omega2020-be) for details on the backend of our project.
 
 See [Front End Documentation](https://github.com/Lambda-School-Labs/omega2020-fe) for details on the front end of our project.
-
