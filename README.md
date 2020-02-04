@@ -50,6 +50,7 @@ Data Pipeline:
 10. S3 Bucket is organized into different folders of Raw Images, Processed Images, Individual Sudoku Cells, 
 
 Auxiliary Services:
+
 A. AWS Ground Truth was used to initially bootstrap the training of our model where our team individually scored 5,000 digits from a Sudoku Puzzle Book.
 B. The Sagemaker Train Function reads a specific folder in the S3 Bucket, and runs on a scheduled basis allowing **Omega2020 learns over time as more data is shared.**
 C. Reference Puzzles generated from our scraper is pulled on request to the front end, organized by difficulty.
