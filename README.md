@@ -31,8 +31,33 @@ The Omega2020 DS API serves as the backbone for image processing and computer vi
 
 Below is an annotated breakout of the Cloud Architecture for the Omega 2020 Solution. Each step is also explained below.
 
-[<img src="https://files.slack.com/files-pri/T4JUEB3ME-FTH17UJBA/omega2020_-_annotated.png"/>](https://cloudcraft.co/view/7b1de017-7406-43f3-a54e-682fcdc7b28f?key=ZZYfXAD9cYsLAA_galrUGw)
+[<img src="https://files.slack.com/files-pri/T4JUEB3ME-FTH17UJBA/omega2020_-_annotated.png" />](https://cloudcraft.co/view/7b1de017-7406-43f3-a54e-682fcdc7b28f?key=ZZYfXAD9cYsLAA_galrUGw)
 
+(Black Arrow) - Standard Inflow of Data for uploading a Paper Sudoku Puzzle
+(Orange Arrow) - Querying a Sudoku Puzzle String to solve.
+(Green Arrow) - Responses to Front End
+
+Data Pipeline:
+1. Web Team's Front end Deployed on Netlify at Omega2020.netlify.com
+2. Elastic Beanstalk endpoint, redirected from an HTTPS: hosted website.
+3. Auto scales between 1-4 servers to be able to handle spikes in demand.
+4.
+(Black Arrow) First entry point within the Flask App, posts the raw image to S3. 
+(Orange Arrow) Passes Puzzle To Solver
+
+5. After the raw image is uploaded, it goes the Image Processing Script. Cropping out the Sudoku Puzzle from the image background, and subdivides a Sudoku Puzzle to 81 cells, stored as a list of 81 Numpy Arrays. Each Numpy Array is 784 integers long, representing a 28x28 pixel image.
+6.
+(Orange Arrow) With Digits Passed via GET request from front end, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty. 
+(Green Arrow) With predicted digits passed back from Sagemaker API Endpoint, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty. 
+7. Amazon API Endpoint called for Analysis. Acts as a handler between Flask App and Sagemaker back end.
+8. Lambda Function receives URL metadata from the API Gateway, and transforms it into the Sagemaker format.
+9. Amazon Sagemaker Scores the inbound predictions.
+10. S3 Bucket is organized into different folders of Raw Images, Processed Images, Individual Sudoku Cells, 
+
+Auxiliary Services:
+A. AWS Ground Truth was used to initially bootstrap the training of our model where our team individually scored 5,000 digits from a Sudoku Puzzle Book.
+B. The Sagemaker Train Function reads a specific folder in the S3 Bucket, and runs on a scheduled basis allowing **Omega2020 learns over time as more data is shared.**
+C. Reference Puzzles generated from our scraper is pulled on request to the front end, organized by difficulty.
 
 ###  Models:
 
@@ -48,7 +73,15 @@ Sudoku Puzzle Difficulty Model:
 
 ### How to connect to the DS API
 
-🚫 List directions on how to connect to the API here
+| route               | description                       |
+|:----------------------------|:----------------------------------|
+| `POST: /demo_file`              | With an image attached, the predicted digits, sudoku solution (if applicable), and puzzle difficulty (if applicable) |
+| `GET: /solve?puzzle=*puzzle_string*`      | For submitted Sudoku String, returns sudoku solution (if applicable), and difficulty (if applicable) |
+| `DEV ONLY /reset` | Drops Tables and reinitiates database. Use only in testing. |
+| `/bulk_processing` | Batch Processing of images in raw_images folder in S3, useful for upates to image processing|
+| `/train` | Submit all valid Sudoku Puzzles images (as numpy arrays) and predicted values to a validation S3 folder to be fed into Sagemaker Training |
+| `/upload` | Simple HTML page to test image upload independent of front end (used for DS testing) |
+
 
 ### Issue/Bug Request
 
