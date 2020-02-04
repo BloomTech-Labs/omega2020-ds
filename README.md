@@ -216,6 +216,11 @@ SAGEMAKER_API_URL = 'https://execute-api.us-east-1.amazonaws.com/test/omega-pred
 This app as structured is intended to be deployed using AWS Elastic Beanstalk. The .ebextensions folder contains configuration for CORS as well as HTTPS certification, but requires an updated Role with the ARN linked to the AWS Certificate Manager role for the signed SSL certificate. (SSL Is required to work in production with netlify, as netlify will not accept HTTP traffic).
 
 
+#### Issues
+
+We are documenting outstanding issues on the issues page of this repo: https://github.com/Lambda-School-Labs/omega2020-ds/issues
+
+
 ### Issue/Bug Request
 
  **If you are having an issue with the existing project code, please submit a bug report under the following guidelines:**
