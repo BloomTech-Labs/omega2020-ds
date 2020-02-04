@@ -108,6 +108,7 @@ Cell Splicing:
 Each Cell is then casted into a Numpy Array (each cell is 28x28 pixels, reshaped to a Numpy vector with length 784) and then fed into the Model.
 
 Predicted Sudoku Grid and Solution Grid.
+
 [<img src="https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/display_grid.png" width = "300" />](https://github.com/Lambda-School-Labs/omega2020-ds/blob/master/display_grid.png)  
 
 
