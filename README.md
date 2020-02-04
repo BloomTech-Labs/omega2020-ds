@@ -41,13 +41,14 @@ Data Pipeline:
 1. Web Team's Front end Deployed on Netlify at Omega2020.netlify.com
 2. Elastic Beanstalk endpoint, redirected from an HTTPS: hosted website.
 3. Auto scales between 1-4 servers to be able to handle spikes in demand.
-4. 
-  1. **(Black Arrow)** First entry point within the Flask App, posts the raw image to S3.
-  2. **(Orange Arrow)** Passes Puzzle string To Solver
+
+4. Entrypoint to Flask App
+    * **(Black Arrow)** First entry point within the Flask App, posts the raw image to S3.
+    * **(Orange Arrow)** Passes Puzzle string To Solver
 5. After the raw image is uploaded, it goes the Image Processing Script. Cropping out the Sudoku Puzzle from the image background, and subdivides a Sudoku Puzzle to 81 cells, stored as a list of 81 Numpy Arrays. Each Numpy Array is 784 integers long, representing a 28x28 pixel image.
-6. 
-  1. **(Orange Arrow)** With Digits Passed via GET request from front end, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty.
-  2. **(Green Arrow)** With predicted digits passed back from Sagemaker API Endpoint, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty. 
+6. Solver Module
+    * **(Orange Arrow)** With Digits Passed via GET request from front end, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty.
+    * **(Green Arrow)** With predicted digits passed back from Sagemaker API Endpoint, solver checks if submitted Sudoku Puzzle is valid, if valid, the solution is passed as well as forecasted difficulty. 
 7. Amazon API Endpoint called for Analysis. Acts as a handler between Flask App and Sagemaker back end.
 8. Lambda Function receives URL metadata from the API Gateway, and transforms it into the Sagemaker format.
 9. Amazon Sagemaker Scores the inbound predictions.
@@ -55,9 +56,10 @@ Data Pipeline:
 
 Auxiliary Services:
 
-A. AWS Ground Truth was used to initially bootstrap the training of our model where our team individually scored 5,000 digits from a Sudoku Puzzle Book.
-B. The Sagemaker Train Function reads a specific folder in the S3 Bucket, and runs on a scheduled basis allowing **Omega2020 learns over time as more data is shared.**
-C. Reference Puzzles generated from our scraper is pulled on request to the front end, organized by difficulty.
+* A. AWS Ground Truth was used to initially bootstrap the training of our model where our team individually scored 5,000 digits from a Sudoku Puzzle Book.
+* B. The Sagemaker Train Function reads a specific folder in the S3 Bucket, and runs on a scheduled basis allowing **Omega2020 learns over time as more data is shared.**
+* C. Reference Puzzles generated from our scraper is pulled on request to the front end, organized by difficulty.
+
 
 ###  Models:
 
@@ -160,4 +162,3 @@ Naked Twins Solver Technique Reference: http://hodoku.sourceforge.net/en/tech_na
 See [Backend Documentation](https://github.com/Lambda-School-Labs/omega2020-be) for details on the backend of our project.
 
 See [Front End Documentation](https://github.com/Lambda-School-Labs/omega2020-fe) for details on the front end of our project.
-

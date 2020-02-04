@@ -441,7 +441,6 @@ def create_app():
         # Queries the ModelTrainer table
         values = ModelTrainer.query.all()
         df = pd.read_sql_query(model_train_query, con=db_conn)
-        df = df.drop_duplicates()
 
         # removing wrapper brackets, and reverses the . character to 0 for
         # model training
@@ -472,6 +471,7 @@ def create_app():
         # to be included in a future release.
         train_csv_path = "pre_validated_data/new_data.csv"
         csv_buffer_train = StringIO()
+        final_df = final_df.drop_duplicates()
         final_df.to_csv(csv_buffer_train, header=False, index=False)
         csv_buffer_train.seek(0)
         s3.put_object(
