@@ -41,6 +41,7 @@ Data Pipeline:
 1. Web Team's Front end Deployed on Netlify at Omega2020.netlify.com
 2. Elastic Beanstalk endpoint, redirected from an HTTPS: hosted website.
 3. Auto scales between 1-4 servers to be able to handle spikes in demand.
+
 4. Entrypoint to Flask App
     * **(Black Arrow)** First entry point within the Flask App, posts the raw image to S3.
     * **(Orange Arrow)** Passes Puzzle string To Solver
@@ -58,6 +59,7 @@ Auxiliary Services:
 * A. AWS Ground Truth was used to initially bootstrap the training of our model where our team individually scored 5,000 digits from a Sudoku Puzzle Book.
 * B. The Sagemaker Train Function reads a specific folder in the S3 Bucket, and runs on a scheduled basis allowing **Omega2020 learns over time as more data is shared.**
 * C. Reference Puzzles generated from our scraper is pulled on request to the front end, organized by difficulty.
+
 
 ###  Models:
 
