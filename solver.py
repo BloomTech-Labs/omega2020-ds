@@ -17,7 +17,7 @@ import copy
 rows = 'ABCDEFGHI'
 cols = '123456789'
 boxes = [s+t for s in rows for t in cols]
-picklefile = open('difficulty_level_model', 'rb')
+picklefile = open('data/difficulty_level_model', 'rb')
 model_level = pickle.load(picklefile)
 picklefile.close()
 
