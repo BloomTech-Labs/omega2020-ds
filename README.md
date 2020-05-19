@@ -1,4 +1,7 @@
 # Omega2020
+![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg)
+[![Maintainability](https://api.codeclimate.com/v1/badges/fbae02b107012853a02d/maintainability)](https://codeclimate.com/github/Lambda-School-Labs/omega2020-ds/maintainability)
+
 
 You can find the project at [Omega2020 DS API](https://api.lambda-omega2020.com/)
 
@@ -13,8 +16,6 @@ You can find the project at [Omega2020 DS API](https://api.lambda-omega2020.com/
 
 
 
-
-![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg)
 
 ## Project Overview
 
