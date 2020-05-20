@@ -8,6 +8,23 @@ You can find the project at [Omega2020 DS API](https://api.lambda-omega2020.com/
 
 ## Contributors
 
+### LabsPT 11
+
+|[Stephen Plainte](https://github.com/FuriouStyles)|[Ivan Santos](https://github.com/Skantastico)|  [Brandon Bruce](https://github.com/brucebra000)|[Daniel Aguilar](https://github.com/aguilargallardo)|               
+|:-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
+|                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-male.png" width = "200" />](https://github.com/FuriouStyles)                       |                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-male.png" width = "200" />](https://github.com/Skantastico)                       |                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-male.png" width = "200" />](https://github.com/brucebra000)                       |                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-male.png" width = "200" />](https://github.com/aguilargallardo)                       
+|                 [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/FuriouStyles)                 |            [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/Skantastico)             |           [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/brucebra000)            |          [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/aguilargallardo)          
+| [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) | [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/) |
+
+
+|[Marvin Davila](https://github.com/malexmad)|
+|:-----------------------------------------------------------------------------------------------------------: |
+|                      [<img src="https://www.dalesjewelers.com/wp-content/uploads/2018/10/placeholder-silhouette-male.png" width = "200" />](https://github.com/malexmad)                       |
+|           [<img src="https://github.com/favicon.ico" width="15"> ](https://github.com/malexmad)            | 
+| [ <img src="https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca" width="15"> ](https://www.linkedin.com/in/marvin-davila/) |
+
+
+### Labs 19
 
 |[Rob Hamilton](https://github.com/rob1ham)|[Johana Luna](https://github.com/johanaluna)|  [Hira Khan](https://github.com/Hira63S)|[Rudy Enriquez](https://github.com/RNEnriquez)|               
 |:-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
@@ -20,8 +37,7 @@ You can find the project at [Omega2020 DS API](https://api.lambda-omega2020.com/
 
 ## Project Overview
 
-
-[Trello Board](https://trello.com/b/vlvasPUF/labs19-omega2020)
+[Trello Board](https://trello.com/b/NyKQYmbB/labs-pt11-omega2020)
 
 [Product Canvas](https://www.notion.so/980697b5f8bf481db26a8dd57e393aeb?v=5fecee4136ae4e69b228b84f810610c2)
 
