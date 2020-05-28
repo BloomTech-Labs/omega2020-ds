@@ -10,7 +10,7 @@
 ##################################################
 
 
-from ai import *
+from .ai import *
 import pickle
 import copy
 

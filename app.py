@@ -8,9 +8,9 @@
 ##################################################
 
 from flask import Flask, redirect, flash, request, render_template, jsonify
-from schema import DB, PuzzleTable, ModelTrainer
+from .schema import DB, PuzzleTable, ModelTrainer
 from decouple import config
-from pipeline import *
+from .pipeline import *
 import boto3
 import requests
 import hashlib
@@ -31,9 +31,9 @@ import json
 from tempfile import TemporaryFile
 import psycopg2
 
-from ai import *
-from solver import *
-from dictionary import translation_dictionary
+from .ai import *
+from .solver import *
+from .dictionary import translation_dictionary
 
 
 def create_app():

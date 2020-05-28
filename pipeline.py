@@ -26,8 +26,8 @@ from decouple import config
 import urllib.request
 import numpy as np
 from skimage import io
-from preprocessing import Preprocess
-from model import KNN
+from .preprocessing import Preprocess
+from .model import KNN
 
 
 # this function stitches together the intermediary steps leveraged in the
