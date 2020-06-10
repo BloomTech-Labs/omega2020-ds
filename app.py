@@ -201,10 +201,12 @@ def create_app():
             Key=csv_path)
 
         # Sends an POST request to the sagemaker API URL, appending the created
-        # above to the request for the sagemaker endpoint to read in.
+        # above to the request for the sagemaker endpoint to read in. Comment the request
+        # out if SageMaker is not currently running or it will produce an error.
+
         SAGEMAKER_API_URL = config('SAGEMAKER_API_URL')
         data = {'data': csv_url}
-        # sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
+        sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
 
         # Below line is to use the AWS Sagemaker returned predictions. Comment it out, if you're testing with local models.
         #pred = sagermaker_response.content.decode('utf-8').replace("\n","").replace("0",".")
@@ -224,7 +226,7 @@ def create_app():
         difficulty = solve(str(pred))[3]
 
         # In the event a puzzle has invalid values, remapping from backend to
-        # frontend is required for the front end to highlight invalid ceuiis ruuttggttggtttg
+        # frontend is required for the front end to highlight invalid cells
         # (web team did not get this functionality in final launch, but leaving
         # it in for a future release as DS team functionality is ready)
         if len(list(solve(str(pred))[1])) != 81 and grid_status == 2:
