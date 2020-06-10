@@ -193,7 +193,7 @@ def validator(grid):
     Output: Array
             Valid : empty array []
             Invalid : False and the position of the 
-            all wring values that are in conflict.
+            all wrong values that are in conflict.
     
     """
     valuesv = dict(zip(boxes, ["." if element == "." else

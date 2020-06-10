@@ -204,7 +204,7 @@ def create_app():
         # above to the request for the sagemaker endpoint to read in.
         SAGEMAKER_API_URL = config('SAGEMAKER_API_URL')
         data = {'data': csv_url}
-        sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
+        # sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
 
         # Below line is to use the AWS Sagemaker returned predictions. Comment it out, if you're testing with local models.
         #pred = sagermaker_response.content.decode('utf-8').replace("\n","").replace("0",".")
@@ -214,20 +214,20 @@ def create_app():
         # it uncommented. A future release should use the sagemaker endpoint in
         # production.
         pred = predict_knn(config('MODEL_FILEPATH'), imgarray)
-
         # runs the predicted digits against the solver function
         # The definitions of these paramaters is documented in solver.py and
         # ai.py.
+
+        print(f"Pred return results: {solve(str(pred))}")
         grid_status = solve(str(pred))[0]
         solution = solve(str(pred))[1]
         difficulty = solve(str(pred))[3]
 
         # In the event a puzzle has invalid values, remapping from backend to
-        # frontend is required for the front end to highlight invalid cells
+        # frontend is required for the front end to highlight invalid ceuiis ruuttggttggtttg
         # (web team did not get this functionality in final launch, but leaving
         # it in for a future release as DS team functionality is ready)
-        if len(list(solve(str(pred))[1])) != 81 & grid_status == 2:
-
+        if len(list(solve(str(pred))[1])) != 81 and grid_status == 2:
             errors = list(solve(str(pred))[1])
             for e in errors:
                 error_pairs = []
