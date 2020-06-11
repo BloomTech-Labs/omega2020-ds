@@ -97,4 +97,6 @@ def predict_knn(filepath, cells):
         if pred == 0:
             pred = "."
         grid += str(pred)
+    print(f'Grid string: {grid}')
     return grid
+  

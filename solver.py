@@ -13,13 +13,49 @@
 from .ai import *
 import pickle
 import copy
+import sys
 
-rows = 'ABCDEFGHI'
-cols = '123456789'
-boxes = [s+t for s in rows for t in cols]
+
 picklefile = open('data/difficulty_level_model', 'rb')
 model_level = pickle.load(picklefile)
 picklefile.close()
+
+def get_boxes_and_values(grid):
+    rows = None
+    cols = None
+    boxes = None
+    values = None
+    valuesb = None
+    size = None
+    if len(grid) == 81:
+        rows = 'ABCDEFGHI'
+        cols = '123456789'
+        size = 9
+        boxes = [s+t for s in rows for t in cols]
+        values = dict(zip(boxes, ["123456789" if x == "." else x for x in grid]))
+        valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
+    elif len(grid) == 16:
+        rows = 'ABCD'
+        cols = '1234'
+        size = 4
+        boxes = [s+t for s in rows for t in cols]
+        values = dict(zip(boxes, ["1234" if x == "." else x for x in grid]))
+        valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
+    elif len(grid) == 144:
+        rows = 'ABCDEFGHIJKL'
+        cols = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        size = 12
+        boxes = [s+t for s in rows for t in cols]
+        values = dict(zip(boxes, ["123456789" if x == "." else x for x in grid]))
+        valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
+    elif len(grid) == 256:
+        rows = 'ABCDEFGHIJKLMNOP'
+        cols = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
+        size = 16
+        boxes = [s+t for s in rows for t in cols]
+        values = dict(zip(boxes, ["123456789" if x == "." else x for x in grid]))
+        valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
+    return boxes, values, valuesb, size, rows, cols
 
 
 def solve(grid):
@@ -48,9 +84,15 @@ def solve(grid):
                 d) Message --> "No Difficulty Level"
     """
 
-    values = dict(zip(boxes, ["123456789" if x == "." else x for x in grid]))
-    valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
+    boxes, values, valuesb, size, rows, cols = get_boxes_and_values(grid)
+    
+    # commented out the following 3 lines to test the rewrite
+    # values = dict(zip(boxes, ["123456789" if x == "." else x for x in grid]))
+    # valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
     validation = validator(grid)
+
+    # keep this and uncomment for debugging larger dimensional puzzles later
+    # print(f"validation: {validation}", file=sys.stderr)
 
     if len(validation) is 0:
         tech=[]
@@ -62,8 +104,8 @@ def solve(grid):
                                 len(values[box]) == 1])
             solution = "".join([value if len(value) == 1 else "."
                                 for value in values.values()])
-            if values_solved == 81:
-                init_values = dict(zip(boxes, ["123456789"
+            if values_solved == size**2:
+                init_values = dict(zip(boxes, [cols
                                    if x == "." else x for x in grid]))
                 tracker_solve = tracker(init_values).reshape(1, -1)
                 level = model_level.predict(tracker_solve)[0]
@@ -84,7 +126,9 @@ def solve_technique(grid, technique):
     """
     Check if a puzzle can be solved using a specific technique
     """
-    values = dict(zip(boxes, ["123456789"
+    boxes, values, valuesb, size, rows, cols = get_boxes_and_values(grid)
+
+    values = dict(zip(boxes, [cols
                   if element == "." else element for element in grid]))
     if technique == "single_position":
             stalled = False
@@ -101,7 +145,7 @@ def solve_technique(grid, technique):
                         if len(values[box]) == 0]):
                     # Not Solved
                     return False
-            if solved_values_after == 81:
+            if solved_values_after == size:
                 # Solved
                 return (1, values)
             else:
@@ -123,7 +167,7 @@ def solve_technique(grid, technique):
                 if len([box for box in values.keys()
                         if len(values[box]) == 0]):
                     return False
-            if solved_values_after == 81:
+            if solved_values_after == size:
                 return (1, values)
             else:
                 return (0, values)
@@ -142,7 +186,7 @@ def solve_technique(grid, technique):
                 if len([box for box in values.keys()
                         if len(values[box]) == 0]):
                     return False
-            if solved_values_after == 81:
+            if solved_values_after == size:
                 return (1, values)
             else:
                 return (0, values)
@@ -161,12 +205,12 @@ def solve_technique(grid, technique):
                 if len([box for box in values.keys()
                         if len(values[box]) == 0]):
                     return False
-            if solved_values_after == 81:
+            if solved_values_after == size:
                 return (1, values)
             else:
                 return (0, values)
 
 if __name__ == '__main__':
     solve(grid)
-    solve_technique(grid, tecnique)
+    solve_technique(grid, technique)
 
