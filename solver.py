@@ -41,6 +41,13 @@ def get_boxes_and_values(grid):
         boxes = [s+t for s in rows for t in cols]
         values = dict(zip(boxes, ["1234" if x == "." else x for x in grid]))
         valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
+    elif len(grid) == 36:
+        rows = 'ABCDEF'
+        cols = '123456'
+        size = 6
+        boxes = [s+t for s in rows for t in cols]
+        values = dict(zip(boxes, ["1234" if x == "." else x for x in grid]))
+        valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
     elif len(grid) == 144:
         rows = 'ABCDEFGHIJKL'
         cols = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
