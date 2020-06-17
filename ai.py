@@ -19,6 +19,11 @@ import pickle
 import copy
 
 def get_rows_cols(values):
+    """
+    Obtain the row and column labels based based on an input value.
+    Input: a string of 81 values
+    Output: row (string), columns (string), and size (int) variables
+    """
     if len(values) == 81:
         rows = 'ABCDEFGHI'
         cols = '123456789'
@@ -42,6 +47,11 @@ def get_rows_cols(values):
     return rows, cols, size
 
 def get_boxes(rows, cols):
+    """
+    Gets a list of box labels for a row and column pair
+    Input: rows and column strings
+    Output: a list of box identifiers in string format
+    """
     return [s + t for s in rows for t in cols]
 
 def get_row_units(rows, cols):
@@ -59,10 +69,18 @@ def get_square_units(rows, cols, size):
         square_units = [[s + t for s in rs for t in cs] for \
         rs in ('AB', 'CD') for \
         cs in ('12', '34')]
-    elif size == 36:
+    elif size == 6:
         square_units = [[s + t for s in rs for t in cs] for \
         rs in ('ABC', 'DEF' ) for \
         cs in ('12', '34', '56')]
+    elif size == 12:
+        square_units = [[s + t for s in rs for t in cs] for \
+        rs in ('ABCD', 'EFGH', 'IJKL') for \
+        cs in ('123', '456', '789', ['10', '11', '12'])]
+    elif size == 16:
+        square_units = [[s + t for s in rs for t in cs] for \
+        rs in ('ABCD', 'EFGH', 'IJKL', 'MNOP') for \
+        cs in ('1234', '5678', ['9', '10', '11', '12'], ['13', '14', '15', '16'])]
     return square_units
 
 # square_units = [[s + t for s in rs for t in cs] for
