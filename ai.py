@@ -18,19 +18,66 @@ from collections import Counter
 import pickle
 import copy
 
-rows = 'ABCDEFGHI'
-cols = '123456789'
+def get_rows_cols(values):
+    if len(values) == 81:
+        rows = 'ABCDEFGHI'
+        cols = '123456789'
+        size = 9
+    elif len(values) == 16:
+        rows = 'ABCD'
+        cols = '1234'
+        size = 4
+    elif len(values) == 36:
+        rows = 'ABCDEF'
+        cols = '123456'
+        size = 6
+    elif len(values) == 144:
+        rows = 'ABCDEFGHIJKL'
+        cols = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        size = 12
+    elif len(values) == 256:
+        rows = 'ABCDEFGHIJKLMNOP'
+        cols = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
+        size = 16
+    return rows, cols, size
 
-boxes = [s + t for s in rows for t in cols]
-row_units = [[s + t for s in r for t in cols] for r in rows]
-column_units = [[s + t for s in rows for t in c] for c in cols]
-square_units = [[s + t for s in rs for t in cs] for
-                rs in ('ABC', 'DEF', 'GHI') for
-                cs in ('123', '456', '789')]
-unitlist = row_units + column_units + square_units
-units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers = dict((s, set(sum(units[s], []))-set([s])) for s in boxes)
+def get_boxes(rows, cols):
+    return [s + t for s in rows for t in cols]
 
+def get_row_units(rows, cols):
+    return [[s + t for s in r for t in cols] for r in rows]
+
+def get_column_units(rows, cols):
+    return [[s + t for s in rows for t in c] for c in cols]
+
+def get_square_units(rows, cols, size):
+    if size == 9:
+        square_units = [[s + t for s in rs for t in cs] for \
+        rs in ('ABC', 'DEF', 'GHI') for \
+        cs in ('123', '456', '789')]
+    elif size == 4:
+        square_units = [[s + t for s in rs for t in cs] for \
+        rs in ('AB', 'CD') for \
+        cs in ('12', '34')]
+    elif size == 36:
+        square_units = [[s + t for s in rs for t in cs] for \
+        rs in ('ABC', 'DEF' ) for \
+        cs in ('12', '34', '56')]
+    return square_units
+
+# square_units = [[s + t for s in rs for t in cs] for
+#                 rs in ('ABC', 'DEF', 'GHI') for
+#                 cs in ('123', '456', '789')]
+
+def get_unit_list(values):
+    rows, cols, size = get_rows_cols(values)
+    return get_row_units(rows, cols) + get_column_units(rows, cols) + get_square_units(rows, cols, size)
+
+def get_units(unit_list, boxes):
+    return dict((s, [u for u in unit_list if s in u]) for s in boxes)
+
+def get_peers(units, boxes):
+    return dict((s, set(sum(units[s], []))-set([s])) for s in boxes)
 
 def single_position(values):
     """
@@ -39,13 +86,16 @@ def single_position(values):
     Input: A sudoku in dictionary form.
     Output: The resulting sudoku in dictionary form.
     """
+    rows, cols, size = get_rows_cols(values)
+    boxes = get_boxes(rows, cols)
+    unit_list = get_unit_list(values)
+    peers = get_peers(get_units(unit_list, boxes), boxes)
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     for box in solved_values:
         digit = values[box]
         for peer in peers[box]:
             values[peer] = values[peer].replace(digit, "")
     return values
-
 
 def single_candidate(values):
     """
@@ -54,8 +104,10 @@ def single_candidate(values):
     Input: A sudoku in dictionary form.
     Output: The resulting sudoku in dictionary form.
     """
-    for unit in unitlist:
-        for digit in "123456789":
+    unit_list = get_unit_list(values)
+    rows, cols, size = get_rows_cols(values)
+    for unit in unit_list:
+        for digit in cols:
             dplaces = [box for box in unit if digit in values[box]]
             if len(dplaces) == 1:
                 values[dplaces[0]] = digit
@@ -72,7 +124,8 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-    for unit in unitlist:
+    unit_list = get_unit_list(values)
+    for unit in unit_list:
         # 1. Find twins
         twins = [v for v in [values[box] for box in unit] if
                  [values[box] for box in unit].count(v) == 2 and len(v) == 2]
@@ -96,12 +149,13 @@ def naked_triple(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
+    unit_list = get_unit_list(values)
     values_triples = [a for a, b in Counter([v for k, v in values.items() if
                       len(v) == 3]).items() if b > 2]
     triples = [([k for k, v in values.items() if v == value_triple]) for
                value_triple in values_triples]
     for triple in triples:
-        for unit in unitlist:
+        for unit in unit_list:
             if(set(triple).issubset(set(unit))):
                 values_remove = [x for x in unit if x not in triple]
                 digits = values[triple[0]]
@@ -151,6 +205,8 @@ def search(values):
     puzzle(search and propagation,try all possible values)
     """
     # First, reduce the puzzle using the previous function
+    rows, cols, size = get_rows_cols(values)
+    boxes = get_boxes(rows, cols)
     values = reduce_puzzle(values)
     if values is False:
         # Failed earlier
@@ -167,13 +223,15 @@ def search(values):
         if attempt:
             return attempt
 
-
+# Not a priority for multidimensional solving as of RC 2.1
 def display(values):
     """
     Display the values as a 2-D grid.
     Input: The sudoku in dictionary form
     Output: print the grid
     """
+    rows, cols, size = get_rows_cols(values)
+    boxes = get_boxes(rows, cols)
     width = 1 + max(len(values[s]) for s in boxes)
     line = '+'.join(['-' * (width * 3)] * 3)
     for r in rows:
@@ -196,6 +254,10 @@ def validator(grid):
             all wring values that are in conflict.
     
     """
+    rows, cols, size = get_rows_cols(grid)
+    boxes = get_boxes(rows, cols)
+    unit_list = get_unit_list(grid)
+    peers = get_peers(get_units(unit_list, boxes), boxes)
     valuesv = dict(zip(boxes, ["." if element == "." else
                    element for element in grid]))
     answ = []
@@ -226,6 +288,8 @@ def tracker(values):
     Output : array[single_position, single_candidate,
                    naked_twins, naked_triple, search]
     """
+    rows, cols, size = get_rows_cols(values)
+    boxes = get_boxes(rows, cols)
     stalled = False
     start = 0
     answ = [0, 0, 0, 0, 0]
@@ -281,7 +345,9 @@ def conv_values(grid):
     Input : string of length 81
     Output : dictionary
     """
-    return dict(zip(boxes, ["123456789" if
+    rows, cols, size = get_rows_cols(grid)
+    boxes = get_boxes(rows, cols)
+    return dict(zip(boxes, [cols if
                     element == "." else element for element in grid]))
 
 
