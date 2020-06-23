@@ -25,7 +25,6 @@ import urllib.request
 import sys
 import logging
 import re
-from flask_cors import CORS
 from urllib.request import urlopen
 import json
 from tempfile import TemporaryFile
@@ -39,7 +38,6 @@ from .dictionary import translation_dictionary
 def create_app():
     """This is the core function with all of the Flask App Routes and logic that serves as the DS API. This first block of functions serves as adding core configuration settings such as FLASK, and Database configuration."""
     application = Flask(__name__)
-    CORS(application)
     application.debug = True
     application.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
     application.config['ENV'] = config('FLASK_ENV')
