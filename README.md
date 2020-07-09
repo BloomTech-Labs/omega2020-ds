@@ -138,6 +138,11 @@ Predicted Sudoku Grid and Solution Grid.
 -   [Reference Sudoku Puzzles Scraped](http://www.sudoku.org.uk/Daily.asp)
 -   [Paper Sudoku Puzzles Processed](https://www.amazon.com/gp/product/1680524755/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1)
 -   [MNIST](http://yann.lecun.com/exdb/mnist/)
+-   [4x4 Puzzles Dataset](https://github.com/Black-Phoenix/4x4-Sudoku-Dataset)   
+-   [Sudoku Scraper](https://github.com/apauliuc/sudoku-scraper)
+-   [6x6 Puzzles Scraped](https://www.menneske.no/sudoku/2x3/eng/)
+-   [12x12 Puzzles Scraped](https://www.menneske.no/sudoku/3x4/eng/)
+-   [16x16 Puzzles Scraped](https://www.menneske.no/sudoku/4/eng/)
 
 ### How to connect to the DS API
 
