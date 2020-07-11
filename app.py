@@ -32,7 +32,7 @@ import psycopg2
 
 from .ai import *
 from .solver import *
-from .dictionary import translation_dictionary
+from .dictionary import *
 
 
 def create_app():
@@ -202,9 +202,9 @@ def create_app():
         # above to the request for the sagemaker endpoint to read in. Comment the request
         # out if SageMaker is not currently running or it will produce an error.
 
-        SAGEMAKER_API_URL = config('SAGEMAKER_API_URL')
-        data = {'data': csv_url}
-        sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
+        # SAGEMAKER_API_URL = config('SAGEMAKER_API_URL')
+        # data = {'data': csv_url}
+        # sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
 
         # Below line is to use the AWS Sagemaker returned predictions. Comment it out, if you're testing with local models.
         #pred = sagermaker_response.content.decode('utf-8').replace("\n","").replace("0",".")
@@ -389,26 +389,43 @@ def create_app():
     # Detail of code documented above in demo_file route.
     def solve_sudoku():
         pred = request.args.get("puzzle")
-        grid_status = solve(str(pred))[0]
-        solution = solve(str(pred))[1]
-        difficulty = solve(str(pred))[3]
-        if len(list(solve(str(pred))[1])) != 81:
-
-            errors = list(solve(str(pred))[1])
+        solved = solve(str(pred))
+        grid_status = solved[0]
+        #print(grid_status)
+        solution = solved[1]
+        #print(solution)
+        difficulty = solved[3]
+        print(len(list(solution)))
+        if len(list(solution)) in [16, 36, 81, 144, 256]:
+            pass
+        else:# len(list(solution)) != 81 or len(list(solution)) != 16 or len(list(solution)) != 36 or len(list(solution)) != 144 or len(list(solution)) != 256:
+            errors = list(solution)
+            print(f'Here are the errors: {errors}')
             for e in errors:
                 error_pairs = []
                 if e == '':
                     pass
                 else:
+                    print(f'This is e: {e}')
                     guess_pair = []
                     guess = e[0]
-                    cell = find_replace_multi(e[1], translation_dictionary)
+                    if len(pred) == 14:
+                        translation = translation_dictionary4
+                    elif len(pred) == 36:
+                        translation = translation_dictionary6
+                    elif len(pred) == 81:
+                        translation = translation_dictionary
+                    elif len(pred) == 144:
+                        translation = translation_dictionary12
+                    elif len(pred) == 256:
+                        translation = translation_dictionary16
+                    cell = find_replace_multi(e[1], translation)
                     guess_pair.append(guess)
                     guess_pair.append(cell)
                     error_pairs.append(guess_pair)
                 solution = error_pairs
-        else:
-            pass
+        # else:
+        #     pass
         return jsonify(
             values=pred,
             puzzle_status=grid_status,

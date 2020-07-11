@@ -71,8 +71,8 @@ def get_square_units(rows, cols, size):
         cs in ('12', '34')]
     elif size == 6:
         square_units = [[s + t for s in rs for t in cs] for \
-        rs in ('ABC', 'DEF' ) for \
-        cs in ('12', '34', '56')]
+        rs in ('AB', 'CD', 'EF' ) for \
+        cs in ('123', '456')]
     elif size == 12:
         square_units = [[s + t for s in rs for t in cs] for \
         rs in ('ABCD', 'EFGH', 'IJKL') for \
@@ -81,6 +81,7 @@ def get_square_units(rows, cols, size):
         square_units = [[s + t for s in rs for t in cs] for \
         rs in ('ABCD', 'EFGH', 'IJKL', 'MNOP') for \
         cs in ('1234', '5678', ['9', '10', '11', '12'], ['13', '14', '15', '16'])]
+    # print(square_units)
     return square_units
 
 # square_units = [[s + t for s in rs for t in cs] for
@@ -197,21 +198,27 @@ def reduce_puzzle(values):
     """
     solved_values = [box for box in values.keys() if
                      len(values[box]) == 1]
+    print(values.keys())
     stalled = False
     while not stalled:
+        # print('not stalled')
         solved_values_before = len([box for box in values.keys() if
                                     len(values[box]) == 1])
+       # print(f'count before solving: {solved_values_before}, solved boxes before solving: {[box for box in values.keys() if len(values[box]) == 1]}')
         values = single_position(values)
         values = single_candidate(values)
         values = naked_twins(values)
         values = naked_triple(values)
         solved_values_after = len([box for box in values.keys() if
                                    len(values[box]) == 1])
+        #print(f'count after solving: {solved_values_after}, solved boxes after solving: {[box for box in values.keys() if len(values[box]) == 1]}')
         stalled = solved_values_before == solved_values_after
+       # print(f'Stalled: {stalled}')
         if len([box for box in values.keys() if
                 len(values[box]) == 0]):
-            return False
-    return values
+            return (False, values)
+    #print(f'solved values: {values}')
+    return True, values
 
 
 def search(values):
@@ -225,20 +232,26 @@ def search(values):
     # First, reduce the puzzle using the previous function
     rows, cols, size = get_rows_cols(values)
     boxes = get_boxes(rows, cols)
-    values = reduce_puzzle(values)
-    if values is False:
-        # Failed earlier
-        return False
+   # print(f'Original sudoku values: {values}')
+    truth, values = reduce_puzzle(values)
+    if truth is False:
+        print('false')
+        truth, values = reduce_puzzle(values)
+        print(f'truth 1: {truth}') 
+        #return False
+    print(f'truth 2: {truth}')
     if all(len(values[s]) == 1 for s in boxes):
         # Solved!
         return values
     n, s = min((len(values[s]), s) for s in boxes if
                len(values[s]) > 1)
+    print(n, s)
     for value in values[s]:
         new_sudoku = values.copy()
         new_sudoku[s] = value
         attempt = search(new_sudoku)
         if attempt:
+            print(f'attempt: {attempt}')
             return attempt
 
 # Not a priority for multidimensional solving as of RC 2.1
