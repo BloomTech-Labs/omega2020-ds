@@ -204,7 +204,7 @@ def create_app():
 
         SAGEMAKER_API_URL = config('SAGEMAKER_API_URL')
         data = {'data': csv_url}
-        sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
+        #sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
 
         # Below line is to use the AWS Sagemaker returned predictions. Comment it out, if you're testing with local models.
         #pred = sagermaker_response.content.decode('utf-8').replace("\n","").replace("0",".")
