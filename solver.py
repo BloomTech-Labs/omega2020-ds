@@ -21,6 +21,7 @@ model_level = pickle.load(picklefile)
 picklefile.close()
 
 def get_boxes_and_values(grid):
+    #print(grid)
     rows = None
     cols = None
     boxes = None
@@ -46,7 +47,7 @@ def get_boxes_and_values(grid):
         cols = '123456'
         size = 6
         boxes = [s+t for s in rows for t in cols]
-        values = dict(zip(boxes, ["1234" if x == "." else x for x in grid]))
+        values = dict(zip(boxes, ["123456" if x == "." else x for x in grid]))
         valuesb = dict(zip(boxes, ["." if x == "." else x for x in grid]))
     elif len(grid) == 144:
         rows = 'ABCDEFGHIJKL'
@@ -105,7 +106,7 @@ def solve(grid):
         tech=[]
         values = search(values)
         if values is False:
-            return (3, 'Not Solution', grid, 'No Difficulty Level')
+            return (3, 'No Solution', grid, 'No Difficulty Level')
         else:
             values_solved = len([box for box in values.keys() if
                                 len(values[box]) == 1])
