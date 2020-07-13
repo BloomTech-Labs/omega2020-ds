@@ -202,9 +202,15 @@ def create_app():
         # above to the request for the sagemaker endpoint to read in. Comment the request
         # out if SageMaker is not currently running or it will produce an error.
 
-        # SAGEMAKER_API_URL = config('SAGEMAKER_API_URL')
-        # data = {'data': csv_url}
-        # sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
+# <<<<<<< ai-bug-fix
+#         # SAGEMAKER_API_URL = config('SAGEMAKER_API_URL')
+#         # data = {'data': csv_url}
+#         # sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
+# =======
+#         SAGEMAKER_API_URL = config('SAGEMAKER_API_URL')
+#         data = {'data': csv_url}
+#         #sagermaker_response = requests.post(SAGEMAKER_API_URL, json=data)
+# >>>>>>> master
 
         # Below line is to use the AWS Sagemaker returned predictions. Comment it out, if you're testing with local models.
         #pred = sagermaker_response.content.decode('utf-8').replace("\n","").replace("0",".")
