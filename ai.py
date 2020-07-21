@@ -235,11 +235,8 @@ def search(values):
    # print(f'Original sudoku values: {values}')
     truth, values = reduce_puzzle(values)
     if truth is False:
-        print('false')
         truth, values = reduce_puzzle(values)
-        print(f'truth 1: {truth}') 
         #return False
-    print(f'truth 2: {truth}')
     if all(len(values[s]) == 1 for s in boxes):
         # Solved!
         return values
@@ -251,7 +248,6 @@ def search(values):
         new_sudoku[s] = value
         attempt = search(new_sudoku)
         if attempt:
-            print(f'attempt: {attempt}')
             return attempt
 
 # Not a priority for multidimensional solving as of RC 2.1

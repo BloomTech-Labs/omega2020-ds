@@ -178,8 +178,7 @@ class Preprocess:
         return new_img
 
     def invert(new_img):
-
-        #        just_img, thresh1 = cv2.threshold(new_img, 200, 255, cv2.THRESH_BINARY)
+        # just_img, thresh1 = cv2.threshold(new_img, 200, 255, cv2.THRESH_BINARY)
         try:
             gray_img = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
         except cv2.error:
@@ -198,15 +197,52 @@ class Preprocess:
         # invert the image again to black and white
         invert_img = cv2.bitwise_not(smooth_img)
 
+        # delete this write function before publishing
+        cv2.imwrite('inverted-images/inverted.jpg', invert_img)
         return invert_img
 
-    def boxes(invert_img):
+    def box_count(image):
+        # Uses OpenCV Hough Transformer to identify lines in the puzzle and 
+        # Then returns dimentionsionality of the puzzle based on the line count
+        boxed_img = image
+        # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+        # kernel = np.ones((3, 3), np.uint8)
+        # edges = cv2.dilate(edges, kernel, iterations=1)
+        # kernel = np.ones((5, 5), np.uint8)
+        # edges = cv2.erode(edges, kernel, iterations=1)
+
+        ret, thresh = cv2.threshold(boxed_img, 127, 255, 1)
+        contours, h = cv2.findContours(thresh, cv2.RETR_LIST, 2)
+        count = 0
+        for cnt in contours:
+            approx = cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt, True), True)
+            if len(approx) == 4:
+                #cv2.drawContours(boxed_img, [cnt], 0, (0, 0, 255), -1)
+                count += 1
+            else:
+                pass
+
+        # remove the write operation as we only need the line count to be returned
+        print(f'Box count: {count}')
+        lined_image = cv2.imwrite('box-images/findCountours.jpg', boxed_img)
+        return count
+
+    def boxes(invert_img, count):
         # This sets the coordinates of the grid lines to to splice a processed
         # image to a individual sudoku cells.
-        rows = [(30, 110), (125, 205), (235, 315), (350, 430),
-                (455, 535), (580, 660), (680, 760), (785, 865), (890, 970)]
-        columns = [(30, 110), (130, 210), (240, 320), (355, 435),
-                   (455, 535), (575, 655), (680, 760), (800, 880), (890, 970)]
+        if 70 < count < 120:
+            print('9x9')
+            rows = [(30, 110), (125, 205), (235, 315), (350, 430),
+                    (455, 535), (580, 660), (680, 760), (785, 865), (890, 970)]
+            columns = [(30, 110), (130, 210), (240, 320), (355, 435),
+                    (455, 535), (575, 655), (680, 760), (800, 880), (890, 970)]
+        elif 27 < count < 60:
+            print('6x6')
+            rows = [(30, 140), (165, 305), (330, 470), (500, 635),
+                    (660, 785), (820, 970)]
+            columns = [(30, 140), (165, 305), (330, 470), (500, 635),
+                    (660, 785), (820, 970)]
         images_list = []
         for unit in rows:
             for units in columns:
