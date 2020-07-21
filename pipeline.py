@@ -49,14 +49,16 @@ def pipeline(imgpath):
     # Press q on keyboard to  exit
     #cv2.waitKey(25) & 0xFF == ord('q')
 
-    cells = Preprocess.boxes(inverted)
+    box_count = Preprocess.box_count(inverted)
+
+    cells = Preprocess.boxes(inverted, box_count)
 
     new_cells = []
     for cell in cells:
         new_cell = Preprocess.process_cells(cell)
         new_cells.append(new_cell)
 
-    return inverted, new_cells
+    return inverted, box_count, new_cells, cells
 
 # This Predict function is a deprecated pipeline using PyTorch to predict images
 # def predict(cells):

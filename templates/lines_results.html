@@ -1,0 +1,24 @@
+{% extends "lines.html" %}
+{% block content %}
+<div id="parent">
+    <article class="flex two" style="padding: 3em 4em 3em 4em;">
+        <div class="child">
+            <p> Original Photo</p>
+            <img src={{imgurl}} alt="Original" height="250" width="250">
+            <p> Photo with Boxes</p>
+            <p> Box Count: {{lines}}</p>
+            <img src={{processed_url}} alt="Original" height="250" width="250">
+            <p> Cell Images before resizing:</p>
+            <table>
+            {% for cell in cells %}
+                <tbody>
+                    <tr>
+                        <td>{{ cell }}</td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+            </table>
+        </div>
+    </article>
+</div>
+{% endblock %}
