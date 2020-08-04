@@ -2,9 +2,15 @@ This is a work in progress for translating the open source human techniques on H
 
 We are using a python2 package named java2python to attempt to translate some of them into python2, and then to python3 with hopes of implementing into our ai.py code.
 
+***
+
 6 Working No issues
+
 4 Partially Worked (perhaps no issue but error raised)
+
 11 Not Working (but similar error for all in hex)
+
+***
 
 Worked with no issues:
 
@@ -21,7 +27,7 @@ SudokuSolverFactory.py
 TableEntry.py
 
 
-===========================================
+***
 
 Partially Worked:
 
@@ -53,7 +59,7 @@ Error:
 # WARNING runTransform: Generated source has invalid syntax. invalid syntax (<string>, line 76)
 ```
 
-===========================================
+***
 
 Did not work:
 
