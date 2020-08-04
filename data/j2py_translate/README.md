@@ -9,10 +9,15 @@ We are using a python2 package named java2python to attempt to translate some of
 Worked with no issues:
 
 AIs.py
+
 GiveUpSolver.py
-GroupNode.py
-IncompleteSolver.py
-SudokuSolverFactory.py
+
+GroupNode.py 
+
+IncompleteSolver.py 
+
+SudokuSolverFactory.py 
+
 TableEntry.py
 
 
