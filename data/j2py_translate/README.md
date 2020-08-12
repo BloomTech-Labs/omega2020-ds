@@ -4,11 +4,11 @@ We are using a python2 package named java2python to attempt to translate some of
 
 ***
 
-6 Working No issues
+12 Working No issues
 
 4 Partially Worked (perhaps no issue but error raised)
 
-11 Not Working (but similar error for all in hex)
+4 Not Working (but similar error for 4 of them)
 
 ***
 
@@ -20,11 +20,25 @@ GiveUpSolver.py
 
 GroupNode.py 
 
-IncompleteSolver.py 
+IncompleteSolver.py
 
-SudokuSolverFactory.py 
+SudokuSolverFactory.py
 
 TableEntry.py
+
+BruteForceSolver.py
+
+MiscellaneousSolver.py
+
+SudokuStepFinder.py
+
+TablingSolver.py
+
+TemplateSolver.py
+
+UniquenessSolver.py
+
+WingSolver.py
 
 
 ***
@@ -68,32 +82,64 @@ AIsSolver.py
 Error:
 
 ```
-# ERROR runTransform: exception while parsing
 Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 62550: ordinal not in range(128)
-```
-
-
-BruteForceSolver.py
-
-Error:
-
-```
-# ERROR runTransform: exception while parsing
-Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 2061: ordinal not in range(128)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 259, in <module>
+    sys.exit(runMain(configScript(sys.argv[1:])))
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 57, in runMain
+    return runOneOrMany(options)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 83, in runOneOrMany
+    return runTransform(options)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 135, in runTransform
+    module.walk(tree)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 483, in acceptIf
+    ifBlock.walk(node.children[1], memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 668, in nodeOpExpr
+    self.zipWalk(node.children, visitors, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 99, in zipWalk
+    visitor.walk(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 700, in acceptPreformatted
+    self.zipWalk(node.children, vs, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 99, in zipWalk
+    visitor.walk(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 743, in acceptPrePost
+    name = node.firstChildOfType(tokens.IDENT).text
+AttributeError: 'NoneType' object has no attribute 'text'
 ```
 
 ChainSolver.py
@@ -101,15 +147,58 @@ ChainSolver.py
 Error:
 
 ```
-# ERROR runTransform: exception while parsing
 Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 32528: ordinal not in range(128)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 259, in <module>
+    sys.exit(runMain(configScript(sys.argv[1:])))
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 57, in runMain
+    return runOneOrMany(options)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 83, in runOneOrMany
+    return runTransform(options)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 135, in runTransform
+    module.walk(tree)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 625, in acceptWhile
+    whileStat.walk(blkNode, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 223, in acceptVarDeclaration
+    assgnExp.walk(declExp, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 700, in acceptPreformatted
+    self.zipWalk(node.children, vs, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 99, in zipWalk
+    visitor.walk(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 743, in acceptPrePost
+    name = node.firstChildOfType(tokens.IDENT).text
+AttributeError: 'NoneType' object has no attribute 'text'
 ```
 
 FishSolver.py
@@ -117,119 +206,69 @@ FishSolver.py
 Error:
 
 ```
-j2py FishSolver.java > FishSolver.py
-# ERROR runTransform: exception while parsing
 Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 1425: ordinal not in range(128)
-```
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 259, in <module>
+    sys.exit(runMain(configScript(sys.argv[1:])))
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 57, in runMain
+    return runOneOrMany(options)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 83, in runOneOrMany
+    return runTransform(options)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 135, in runTransform
+    module.walk(tree)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 625, in acceptWhile
+    whileStat.walk(blkNode, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 86, in walk
+    visitor.walk(child, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 668, in nodeOpExpr
+    self.zipWalk(node.children, visitors, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 99, in zipWalk
+    visitor.walk(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 83, in walk
+    visitor = self.accept(tree, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 43, in accept
+    return call(node, memo)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/visitor.py", line 743, in acceptPrePost
+    name = node.firstChildOfType(tokens.IDENT).text
+AttributeError: 'NoneType' object has no attribute 'text'
 
-MiscellaneousSolver.py
-
-Error:
-```
-# ERROR runTransform: exception while parsing
-Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 1845: ordinal not in range(128)
 ```
 
 SudokuSolver.py
 
 Error:
 ```
-# ERROR runTransform: exception while parsing
 Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 7713: ordinal not in range(128)
-```
-
-SudokuStepFinder.py
-
-Error:
-```
-# ERROR runTransform: exception while parsing
-Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 33929: ordinal not in range(128)
-```
-
-TablingSolver.py
-
-Error:
-```
-# ERROR runTransform: exception while parsing
-Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 4692: ordinal not in range(128)
-```
-
-TemplateSolver.py
-
-Error:
-```
-# ERROR runTransform: exception while parsing
-Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 1519: ordinal not in range(128)
-```
-
-UniquenessSolver.py
-
-Error:
-```
-# ERROR runTransform: exception while parsing
-Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 13237: ordinal not in range(128)
-```
-
-WingSolver.py
-
-Error:
-```
-# ERROR runTransform: exception while parsing
-Traceback (most recent call last):
-  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 120, in runTransform
-    tree = buildAST(source)
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 15, in buildAST
-    lexer = Lexer(StringStream(source))
-  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/antlr_python_runtime-3.1.3-py2.7.egg/antlr3/streams.py", line 336, in __init__
-    self.strdata = unicode(data)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 4777: ordinal not in range(128)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 259, in <module>
+    sys.exit(runMain(configScript(sys.argv[1:])))
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 57, in runMain
+    return runOneOrMany(options)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 83, in runOneOrMany
+    return runTransform(options)
+  File "/home/ivan/anaconda3/envs/py2/bin/j2py", line 128, in runTransform
+    transformAST(tree, config)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/compiler/__init__.py", line 37, in transformAST
+    call(node, config)
+  File "/home/ivan/anaconda3/envs/py2/lib/python2.7/site-packages/java2python/mod/transform.py", line 97, in lengthToLen
+    expr.children.remove(method)
+ValueError: list.remove(x): x not in list
 ```
