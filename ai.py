@@ -156,10 +156,48 @@ def naked_twins(values):
                     values[box] = values[box].replace(digit, "")
     return values
 
+def locked_twins(values):
+    """
+    Eliminate values using the locked twins/pair strategy.
+    Check if there are two pairs with the sames digits in two houses.
+    The two houses are a row and a block or a column and a block.
+    
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+    Returns:
+        the values dictionary with the naked twins eliminated from peers.
+    """
+    rows, cols, size = get_rows_cols(values)
+    boxes = get_boxes(rows, cols)
+    unit_list = get_unit_list(values)
+    twins_houses = {}
+    for count, unit in enumerate(unit_list):
+        # 1. Find twins - this needs to be adusted to find twins in different houses
+        twins_values = [value for value in [values[box] for box in unit] if
+                 [values[box] for box in unit].count(value) == 2 and len(value) == 2]
+        twins_boxes = [([key for key, value in values.items() if value == twins_values]) for
+               twins_values in twins_values]
+        # add the house and the twins to a dict outside the loop
+        if len(twins_values) > 0:
+            twins_houses[count] = dict(zip(twins_boxes[0], twins_values))
+    
+        #if conditional - if the twins are in shared houses do the below operation
+    for key, value in twins_houses.items():
+        temp_dict = twins_houses.copy()
+        temp_dict.pop(key)
+        for item in temp_dict:
+            if temp_dict[item] == value: 
+                for box in unit_list[key]:
+                    if values[box] in twins_values:
+                        continue
+                    for twin in twins_values:
+                        for digit in twin:
+                            values[box] = values[box].replace(digit, "")
+    return values
 
 def naked_triple(values):
     """ 
-    Eliminate values using the naked twins strategy.
+    Eliminate values using the naked triple strategy.
     Check if there are three triples with the sames digits in a row, column or square    
     
     Args:
@@ -169,10 +207,39 @@ def naked_triple(values):
         the values dictionary with the naked twins eliminated from peers.
     """
     unit_list = get_unit_list(values)
-    values_triples = [a for a, b in Counter([v for k, v in values.items() if
-                      len(v) == 3]).items() if b > 2]
-    triples = [([k for k, v in values.items() if v == value_triple]) for
+    values_triples = [a for a, count in Counter([value for key, value in values.items() if
+                      len(value) == 3]).items() if count > 2]
+    triples = [([key for key, value in values.items() if value == value_triple]) for
                value_triple in values_triples]
+    print(f'triples boxes: {triples}')
+    for triple in triples:
+        for unit in unit_list:
+            if(set(triple).issubset(set(unit))):
+                values_remove = [x for x in unit if x not in triple]
+                digits = values[triple[0]]
+                for vr in values_remove:
+                    for digit in digits:
+                        values[vr] = values[vr].replace(digit, "")
+    return values
+
+def locked_triple(values):
+    """ 
+    Eliminate values using the naked triple strategy.
+    Check if there are three triples with the same digits in two houses.
+    The two houses are a row and a block or a column and a block.
+    
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+        
+    Returns:
+        the values dictionary with the naked twins eliminated from peers.
+    """
+    unit_list = get_unit_list(values)
+    values_triples = [a for a, count in Counter([value for key, value in values.items() if
+                    len(value) == 3]).items() if count > 2]
+    triples = [([key for key, value in values.items() if value == value_triple]) for
+            value_triple in values_triples]
+    print(f'triples: {triples}')
     for triple in triples:
         for unit in unit_list:
             if(set(triple).issubset(set(unit))):
@@ -198,26 +265,22 @@ def reduce_puzzle(values):
     """
     solved_values = [box for box in values.keys() if
                      len(values[box]) == 1]
-    print(values.keys())
     stalled = False
     while not stalled:
-        # print('not stalled')
         solved_values_before = len([box for box in values.keys() if
                                     len(values[box]) == 1])
-       # print(f'count before solving: {solved_values_before}, solved boxes before solving: {[box for box in values.keys() if len(values[box]) == 1]}')
         values = single_position(values)
         values = single_candidate(values)
-        values = naked_twins(values)
+        # values = naked_twins(values)
+        # values = locked_twins(values)
         values = naked_triple(values)
+        values = locked_triple(values)
         solved_values_after = len([box for box in values.keys() if
                                    len(values[box]) == 1])
-        #print(f'count after solving: {solved_values_after}, solved boxes after solving: {[box for box in values.keys() if len(values[box]) == 1]}')
         stalled = solved_values_before == solved_values_after
-       # print(f'Stalled: {stalled}')
         if len([box for box in values.keys() if
                 len(values[box]) == 0]):
             return (False, values)
-    #print(f'solved values: {values}')
     return True, values
 
 
@@ -232,7 +295,7 @@ def search(values):
     # First, reduce the puzzle using the previous function
     rows, cols, size = get_rows_cols(values)
     boxes = get_boxes(rows, cols)
-   # print(f'Original sudoku values: {values}')
+    # print(f'Original sudoku values: {values}')
     truth, values = reduce_puzzle(values)
     if truth is False:
         truth, values = reduce_puzzle(values)
@@ -242,7 +305,7 @@ def search(values):
         return values
     n, s = min((len(values[s]), s) for s in boxes if
                len(values[s]) > 1)
-    print(n, s)
+    # print(n, s)
     for value in values[s]:
         new_sudoku = values.copy()
         new_sudoku[s] = value
@@ -291,11 +354,13 @@ def validator(grid):
     values_grid = dict(filter(lambda n: n[1] != ".", valuesv.items()))
     a = [(valuesv[n], [valuesv[p] for p in peers[n]], n) for
          n in list(values_grid.keys())]
+    print(f'len of a: {len(a)}')
     for x in a:
         if x[0] in x[1]:
             answ.append([False, x[0], x[2]])
         else:
             pass
+    print(f'answer: {answ}')
     return answ
 
 
@@ -333,15 +398,16 @@ def tracker(values):
         answ = (answ if values_before == values_after else
                 np.add(answ, [0, 1, 0, 0, 0]))
         values_before = values_after
-        values = naked_twins(values)
-        values_after = transf(values)
-        answ = (answ if values_before == values_after else
-                np.add(answ, [0, 0, 1, 0, 0]))
-        values_before = values_after
+        # values = naked_twins(values)
+        # values_after = transf(values)
+        # answ = (answ if values_before == values_after else
+        #         np.add(answ, [0, 0, 1, 0, 0]))
+        # values_before = values_after
         values = naked_triple(values)
         values_after = transf(values)
         answ = (answ if values_before == values_after else
                 np.add(answ, [0, 0, 0, 1, 0]))
+        values = locked_triple(values)
         solved_values = len([box for box in values.keys()
                              if len(values[box]) == 1])
         if solved_values is 81:
