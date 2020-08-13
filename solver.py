@@ -126,6 +126,7 @@ def solve(grid):
                 return ("Not solved")
     else:
         for element in validation:
+            print(f'removed element: {element}')
             element.remove(False)
         return(2, validation, grid, 'No Difficulty Level')
 

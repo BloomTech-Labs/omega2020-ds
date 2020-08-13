@@ -1,8 +1,6 @@
 awsebcli==3.17.0
 backcall==0.1.0
 blessed==1.17.0
-boto3==1.11.7
-botocore==1.13.50
 cached-property==1.5.1
 cement==2.8.2
 certifi==2019.11.28

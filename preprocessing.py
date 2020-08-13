@@ -231,18 +231,19 @@ class Preprocess:
     def boxes(invert_img, count):
         # This sets the coordinates of the grid lines to to splice a processed
         # image to a individual sudoku cells.
-        if 70 < count < 120:
-            print('9x9')
-            rows = [(30, 110), (125, 205), (235, 315), (350, 430),
-                    (455, 535), (580, 660), (680, 760), (785, 865), (890, 970)]
-            columns = [(30, 110), (130, 210), (240, 320), (355, 435),
-                    (455, 535), (575, 655), (680, 760), (800, 880), (890, 970)]
-        elif 27 < count < 60:
+        if 27 < count < 60:
             print('6x6')
             rows = [(30, 140), (165, 305), (330, 470), (500, 635),
                     (660, 785), (820, 970)]
             columns = [(30, 140), (165, 305), (330, 470), (500, 635),
                     (660, 785), (820, 970)]
+        # Assumes a 9x9 puzzle since it's the most popular one
+        else:
+            print('9x9')
+            rows = [(30, 110), (125, 205), (235, 315), (350, 430),
+                    (455, 535), (580, 660), (680, 760), (785, 865), (890, 970)]
+            columns = [(30, 110), (130, 210), (240, 320), (355, 435),
+                    (455, 535), (575, 655), (680, 760), (800, 880), (890, 970)]
         images_list = []
         for unit in rows:
             for units in columns:
@@ -253,6 +254,7 @@ class Preprocess:
         final_images = []
         for i in range(len(images_list)):
             resize_img = cv2.resize(images_list[i], (28, 28))
+            cv2.imwrite('image-cells/cell_'+str(i)+'.jpg', resize_img)
             final_images.append(resize_img)
 
         return final_images
