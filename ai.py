@@ -207,19 +207,17 @@ def naked_triple(values):
         the values dictionary with the naked twins eliminated from peers.
     """
     unit_list = get_unit_list(values)
-    values_triples = [a for a, count in Counter([value for key, value in values.items() if
-                      len(value) == 3]).items() if count > 2]
-    triples = [([key for key, value in values.items() if value == value_triple]) for
-               value_triple in values_triples]
-    print(f'triples boxes: {triples}')
-    for triple in triples:
-        for unit in unit_list:
-            if(set(triple).issubset(set(unit))):
-                values_remove = [x for x in unit if x not in triple]
-                digits = values[triple[0]]
-                for vr in values_remove:
-                    for digit in digits:
-                        values[vr] = values[vr].replace(digit, "")
+    for unit in unit_list:
+        # 1. Find twins
+        triples = [v for v in [values[box] for box in unit] if
+                 [values[box] for box in unit].count(v) == 3 and len(v) == 3]
+        print(f'triples: {triples}')
+        for box in unit:
+            if values[box] in triples:
+                continue
+            for triple in triples:
+                for digit in triple:
+                    values[box] = values[box].replace(digit, "")
     return values
 
 def locked_triple(values):
@@ -239,7 +237,7 @@ def locked_triple(values):
                     len(value) == 3]).items() if count > 2]
     triples = [([key for key, value in values.items() if value == value_triple]) for
             value_triple in values_triples]
-    print(f'triples: {triples}')
+    print(f'locked triples: {triples}')
     for triple in triples:
         for unit in unit_list:
             if(set(triple).issubset(set(unit))):
