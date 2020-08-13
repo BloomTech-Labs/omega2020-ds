@@ -38,6 +38,7 @@ from .dictionary import *
 def create_app():
     """This is the core function with all of the Flask App Routes and logic that serves as the DS API. This first block of functions serves as adding core configuration settings such as FLASK, and Database configuration."""
     application = Flask(__name__)
+    # CORS(application)
     application.debug = True
     application.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
     application.config['ENV'] = config('FLASK_ENV')
@@ -99,6 +100,43 @@ def create_app():
     def upload():
         return render_template('base.html')
 
+    @application.route("/lines", methods=['GET'])
+    # This route will load the upload page, which is a reference to validate
+    # data pipelines independent of the front end being online. Handy for
+    # Local Testing for the DS Team. NOTE: This template is only for testing the implementation
+    # of the lines method of the Preprocess class in preprocessing.py
+    def lines_test():
+        return render_template('lines.html')
+
+    @application.route("/demo_lines", methods=['GET', 'POST'])
+    # This template is only for testing the implementation
+    # of the lines method of the Preprocess class in preprocessing.py
+    # ADD DESCRIPTIVE COMMENTS BEFORE PUSHING
+    def demo_lines():
+        # 
+        image_file = request.files['file']
+        # 
+        imghash = hashlib.md5(image_file.read()).hexdigest()
+        image_file.seek(0)
+        # 
+        imgurl = upload_file_to_s3(
+            image_file,
+            config('S3_BUCKET'),
+            "raw_puzzles/" + imghash + '.png')
+
+        processed, box_count, imgarray, cells = pipeline(imgurl)
+        processed_image = Image.fromarray(processed)
+
+        with BytesIO() as in_mem_file_cropped:
+            processed_image.save(in_mem_file_cropped, format='PNG')
+            in_mem_file_cropped.seek(0)
+            processed_url = upload_file_to_s3(
+                in_mem_file_cropped,
+                config('S3_BUCKET'), "processed_puzzles/" +
+                imghash + '_processed.png')
+
+        return render_template('lines_results.html', imgurl=imgurl, box_count=box_count, processed_url=processed_url, cells=cells)
+
     @application.route("/bulk_upload", methods=['GET'])
     # This route is used for bulk upload and processing of images to bootstrap
     # our model, will take hours to run given current amount of data, but if
@@ -137,7 +175,7 @@ def create_app():
         # variable and returns 81 numpy arrays (of 28x28 dimensions)
         # representing each individual sudoku cell that makes up the whole
         # puzzle
-        processed, imgarray = pipeline(imgurl)
+        processed, box_count, imgarray, cells = pipeline(imgurl)
         processed_image = Image.fromarray(processed)
 
         # loads the processed image in memory so it can be uploaded to S3 in
@@ -182,7 +220,10 @@ def create_app():
         # reshapes the numpy array into 81 rows (one for each cell) and 784 columns (one for each value in the 784 pixels that make up a 28x28 pixel image)
         # loads it into a csv_buffer object and loaded to S3 for sagemaker
         # processing.
-        allArrays = allArrays.reshape(81, 784)
+        if 70 < box_count < 120:
+            allArrays = allArrays.reshape(81, 784)
+        elif 25 < box_count < 60:
+            allArrays = allArrays.reshape(36, 784)
         allArrays = np.rint(allArrays)
         csv_array = pd.DataFrame(allArrays)
         csv_buffer = StringIO()
