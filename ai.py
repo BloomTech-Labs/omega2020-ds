@@ -222,7 +222,7 @@ def naked_triple(values):
 
 def locked_triple(values):
     """ 
-    Eliminate values using the naked triple strategy.
+    Eliminate values using the locked triple strategy.
     Check if there are three triples with the same digits in two houses.
     The two houses are a row and a block or a column and a block.
     
@@ -248,6 +248,31 @@ def locked_triple(values):
                         values[vr] = values[vr].replace(digit, "")
     return values
 
+def naked_quadruple(values):
+    """ 
+    Eliminate values using the naked quadruple strategy.
+    Check if there are two or more boxes with same 4 digits in a row, column or square.
+    There are no locked quadruples. 
+    
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+        
+    Returns:
+        the values dictionary with the naked twins eliminated from peers.
+    """
+    unit_list = get_unit_list(values)
+    for unit in unit_list:
+        # 1. Find quads
+        quads = [v for v in [values[box] for box in unit] if
+                 [values[box] for box in unit].count(v) == 4 and len(v) == 4]
+        print(f'quads: {quads}')
+        for box in unit:
+            if values[box] in quads:
+                continue
+            for quad in quads:
+                for digit in quad:
+                    values[box] = values[box].replace(digit, "")
+    return values
 
 def reduce_puzzle(values):
     """
@@ -269,10 +294,11 @@ def reduce_puzzle(values):
                                     len(values[box]) == 1])
         values = single_position(values)
         values = single_candidate(values)
-        # values = naked_twins(values)
-        # values = locked_twins(values)
+        values = naked_twins(values)
+        values = locked_twins(values)
         values = naked_triple(values)
         values = locked_triple(values)
+        values = naked_quadruple(values)
         solved_values_after = len([box for box in values.keys() if
                                    len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
