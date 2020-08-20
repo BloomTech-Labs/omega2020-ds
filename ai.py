@@ -105,6 +105,7 @@ def single_position(values):
     Input: A sudoku in dictionary form.
     Output: The resulting sudoku in dictionary form.
     """
+    # print('---Single Position---)
     rows, cols, size = get_rows_cols(values)
     boxes = get_boxes(rows, cols)
     unit_list = get_unit_list(values)
@@ -123,6 +124,7 @@ def single_candidate(values):
     Input: A sudoku in dictionary form.
     Output: The resulting sudoku in dictionary form.
     """
+    # print('---Single Candidate---)
     unit_list = get_unit_list(values)
     rows, cols, size = get_rows_cols(values)
     for unit in unit_list:
@@ -143,6 +145,7 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
+    # print('---Naked Twins---)
     unit_list = get_unit_list(values)
     for unit in unit_list:
         # 1. Find twins
@@ -167,6 +170,7 @@ def locked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
+    # print('---Locked Twins---)
     rows, cols, size = get_rows_cols(values)
     boxes = get_boxes(rows, cols)
     unit_list = get_unit_list(values)
@@ -206,12 +210,13 @@ def naked_triple(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
+    # print('---Naked Triple---)
     unit_list = get_unit_list(values)
     for unit in unit_list:
-        # 1. Find twins
+        # 1. Find triples
         triples = [v for v in [values[box] for box in unit] if
                  [values[box] for box in unit].count(v) == 3 and len(v) == 3]
-        print(f'triples: {triples}')
+        # print(f'triples: {triples}')
         for box in unit:
             if values[box] in triples:
                 continue
@@ -232,12 +237,13 @@ def locked_triple(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
+    # print('---Locked Triple---)
     unit_list = get_unit_list(values)
     values_triples = [a for a, count in Counter([value for key, value in values.items() if
                     len(value) == 3]).items() if count > 2]
     triples = [([key for key, value in values.items() if value == value_triple]) for
             value_triple in values_triples]
-    print(f'locked triples: {triples}')
+    # print(f'locked triples: {triples}')
     for triple in triples:
         for unit in unit_list:
             if(set(triple).issubset(set(unit))):
@@ -260,18 +266,101 @@ def naked_quadruple(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
+    # print('---Naked Quad---')
     unit_list = get_unit_list(values)
     for unit in unit_list:
         # 1. Find quads
         quads = [v for v in [values[box] for box in unit] if
                  [values[box] for box in unit].count(v) == 4 and len(v) == 4]
-        print(f'quads: {quads}')
+        # print(f'quads: {quads}')
         for box in unit:
             if values[box] in quads:
                 continue
             for quad in quads:
                 for digit in quad:
                     values[box] = values[box].replace(digit, "")
+    return values
+
+def simple_color_trap(values):
+    """
+    Eliminates values using the simple color trap strategy.
+    Search for conjugate pairs and color them blue and yellow. Blue can only connect to 
+    yellow and yellow can only connect to blue.
+    Any same-digit candidate that can see a blue and yellow square, it is marked
+    red and eliminated. 
+
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+    Returns:
+        the values dictionary with the red colored numbers eliminated from peers.
+    """
+    # print('---Simple Color Trap---')
+    rows, cols, size = get_rows_cols(values)
+    boxes = get_boxes(rows, cols)
+    unit_list = get_unit_list(values)
+    blue, yellow, red = [], [], []
+    all_blues_found, all_yellows_found = False, False
+    # Search for first conjugate pair as a starting point
+    for unit in unit_list:
+        conjugate_pairs = [v for v in [values[box] for box in unit] if
+                [values[box] for box in unit].count(v) == 2]
+        # print(conjugate_pairs)
+        for box in unit:
+            if values[box] in conjugate_pairs:
+                blue.append(box)
+                # print(f'blue: {blue}')
+                break
+        if box in blue:
+            break
+
+    # Grabs one canidate from first blue
+    first_values = [x for x in values[box] for box in blue]
+    canidate = 0
+    if first_values:
+        canidate = first_values[0]
+        # print(f'targeted canidate: {canidate}')
+    
+    # Search for the rest of the cojugate pairs and build the network
+    while all_blues_found == False and all_yellows_found == False:
+        # Find more yellows 
+        # Not complete, should only take unmarked conjugate pairs that are next to blues
+        for unit in unit_list:
+            conjugate_pairs = [v for v in [values[box] for box in unit] if
+                    [values[box] for box in unit].count(v) == 2]
+            check_for_update = yellow
+            for box in unit:
+                if values[box] in conjugate_pairs:
+                    # print(f'values: {values[box]}')
+                    if str(canidate) in values[box]:
+                        if box not in blue and box not in yellow:
+                            yellow.append(box)
+                            # print(f'yellow: {yellow}')
+            if check_for_update == yellow:
+                all_yellows_found = True
+
+        # Find more blues
+        # Not complete, should only take unmarked conjugate pairs that are next to yellows
+        for unit in unit_list:
+            conjugate_pairs = [v for v in [values[box] for box in unit] if
+                    [values[box] for box in unit].count(v) == 2]
+            check_for_update = blue
+            for box in unit:
+                if values[box] in conjugate_pairs:
+                    # print(f'values: {values[box]}')
+                    if str(canidate) in values[box]:
+                        if box not in blue and box not in yellow:
+                            blue.append(box)
+                            # print(f'blue: {blue}')
+            if check_for_update == blue:
+                all_blues_found = True
+    # Look for reds
+    # Not complete. Should mark boxes that contain the canidate and can see both a blue and yellow box
+
+    # Remove canidate from reds
+    for box in red:
+        for x in values[box]:
+            if x == canidate:
+                values[box] = values[box].replace(x, "")
     return values
 
 def reduce_puzzle(values):
@@ -299,6 +388,7 @@ def reduce_puzzle(values):
         values = naked_triple(values)
         values = locked_triple(values)
         values = naked_quadruple(values)
+        values = simple_color_trap(values)
         solved_values_after = len([box for box in values.keys() if
                                    len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
@@ -378,13 +468,13 @@ def validator(grid):
     values_grid = dict(filter(lambda n: n[1] != ".", valuesv.items()))
     a = [(valuesv[n], [valuesv[p] for p in peers[n]], n) for
          n in list(values_grid.keys())]
-    print(f'len of a: {len(a)}')
+    # print(f'len of a: {len(a)}')
     for x in a:
         if x[0] in x[1]:
             answ.append([False, x[0], x[2]])
         else:
             pass
-    print(f'answer: {answ}')
+    # print(f'answer: {answ}')
     return answ
 
 
