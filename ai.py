@@ -222,7 +222,7 @@ def naked_triple(values):
 
 def locked_triple(values):
     """ 
-    Eliminate values using the naked triple strategy.
+    Eliminate values using the locked triple strategy.
     Check if there are three triples with the same digits in two houses.
     The two houses are a row and a block or a column and a block.
     
@@ -250,7 +250,7 @@ def locked_triple(values):
 
 def naked_quadruple(values):
     """ 
-    Eliminate values using the naked triple strategy.
+    Eliminate values using the naked quadruple strategy.
     Check if there are two or more boxes with same 4 digits in a row, column or square.
     There are no locked quadruples. 
     
