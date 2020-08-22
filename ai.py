@@ -378,20 +378,19 @@ def brute_force(values):
     """
     for letter in '123456789':
       try:
-          i  = puzzle.index(letter)
+          i  = values.index(letter)
       except ValueError:
           # No empty cell left: solution found
-          return puzzle
+          return values
 
-      c = [puzzle[j] for j in range(81)
+      c = [values[j] for j in range(81)
           if not ((i-j)%9 * (i//9^j//9) * (i//27^j//27 | (i%9//3^j%9//3)))]
       c = ''.join(c)
-      print(c)
 
       for v in range(1, 10):
           if str(v) not in c:
-              print(puzzle[:i]+[v]+puzzle[i+1:])
-              r = solve(puzzle[:i]+[v]+puzzle[i+1:])
+              print(values[:i]+[v]+values[i+1:])
+              r = solve(values[:i]+[v]+values[i+1:])
               if r is not None:
                   return r
 
@@ -421,7 +420,7 @@ def reduce_puzzle(values):
         values = locked_triple(values)
         values = naked_quadruple(values)
         values = simple_color_trap(values)
-        # values = brute_force(values)
+        values = brute_force(values)
         solved_values_after = len([box for box in values.keys() if
                                    len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
