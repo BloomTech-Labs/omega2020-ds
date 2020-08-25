@@ -139,7 +139,7 @@ def naked_twins(values):
     """
     Eliminate values using the naked twins strategy.
     Check if there are two pairs with the sames digits in a row, column or square
-    
+
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
     Returns:
@@ -164,7 +164,7 @@ def locked_twins(values):
     Eliminate values using the locked twins/pair strategy.
     Check if there are two pairs with the sames digits in two houses.
     The two houses are a row and a block or a column and a block.
-    
+
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
     Returns:
@@ -184,13 +184,13 @@ def locked_twins(values):
         # add the house and the twins to a dict outside the loop
         if len(twins_values) > 0:
             twins_houses[count] = dict(zip(twins_boxes[0], twins_values))
-    
+
         #if conditional - if the twins are in shared houses do the below operation
     for key, value in twins_houses.items():
         temp_dict = twins_houses.copy()
         temp_dict.pop(key)
         for item in temp_dict:
-            if temp_dict[item] == value: 
+            if temp_dict[item] == value:
                 for box in unit_list[key]:
                     if values[box] in twins_values:
                         continue
@@ -200,13 +200,13 @@ def locked_twins(values):
     return values
 
 def naked_triple(values):
-    """ 
+    """
     Eliminate values using the naked triple strategy.
-    Check if there are three triples with the sames digits in a row, column or square    
-    
+    Check if there are three triples with the sames digits in a row, column or square
+
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
-        
+
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
@@ -226,14 +226,14 @@ def naked_triple(values):
     return values
 
 def locked_triple(values):
-    """ 
+    """
     Eliminate values using the locked triple strategy.
     Check if there are three triples with the same digits in two houses.
     The two houses are a row and a block or a column and a block.
-    
+
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
-        
+
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
@@ -255,14 +255,14 @@ def locked_triple(values):
     return values
 
 def naked_quadruple(values):
-    """ 
+    """
     Eliminate values using the naked quadruple strategy.
     Check if there are two or more boxes with same 4 digits in a row, column or square.
-    There are no locked quadruples. 
-    
+    There are no locked quadruples.
+
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
-        
+
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
@@ -284,10 +284,10 @@ def naked_quadruple(values):
 def simple_color_trap(values):
     """
     Eliminates values using the simple color trap strategy.
-    Search for conjugate pairs and color them blue and yellow. Blue can only connect to 
+    Search for conjugate pairs and color them blue and yellow. Blue can only connect to
     yellow and yellow can only connect to blue.
     Any same-digit candidate that can see a blue and yellow square, it is marked
-    red and eliminated. 
+    red and eliminated.
 
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
@@ -319,10 +319,10 @@ def simple_color_trap(values):
     if first_values:
         canidate = first_values[0]
         # print(f'targeted canidate: {canidate}')
-    
+
     # Search for the rest of the cojugate pairs and build the network
     while all_blues_found == False and all_yellows_found == False:
-        # Find more yellows 
+        # Find more yellows
         # Not complete, should only take unmarked conjugate pairs that are next to blues
         for unit in unit_list:
             conjugate_pairs = [v for v in [values[box] for box in unit] if
@@ -363,15 +363,46 @@ def simple_color_trap(values):
                 values[box] = values[box].replace(x, "")
     return values
 
+def brute_force(values):
+    """
+    Solve a Sudoku puzzle using a brute force strategy. WARNING: very slow
+    and does not use any sort of backtracking, only to be used as last resort.
+
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the first found solution as a sequence of 81 integers in
+        the 1 to 9 interval (same row or column order than input), or None
+        if no solution exists.
+    """
+    for letter in '123456789':
+      try:
+          i  = values.index(letter)
+      except ValueError:
+          # No empty cell left: solution found
+          return values
+
+      c = [values[j] for j in range(81)
+          if not ((i-j)%9 * (i//9^j//9) * (i//27^j//27 | (i%9//3^j%9//3)))]
+      c = ''.join(c)
+
+      for v in range(1, 10):
+          if str(v) not in c:
+              print(values[:i]+[v]+values[i+1:])
+              r = solve(values[:i]+[v]+values[i+1:])
+              if r is not None:
+                  return r
+
 def reduce_puzzle(values):
     """
     Iterate the techniques. If at some point,
     there is a box with no available values, return False.
     If the sudoku is solved, return the sudoku.
     If after an iteration all the techniques,
-    the sudoku remains the same, return the resulting 
+    the sudoku remains the same, return the resulting
     sudoku in dictionary form.
-    
+
     Input: A sudoku in dictionary form.
     Output: The resulting sudoku in dictionary form.
     """
@@ -389,6 +420,7 @@ def reduce_puzzle(values):
         values = locked_triple(values)
         values = naked_quadruple(values)
         values = simple_color_trap(values)
+        values = brute_force(values)
         solved_values_after = len([box for box in values.keys() if
                                    len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
@@ -400,10 +432,10 @@ def reduce_puzzle(values):
 
 def search(values):
     """
-    Try to reduce the puzzle using all the techniques. 
+    Try to reduce the puzzle using all the techniques.
     If after an iteration reduce_puzzle,
     the sudoku remains the same, guess a number
-    and iterate again the techniques until can solve the 
+    and iterate again the techniques until can solve the
     puzzle(search and propagation,try all possible values)
     """
     # First, reduce the puzzle using the previous function
@@ -454,9 +486,9 @@ def validator(grid):
             empty spaces are "."
     Output: Array
             Valid : empty array []
-            Invalid : False and the position of the 
+            Invalid : False and the position of the
             all wrong values that are in conflict.
-    
+
     """
     rows, cols, size = get_rows_cols(grid)
     boxes = get_boxes(rows, cols)
@@ -588,4 +620,3 @@ def train_model():
     outfile = open('difficulty_level_model', 'wb')
     pickle.dump(model.fit(X_train, y_train.values.ravel()), outfile)
     outfile.close()
-
